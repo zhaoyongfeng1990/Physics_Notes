@@ -1,0 +1,921 @@
+\documentclass{ctexart}
+
+\usepackage{mhchem}
+\usepackage{array}
+\usepackage{graphicx,bm}
+\usepackage{amsmath,amssymb}
+\usepackage{appendix}
+\usepackage{color}
+\usepackage[standard]{ntheorem}
+\usepackage{siunitx}
+\newcommand\cincludegraphics[1]{\centerline{\includegraphics[scale=0.75]{#1}}}
+\newcommand\diff[2]{\frac{d #1}{d #2}}
+\newcommand\Diff[2]{\frac{D #1}{D #2}}
+\newcommand\ddiff[2]{\frac{d^2 #1}{d #2^2}}
+\newcommand\ndiff[3]{\frac{d^{#3}#1}{d #2^{#3}}}
+\newcommand\pdiff[2]{\frac{\partial #1}{\partial #2}}
+\newcommand\pddiff[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\newcommand\pndiff[3]{\frac{\partial^{#3} #1}{\partial #2^{#3}}}
+\newcommand\mathmx[1]{\bm{#1}}
+\newcommand\E[2]{\ensuremath{#1\times10^{#2}}}
+\newcommand\ii{\mathrm{i}}
+\newcommand\dd{\mathrm{d}}
+\newcommand\non{\nonumber \\}
+\newcommand\ecoli{\textit{E. coli }}
+\newcommand\um{\ensuremath{\mathrm{\mu m}}}
+\newcommand\red[1]{{\color{red}#1}}
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    linkcolor=blue,  %choose some color if you want links to stand out
+}
+\renewcommand\arraystretch{1.8}
+
+\DeclareRobustCommand{\vect}[1]{\bm{#1}}
+\pdfstringdefDisableCommands{%
+  \renewcommand{\vect}[1]{#1}%
+}
+
+\bibliographystyle{unsrt}
+
+\usepackage[margin=1.0in]{geometry}
+
+%\usepackage{ctex}
+
+\begin{document}
+\title{软物质的统计力学}
+\maketitle
+\tableofcontents
+
+\section{引言}
+对于一个哈密顿系统，它的平衡态统计是为人所熟知的。统计力学 这篇文章已经提供了一个简单的总结（虽然写得不好）。即从不含时哈密顿量出发，做各态历经假设，得到微正则系综，从而可以得出一系列微观物理量的宏观统计以及热力学极限下的热力学规律。这里唯一需要补充一点的是从刘维尔定理到正则系综，这套理论为什么成立仍然是一个未解决的问题。朗道的解释是 $\ln p$ 是可加的运动常数，因此应该是能量的线性函数，从而得出正则系综。但这并不是非常坚实的推理，以至于我在写前文的时候犹豫再三最终没有采用这个逻辑（实际上我以为我写了）。其实还有一些其它的看法，比如哈密顿系统的混沌性质，或是极大化香农信息熵，但并没有研究得非常清楚。
+
+还有一类常常被称为软物质的系统也是常被归于平衡态热力学中的，但其实并没有囊括在统计力学 这篇文章的框架之中。这类系统便是溶液/大分子胶体/悬浮液系统——溶质/颗粒物如果没有任何自我驱动，也不考虑局部的化学反应，那么经验上显然它可以和溶剂分子达成热力学平衡，服从热力学定律。但是，如何从统计物理出发处理这类系统，这是我最近一直感到困惑的地方。
+
+当然，我们还是可以写出包括溶剂分子的哈密顿量，比如考虑一个坐标 $\bm{q}$ 动量 $\bm{p}$ 的颗粒悬浮在 $N$ 个溶剂粒子构成的液体之中：
+\begin{equation}
+H(\bm{p},\bm{q},\{\bm{q}_i,\bm{p}_i\})=\frac{\bm{p}^2}{2M}+\sum_{i=1}^N \frac{\bm{p}_i^2}{2m_i}+\sum_{i=1}^N V_{\mathrm{FP}}(\bm{q}-\bm{q}_i)+\sum_{1\leq i<j\leq N}V_{\mathrm{FF}}(\bm{q}_i-\bm{q}_j)+V_{\mathrm{ext}}(\bm{q})
+\end{equation}
+其中 $V_{\mathrm{FP}}$ 是溶剂粒子和颗粒的相互作用， $V_{\mathrm{FF}}$ 是溶剂粒子和溶剂粒子的相互作用， $V_{\mathrm{ext}}$ 是某种外场。然而，这个模型几乎不可解，而且包含了太多我们不关心的变量——何况这只是“单粒子”的哈密顿量。如果溶剂已经达到平衡态，没有宏观的流体运动，那么我们应该有办法将这个问题简化，得到一套只包括悬浮粒子的系统。
+
+这个过程将在下一节详细阐述。这里先剧透一点。简化后的系统的动力学在平均场近似下可以用一个单粒子的含时哈密顿量描述：
+\begin{equation}
+H(\tilde{\bm{p}},\bm{q})=\left(\frac{\bm{p}^2}{2M}+V_{\mathrm{MF}}(\bm{q})\right)e^{\frac{\mu}{M}t}
+\end{equation}
+但这里的正则动量是 $\tilde{\bm{p}}=\bm{p}e^{\frac{\mu}{M}t}$ 。对于这样一个含时的哈密顿量，还能否直接使用正则系综（以及如何使用正则系综）就是一件值得怀疑的事情了。或者说，到现在为止我们还不确定这个简化有没有破坏平衡态热力学。这个问题会在建立相关的框架之后，在更后面的章节中回答。
+
+这一系列文章需要的数学基础大体上是基本微积分与概率统计的知识，最后会涉及到变分法，需要的物理基本上只有经典力学、平衡态统计和经典场论。
+
+\section{一个可解模型}
+这里从一个非常简化但精确可解的模型出发，来简单阐述一下这个简化过程，以及其中用到的近似。这个模型出自Ford, Kac, and Mazur, J. Math. Phys. 1965 （\url{https://aip.scitation.org/doi/abs/10.1063/1.1704304}）。
+
+对于引言中提到的哈密顿量，我们假定 $V_{\mathrm{FP}}(\bm{q}-\bm{q}_i)=\frac{1}{2}m_i\omega_i^2(\bm{q}-\bm{q}_i)^2$ 是谐振子势（或者说，对势函数做泰勒展开保留二次项——这个近似应该已经见过无数遍了），并且，溶剂分子是已经处于热平衡的理想气体，我们不关心，溶剂分子间也没有相互作用。进一步假定溶剂分子的质量相同为 $m$ ，且 $M\gg m$ 。那么，从哈密顿量$H(\bm{p},\bm{q},\{\bm{q}_i,\bm{p}_i\})=\frac{\bm{p}^2}{2M}+\sum_i \frac{\bm{p}_i^2}{2m}+\frac{m}{2}\sum_i \omega_i^2(\bm{q}-\bm{q}_i)^2+V(\bm{q})$
+出发，由
+\begin{equation}
+\frac{d^2 \bm{q}_i}{dt^2}=\frac{1}{m}\frac{d\bm{p}_i}{dt}=-\frac{1}{m}\frac{\partial H}{\partial \bm{q}_i}=-\omega_i^2(\bm{q}_i-\bm{q}(t))
+\end{equation}
+可以精确解得溶剂分子的轨迹为
+\begin{equation}
+\bm{q}_i(t)=\bm{q}_i(0)\cos(\omega_i t)+\frac{\bm{p}_i(0)}{m\omega_i}\sin(\omega_i t)+\omega_j\int_0^t ds\, \bm{q}(s)\sin(\omega_i(t-s))
+\end{equation}
+对后一项做分部积分，有
+\begin{align} 
+\bm{q}_i(t)=&\bm{q}_i(0)\cos(\omega_i t)+\frac{\bm{p}_i(0)}{m\omega_i}\sin(\omega_i t)+[\bm{q}(s)\cos(\omega_i(t-s))]|_0^t-\frac{1}{M}\int_0^t ds\, \bm{p}(s)\cos(\omega_i(t-s)) \\ 
+=&\bm{q}_i(0)\cos(\omega_i t)+\frac{\bm{p}_i(0)}{m\omega_i}\sin(\omega_i t)+\bm{q}(t)-\bm{q}(0)\cos\omega_it-\frac{1}{M}\int_0^t ds\, \bm{p}(s)\cos(\omega_i(t-s)) 
+\end{align}
+那么颗粒的动力学，有
+\begin{equation}
+\frac{d\bm{q}}{dt}=\frac{\bm{p}}{M}
+\end{equation}
+\begin{align} 
+\frac{d\bm{p}}{dt}=&-\nabla V(\bm{q})-\sum_{j=1}^Nm\omega_i^2(\bm{q}-\bm{q}_i) \\
+ =&-\nabla V(\bm{q})-\int_0^t ds\, \frac{\bm{p}(s)}{M}\sum_im\omega_i^2\cos(\omega_i(t-s))-\sum_im\omega_i^2(\bm{q}(0)-\bm{q}_i(0))\cos\omega_it+\sum_i\bm{p}_i(0)\omega_i\sin\omega_i t
+\end{align}
+记
+\begin{equation}
+K(t)=\sum_im\omega_j^2\cos(\omega_it)
+\end{equation}
+\begin{equation}
+\bm{\xi}(t)=-\sum_im\omega_i^2(\bm{q}(0)-\bm{q}_i(0))\cos\omega_it+\sum_i\bm{p}_i(0)\omega_i\sin\omega_i t 
+\end{equation}
+因为在平衡态中，其系综平均只是时间的函数。那么动力学方程简化为
+\begin{align} 
+\frac{d\bm{q}}{dt}=&\frac{\bm{p}}{M}\\ 
+\frac{d\bm{p}}{dt}=&-\nabla V(\bm{q})-\int_0^t ds\, \frac{\bm{p}(s)}{M}K(t-s)+\bm{\xi}(t) \label{eqn_dynamics}
+\end{align}
+
+至此，我们尚未用到任何近似，但我们需要先思考一下这里发生了什么事情。本来我们有一个哈密顿动力系统，其动力学是瞬时、马尔可夫的。但当我们将溶剂分子的自由度统统积分去掉之后，动力系统变成了一个有时滞、非马尔可夫的系统。（这里虽然我使用了马尔可夫这个词，但至此为止动力学依然是确定性的，只是当前时刻的状态改变与历史有关了。）观察 $K(t)$ 的形式，它只与溶剂分子与颗粒的相互作用有关系。也就是说，溶剂分子在这里充当了一种缓冲，记忆了过去时刻颗粒的运动对溶剂分子施加的影响，经过一段时间延时后又在当前时刻反馈给了颗粒。
+
+而 $\bm{\xi}(t)$ 还与系统的初始状态有关系，但这是我们不关心，也无法知道的事情。信息的缺失使我们只好把它当作随机变量处理。为了得到其概率分布函数，从这里开始我们要用到之前提过的假设了——溶剂分子处于平衡态，恒温条件下其坐标和动量满足正则分布（ $\beta=1/k_BT$ ）
+\begin{equation}
+P(\{\bm{q}_i(0),\bm{p}_i(0)\})=Z^{-1}\exp\left(-\beta\sum_j\frac{\bm{p}_j^2(0)}{2m}-\beta\sum_j\frac{\omega_j^2}{2}(\bm{q}_j(0)-\bm{q}(0))^2)\right)
+\end{equation}
+这无非是一系列独立高斯分布的积。那么作为一系列独立高斯分布变量的线性函数，$\bm{\xi}(t)$当然也满足高斯分布，且经过一系列冗长但是trivial的计算，使用这个概率密度求平均我们可以得到
+\begin{equation}
+\langle\bm{\xi}(t)\rangle=0\ \ \mbox{（显然）}
+\end{equation}
+\begin{equation}
+\langle\xi_\alpha(t)\xi_\beta(t')\rangle=k_BT\delta_{\alpha\beta}K(t-t')
+\end{equation}
+
+突然间，这个平衡态的假设把我们之前引入的两个量联系了起来。回想简化后的动力学方程，如果我们把这个关系的左边看作是动力系统演化过程中的涨落关联，右边看作环境对系统造成的阻尼，这个关系说明溶剂在平衡态时对动力系统的耗散，恰好等于其演化过程中的涨落关联。因此这个关系也被称为涨落耗散定理，甚至可以推广到更普遍的系统中。
+
+至此我们对 $K(t)$ 还是一无所知。接下来我们要做一系列方便但是没有什么道理的（气死数学家的，如果他们还没有被前文气死的话）假设。首先，我们考虑溶剂的分子数趋于无穷，其谐振频率趋于连续，假设 $g(\omega)d\omega$ 是谐振频率在 $[\omega,\omega+d\omega)$ 之中的分子数，推广
+\begin{equation}
+K(t)=\int_0^\infty d\omega\,g(\omega)\omega^2\cos(\omega t)
+\end{equation}
+然后无脑取
+\begin{equation}
+g(\omega)=\frac{2\mu}{\pi\omega^2}
+\end{equation}
+
+我们用不甚严格的数学得到
+\begin{equation}
+K(t)=2\mu\delta(t)
+\end{equation}
+于是方程终于变回了没有时滞的样子。如果翻看力学书中关于阻尼运动或者热学书中关于布朗运动的章节，这就是大家熟悉的朗之万方程（1908年，远早于这一节的推导）
+\begin{align} 
+\frac{d\bm{q}}{dt}=&\frac{\bm{p}}{M}\\ 
+\frac{d\bm{p}}{dt}=&-\nabla V(\bm{q})-\frac{\mu}{M}\bm{p}+\bm{\xi}(t) 
+\end{align}
+而 $\bm{\xi}(t)$ 是高斯白噪声，其分量满足
+\begin{equation}
+\langle\bm{\xi}(t)\rangle=0
+\end{equation}
+\begin{equation}
+\langle\xi_\alpha(t)\xi_\beta(t')\rangle=2\mu k_BT\delta_{\alpha\beta}\delta(t-t')
+\end{equation}
+
+于是我们从完全确定性的动力系统出发，得到了一个非确定性的含随机项的微分方程——随机微分方程。但暂时，我们还不明白这个方程究竟是什么东西——因为随机过程的微分并没有定义。去掉噪声项的话，这个动力系统对应的就是引言中的简化哈密顿量。
+
+当然，这个模型只是个和实际系统相去甚远的玩具模型。即使忽视最后一段不合法的计算，面对更一般的情形，我们也不能将上述过程称为推导。但这个模型定性地提示了我们在方程(\ref{eqn_dynamics})中 $K(t)$ 和 $\xi(t)$ 的物理含义：前者是溶剂对粒子的阻尼响应——最简单的情形下可以用一个线性、即时的响应描述，后者是溶剂和粒子本身运动因为缺少信息带来的随机扰动，表现为一个随机的“作用力”。由此我们依然可以通过物理图像来解释这两个随机微分方程，并唯像地假定它们——尤其是朗之万方程——可以描述一些真实的物理系统。接下来，我们将集中在朗之万方程上。首先需要迫切搞清楚的，就是这个实际上不合法的方程究竟代表什么意思。
+
+\section{朗之万方程}
+上一节我们终于得到了一个随机微分方程——朗之万方程，这一节我们就来详细讨论一下这个方程意味着什么。这里我并不打算从完全严格数学的角度来写（因为我做不到，而且估计写出来也很难看懂），其严格化可以参考Oksendal B，Stochastic Differential Equations（虽然我老板似乎不喜欢这本书）。因此考虑到这一篇覆盖的内容，数学专业的同学可能会感到高度不适。我这里能说的是——这里我们写的所有符号都只是形式的记号，物理学家相信原则上其背后的数学都是可以严格化的，但这里为了符合直觉的物理图像，我们大量采用了这种形式记号——尽管我们没有能力和时间时刻检查其有效性。
+
+首先遇到的第一个困难是上一节所提到的高斯白噪声 $\xi(t)$ 是什么。回想上节中对它的假设，它的均值是0，它是高斯分布，但它的关联函数竟然是狄拉克$\delta$函数——也就是说 $\langle\xi^2(t)\rangle$ 是发散的，这根本不可能。这意味着$\xi(t)$并不是一个严格意义上的随机过程，它本身在数学上是不良定的。
+
+为了修正这个问题，我们先退回原点，再回顾一些历史——早在1822年，布朗就研究了花粉的布朗运动。花粉粒子飘在水中，受到水分子无规则的碰撞会做无规则的运动。后世人们将花粉在某个分量上的运动轨迹 $x(t)$ 抽象为维那过程$W_t$。维那过程是一个与单参数（时间）有关的随机过程，稍微严格点说，一个概率空间 $(\Omega,\mathcal{F},\mathcal{P})$ 上的随机变量是一个可逆且保持 $\mathcal{F}$ 代数结构的映射 $X(\omega):\Omega\to\mathbb{R}^n$ ，那么随机过程是参数化的一堆随机变量，即映射$X(t,\omega):(\mathbb{R},\Omega)\to\mathbb{R}^n$ 。当然，实际书写中我们常常省去书写随机过程对 $\omega$ 的依赖，来指代 $t$ 时刻这个随机过程的一个实例。
+
+布朗运动满足的性质也在早期的实验观察中确定了，我们将这几条基本性质作为维那过程的定义：
+
+\begin{enumerate}
+\item 布朗运动连续，但没有特定的漂移方向，所以其增量的期望为0，即
+\begin{equation}
+\langle W_{t+t_0}-W_{t_0}\rangle=0
+\end{equation}
+
+\item 同时，布朗运动与历史无关，其不同时间的增量是独立的。即如果 $t_1<t_2\leq t_3<t_4$ ，那么有
+\begin{equation}
+\langle (W_{t_4}-W_{t_3})(W_{t_2}-W_{t_1})\rangle=0
+\end{equation}
+
+\item 实验中观察到布朗运动的平均位移的平方正比于时间 $\langle \Delta x^2(t)\rangle=2Dt$ 。那么我们定义
+\begin{equation}
+\langle (W_{t_0+t}-W_{t_0})^2\rangle=|t|
+\end{equation}
+
+\item 最后，观察发现布朗运动位移的增量服从高斯（正态）分布。结合上面的性质，有
+\begin{equation}
+W_{t_0+t}-W_{t_0}\sim \mathcal{N}(0,\sqrt{t})
+\end{equation}
+
+\end{enumerate}
+这样任意选取一个初始值，我们就完成了一个一维维那过程的定义。
+
+那么这与朗之万方程有什么联系呢？回想上一节的内容，人们之所以引入朗之万方程，最初就是为了描述和解释花粉的布朗运动。如果没有外场作用，水分子处于平衡态，花粉与水分子之间的粘性足够大，使得花粉动量的涨落会迅速被水的阻尼消耗掉，那么两个动力学方程的时间尺度是分离的。在一个更为缓慢流逝的时间尺度下来看，动量几乎是没有变化的， $\dot{\bm{p}}=0$ ，同样取 $2k_BT\mu=1$ ，那么我们的动力学方程的形式变得出奇得简单
+\begin{equation}
+\frac{dx(t)}{dt}=\xi(t),\ \langle\xi(t)\rangle=0,\ \langle\xi(t)\xi(t')\rangle=\delta(t-t')
+\end{equation}
+
+也就是说，虽然我们还没给出这个形式方程背后的涵义，但我们在物理上要求这个朗之万方程的解是维那过程 $x(t)=W_t$ 。但是回过头来想，随机过程的微分是什么东西？根据维那过程的性质3， $\langle|W_t-W_0|\rangle/t\sim 1/\sqrt{t}$ ，时间趋于0时根本是不收敛的！当然，这也印证了$\xi(t)$的发散问题。因此这里不得不再次强调，这个微分方程只是纯粹的形式记号，数学上不能按照导数来理解。
+
+既然形式上有 $\xi(t)=dW_t/dt$ ，那么我们换个写法或许可以让这个方程看起来不那么糟糕。记  $dW_t=W_{t+dt}-W_t$ ，对于普遍的朗之万方程（之后我们用大写的字母来表示随机过程，至于函数记号为什么这么约定我们下一节会看到）
+\begin{equation}
+\frac{dX_t}{dt}=f(X_t,t)+\sqrt{2D(X_t,t)}\xi(t),\ \langle\xi(t)\rangle=0,\ \langle\xi(t)\xi(t')\rangle=\delta(t-t')
+\end{equation}
+我们把它写成
+\begin{equation}
+dX_t=f(X_t,t)dt+\sqrt{2D(X_t,t)}dW_t
+\end{equation}
+这样看起来似乎好多了，我们首先避免了不合法的导数记号和不可能存在的噪声项，每一项看起来都不发散，似乎迈向了严格化的第一步。但如果读者以为使用微分而非导数可以解决朗之万方程不良定的麻烦，那就太天真了。因为接下来我们面临着一个更大的麻烦。
+
+现实中可以测量的始终是一段时间内物理量的变化，所以其实人们更关心的是微分方程的积分。那么我们仿照一般微积分的做法，现在形式上令
+\begin{equation}
+X_t-X_0=\int_0^t f(X_t,t)\, dt+\int_{W_0}^{W_t}\sqrt{2D(X_t,t)}\,dW_t
+\end{equation}
+那么，第一项看起来是个一般的连续函数对某个实参量的积分， 应该没什么问题。但第二项，积分变量竟然不是一个光滑的实函数。如果我们按照黎曼和的定义，取一系列分点 $t_i$， $W_i\equiv W_{t_i}$ ， $t'\in[t_i,t_{i+1})$ ，把积分写成
+\begin{equation}
+\int_{W_0}^{W_t}\sqrt{2D(X_t,t)}\, dW_t=\lim_{\max\{t_{i+1}-t_i\}\to 0}\sum_i\sqrt{2D(X_{t_i'},t_i')}(W_{i+1}-W_i)
+\end{equation}
+那么，我们发现因为维那过程的性质3，被积函数有可能不是有界变差函数，这个“黎曼和”不收敛！举个例子，计算
+\begin{equation}
+\int_0^t W_s dW_s=\lim_{\Delta s\to0}\sum_{i=1}^N W_{s_i'}\Delta W_{s_i}
+\end{equation}
+如果随机过程取值在区间左端点 $s_i'=s_{i-1}$ （伊藤），那么
+\begin{align}
+\sum_{i=1}^N W_{s_i'}\Delta W_{s_i}=&\sum_{i=1}^N W_{s_{i-1}}(W_{s_i}-W_{s_{i-1}})=\sum_{i=1}^N (W_{s_{i-1}}-W_0)(W_{s_i}-W_{s_{i-1}})+\sum_{i=1}^N W_0(W_{s_i}-W_{s_{i-1}}) \non
+ =&\sum_{i=1}^N (W_{s_{i-1}}-W_0)(W_{s_i}-W_{s_{i-1}})+W_0(W_{t}-W_{0})
+\end{align}
+取均值有
+\begin{equation}
+\langle\sum_{i=1}^N W_{s_i'}\Delta W_{s_i}\rangle=\langle W_0(W_{t}-W_{0})\rangle=\frac{1}{2}\langle W_t^2\rangle-\frac{1}{2}\langle W_0^2\rangle-\frac{1}{2}\langle (W_t-W_0)(W_{t}-W_{0})\rangle \\ =\frac{1}{2}\langle W_t^2\rangle-\frac{1}{2}\langle W_0^2\rangle-\frac{t}{2}
+\end{equation}
+但如果取值在中点 $W_{s_i'}=(W_{s_{i-1}}+W_{s_i})/2$ （Stratonovich），那么类似的计算可以得到
+\begin{equation}
+\langle\sum_{i=1}^N W_{s_i'}\Delta W_{s_i}\rangle=\frac{1}{2}\sum_{i=1}^N\langle(W_{s_i}+W_{s_{i-1}})(W_{s_i}-W_{s_{i-1}})\rangle=\frac{1}{2}\sum_{i=1}^N(\langle W_{s_i}^2\rangle-\langle W^2_{s_{i-1}}\rangle) \\ =\frac{1}{2}\langle W_t^2\rangle-\frac{1}{2}\langle W_0^2\rangle
+\end{equation}
+结果差了一个$t/2$！也就是说，如果不指明积分中函数值的取法，即使是积分形式都是不良定的！
+
+上面展示的例子已经包括了实际中常常采用的两种函数值的取法。那么我们现在终于可以给朗之万方程一个较为严谨的定义了。对于朗之万方程
+\begin{equation}
+\frac{dX_t}{dt}=f(X_t,t)+\sqrt{2D(X_t,t)}\xi(t),\ \langle\xi(t)\rangle=0,\ \langle\xi(t)\xi(t')\rangle=\delta(t-t')
+\end{equation}
+我们称它为伊藤-朗之万方程，如果它的形式解是满足
+\begin{equation}
+X_t=X_0+\int_0^t f(X_t,t)\, dt+\lim_{\max\{t_{i+1}-t_i\}\to 0}\sum_i\sqrt{2D(X_{t_i},t_i)}(W_{i+1}-W_i)
+\end{equation}
+的随机过程 $X_t$ 。
+
+我们称它为Stratonovich-朗之万方程，如果它的形式解是满足
+\begin{equation}
+X_t=X_0+\int_0^t f(X_t,t)\, dt+\lim_{\max\{t_{i+1}-t_i\}\to 0}\sum_i\sqrt{2D\left(\frac{X_{t_{i+1}}+X_{t_i}}{2},\frac{t_{i+1}+t_i}{2}\right)}(W_{i+1}-W_i)
+\end{equation}
+的随机过程 $X_t$ 。
+
+那么到这里，我们明确，原本的朗之万方程的解并不表示一个唯一的随机过程，在不同解释之下，它实际上表示不同的随机过程，而这个随机过程的（较为严谨的）定义是由上面两式给出的。或者换句话说，同一个随机过程，根据定义的不同，可以用不同的朗之万方程来描述。因此需要再次强调，朗之万方程只是一种形式记号，它的真实涵义是上面给出的“积分”，而其中所有涉及随机变量的“微分”必须要按照相应的积分形式来理解。我们保留并大量使用朗之万方程只是因为方便书写，而且可以和确定性的动力系统对照，从而直接和物理图像联系起来。
+
+那么最后还有一个问题，伊藤积分和Stratonovich积分我们应该用哪个？或者更确切地说，从物理直觉出发建立的朗之万方程，应该用哪个定义更符合真实的物理过程？那么我们先看一下两种积分的特点。
+
+对于伊藤积分，从之前的例子中可以看出来，积分的结果即使在期望的意义下也已经不是一般微积分的那些公式了。另外还可以验证，一般微积分中的链式法则也不再成立 $df(X_t)/dt\neq df(X_t)/dX_t\cdot dX_t/dt$ （提醒：按积分形式理解）。但是，伊藤积分中考虑 $X_t=X_{t-dt}+g(X_{t-dt})(W_{t}-W_{t-dt})$ ，相当于是在说造成 $X_t$ 扰动的原因和 $X_t$ 无关（或者更不严谨地说， $\langle X(t)\xi(t)\rangle=\langle X(t)\rangle\langle\xi(t)\rangle$ ），即整个过程中“因果律”是得以保持的。
+
+对于Stratonovich积分，在期望的意义下，一般的积分公式似乎仍然可以使用，链式法则也保持成立。但代价是因为考虑到$X_t=X_{t-dt}+g((X_{t-dt}+X_{t})/2)(W_{t}-W_{t-dt})$，相当于是在说造成 $X_t$ 扰动的原因和 $X_t$ 有关了（或者更不严谨地说， $\langle X(t)\xi(t)\rangle\neq\langle X(t)\rangle\langle\xi(t)\rangle$ ），整个过程并不保持“因果律”。
+在统计物理学家看来，因果律（考虑到任何可以写成伊藤积分的随机过程都可以写成一个Stratonovich积分，这里主要是其带来的计算上的便利）远比微积分公式重要，所以通常我们选用伊藤积分。那么，我们接下来就需要修订伊藤积分中的“积分公式”。其中最重要的，就是“链式法则”。
+
+\section{伊藤积分}
+虽然叫做伊藤积分公式，但我们要写的却是一个类似微分“链式法则”的公式，正是因为（再次强调）所有的微分都需要按照相应的积分形式来理解。
+
+那么我们现在考虑一个已知的关于随机变量 $X_t$ 和时间的形式可微函数 $g(X_t,t)$ 。如果我们知道 $X_t$ 满足朗之万方程（今后我们约定所有的高斯白噪声 $\xi(t)$ 的关联都是无系数的， $\langle\xi(t)\xi(t')\rangle=\delta(t-t')$ ）
+\begin{equation}
+\frac{dX_t}{dt}=f(X_t,t)+\sqrt{2D(X_t,t)}\xi(t),\ \langle\xi(t)\rangle=0,\ \langle\xi(t)\xi(t')\rangle=\delta(t-t')
+\end{equation}
+那么 $\frac{dg(X_t,t)}{dt}$ 是什么？
+
+考虑 $g(X_t,t)$ 的一个增量，按照泰勒公式，我们有
+\begin{equation}
+dg(X_t,t)=\frac{\partial g(X_t,t)}{\partial t}dt+\frac{\partial g(X_t,t)}{\partial X_t}dX_t+\frac{1}{2}\left(\frac{\partial^2 g(X_t,t)}{\partial t^2}dt^2+2\frac{\partial^2 g(X_t,t)}{\partial X_t\partial t}dtdX_t+\frac{\partial^2 g(X_t,t)}{\partial X_t^2}dX_t^2\right)+\cdots
+\end{equation}
+我们知道 $X_t$ 的增量是
+\begin{equation}
+dX_t=f(X_t,t)dt+\sqrt{2D(X_t,t)}dW_t
+\end{equation}
+代入进去整理一下 
+\begin{align} 
+dg(X_t,t)=&\left(\frac{\partial g}{\partial t}+\frac{\partial g}{\partial X_t}f(X_t,t)\right)dt+\frac{\partial g}{\partial X_t}\sqrt{2D(X_t,t)}dW_t+\frac{1}{2}\left(\left(\frac{\partial^2 g}{\partial t^2}+\frac{\partial^2 g}{\partial X_t^2}f^2(X_t,t)+2\frac{\partial^2 g}{\partial t\partial X_t}f(X_t,t)\right)dt^2\right. \non
+ & \left.2\left(\frac{\partial^2 g}{\partial X_t^2}f(X_t,t)\sqrt{2D(X_t,t)}+\frac{\partial^2 g}{\partial t\partial X_t}\sqrt{2D(X_t,t)})\right)dtdW_t+2\frac{\partial^2 g}{\partial X_t^2}D dW_t^2\right)+\cdots 
+\end{align}
+
+前两项一次项还没什么需要留意的。因为积分过程中我们会求和，并令时间间隔 $dt\to0$ ，那么和一般微积分一样， $dt^2$ 项也不重要。那么只需要考察剩下的两项。定义（ $t_i$ 是 $[0,t]$ 上的分点， $dW_i=W_{t_{i+1}}-W_{t_i}$ ， $dt_i=t_{i+1}-t_i$ ）
+\begin{equation}
+Y_t=\sum_i y(X_{t'},t')dW_idt_i
+\end{equation}
+选定分点后这显然是个随机过程，我们可以计算它的均值和各阶距。在伊藤积分下，
+\begin{equation}
+\langle Y_t\rangle=\sum_i\langle y(X_i,t_i)dW_i\rangle dt_i
+\end{equation}
+根据上一节末尾提到的伊藤积分的性质（或者说，维那过程增量独立的性质），
+\begin{equation}
+\langle Y_t\rangle=\sum_i\langle y(X_i,t_i)\rangle\langle dW_i\rangle dt_i=0
+\end{equation}
+
+而二阶距
+\begin{equation}
+\langle Y^2_t\rangle=\sum_{i,j}\langle y(X_i,t_i)y(X_j,t_j)dW_idW_j\rangle dt_idt_j=\sum_{i,j}\langle y(X_i,t_i)y(X_j,t_j)\rangle\langle dW_idW_j\rangle dt_idt_j
+\end{equation}
+同样因为增量独立，求和 $\langle dW_idW_j\rangle$ 对于$i<j$和$i>j$都是0。而 $\langle dW_idW_i\rangle=dt_i$ ，于是二阶距正比于 $dt_i^3$ ，在 $dt\to0$ 的极限下仍然为0。类似可以得到 $Y_t$ 的各阶距在 $dt\to0$ 的极限下都是0， $\lim_{dt\to 0}Y_t=0$ 所以 $dW_tdt$ 项也可以不用考虑。
+
+最后这一项就比较特殊了。根据维那过程的性质3，直觉上我们有 $dW_t^2\sim dt$ ，它实际上是时间微分的一次项，不能省略。为了证明这一点，我们构造
+\begin{equation}
+Z_t=\sum_i Z(X_{t'},t')(dW_i^2-dt_i)
+\end{equation}
+然后和上面类似地计算在伊藤积分下 $Z_t$ 的各阶距。显然 $\langle Z_t\rangle=0$ 。利用暴力展开和 $dW_i$ 服从正态分布 $\mathcal{N}(0,\sqrt{dt_i})$ ，我们可以验证 $\langle(dW_i^2-dt_i)^n\rangle\sim dt^n$ ，在$n>1$时求和并取$dt\to0$时为0。因此，$\lim_{dt\to 0}Z_t=0$。那么，我们对之前的展开式求和并取极限，有
+\begin{equation}
+g(X_t,t)=g(X_0,0)+\lim_{dt\to 0}\sum_i\left(\frac{\partial g}{\partial t}+\frac{\partial g}{\partial X_t}f+\frac{\partial^2g}{\partial X_t^2}D\right)dt_i+\lim_{dt\to 0}\sum_i\frac{\partial g}{\partial X_t}\sqrt{2D(X_i,t_i)}dW_t
+\end{equation}
+这相当于是在说g满足的朗之万方程是
+\begin{equation}
+\frac{dg}{dt}=\frac{\partial g}{\partial t}+\frac{\partial g}{\partial X_t}\frac{dX_t}{dt}+D\frac{\partial^2 g}{\partial X_t^2}=\frac{\partial g}{\partial t}+D\frac{\partial^2 g}{\partial X_t^2}+\frac{\partial g}{\partial X_t}(f+\sqrt{2D}\xi)
+\end{equation}
+于是乎我们通过增加了一项 $D\partial^2g/\partial X_t^2$ 完成了对链式法则的“修正”。
+
+同样这里可以发现，如果我们取Stratonovich积分，在计算诸如 $\langle Y_t\rangle$ 的时候我们就会遇到麻烦。这里不会去实际计算Stratonovich积分中的链式法则，但只说结论的话，Stratonovich积分的链式法则还是原来的模样。
+
+通过这个“链式法则”，我们可以计算任何涉及维那过程的“微分”了。根据基本朗之万方程 $dW_t/dt=\xi(t)$ ，比如， $g(W_t)=W_t^2$ ，那么
+\begin{equation}
+\frac{d W_t^2}{dt}=\frac{d W_t^2}{dW_t}\xi(t)+\frac{1}{2}\frac{d^2W_t^2}{dW_t^2}=2W_t\xi(t)+1
+\end{equation}
+当然，其涵义依然要在积分意义下理解。
+
+最后提一下N维的朗之万方程。利用独立的维那过程我们可以轻易地推广朗之万方程到多维情形（稍微换了一种写法以适应高维情形）
+\begin{equation}
+\frac{d \bm{X_t}}{dt}=\bm{f}(\bm{X}_t,t)+\bm{\sigma}(\bm{X}_t,t)\bm{\xi}(t)
+\end{equation}
+其中 $\bm{X}_t$ ， $\bm{f}$ 和 $\bm{\xi}(t)$ 是$N$维向量，且满足 $\langle\bm{\xi}(t)\rangle=\bm{0}$ ， $\langle\xi_\alpha(t)\xi_\beta(t')\rangle=\delta_{\alpha\beta}\delta(t-t')$ ， $\bm{\sigma}=\{\sigma_{\alpha\beta}\}$ 是一个$N\times N$维的矩阵。之前的讨论也没什么需要修改的地方。而高维的伊藤积分公式是
+\begin{equation}
+\frac{dg(\bm{X}_t,t)}{dt}=\frac{\partial g}{\partial t}+\sum_{\alpha=1}^N\frac{dg}{dX_{\alpha,t}}\frac{dX_{\alpha,t}}{dt}+\frac{1}{2}\sum_{\alpha,\beta,\gamma=1}^N\sigma_{\alpha\gamma}\sigma_{\beta\gamma}\frac{\partial^2 g}{\partial X_{\alpha, t}\partial X_{\beta,t}}
+\end{equation}
+（ $\sum_\gamma\sigma_{\alpha\gamma}\sigma_{\beta\gamma}=(\bm{\sigma\sigma^T})_{\alpha\beta}$ ，如果你有见到矩阵就对角化的习惯，那么相应的公式可以看起来更加简洁。）
+
+至此我们用不甚严格的方式完成了对朗之万方程的建立。但是实际上回过头想想，这个过程有点奇怪：我们从物理直觉和确定性的动力系统出发，写了一个似是而非的方程，然后花了很大力气去讨论这个方程的不同诠释，以及在伊藤的诠释下方程符合的运算规则。但是，作为一个没有时滞和记忆的马尔可夫随机过程，我们应该可以直接通过随机过程的基本假设出发来写出主方程，描述这套系统所有的动力学，而且这个过程中根本不会产生歧义问题。因此下一节中，我们要明白从朗之万方程诠释出的这一系列东西究竟如何回归到一个马尔可夫过程的主方程中去。
+
+\section{Fokker-Planck方程}
+
+之前的朗之万方程描述的是某个流体中悬浮着的粒子的轨迹，但一个随机过程的“导数”实在是一个麻烦重重含混不清的概念。现在我们终于可以回到一个让人舒适一点的框架中了。对于一个随机变量，它的概率密度函数已经包含了这个随机变量的全部信息。对于随机过程也是如此，只是这个分布函数是含时的了。我们记单粒子概率密度函数$P(x;t)$ 是发现一t时刻随机变量取值在$x$附近的概率密度（分号是用来把概率密度的变量和参数分开。后文有时候会不严格遵守这种写法。）。或者使用条件概率，将初始条件也计入其中， $P(x;t|x_0;t_0)$ 为变量在 $t_0$ 时等于 $x_0$ 的条件下，$t$时刻取值在$x$附近的概率密度。那么只要能够计算这个概率密度函数，我们就知道了系统的一切信息。值得注意的是，我们悄悄换掉了变量$x$的涵义。在之前的讨论中它指某一个随机变量的具体取值，现在它指实轴上的某个位置。
+
+我们现在依然在考虑无时滞的系统，所以将讨论依然限定在马尔可夫过程中。马尔可夫过程意味着如果考虑随机变量的一条轨迹 $(t_0,x_0),\ (t_1,x_1),\ \cdots,\ (t_n,x_n)$ ，那么联合概率密度
+\begin{equation}
+P(x_n,t_n,x_{n-1},t_{n-1},\cdots,x_0,t_0)=P(x_n,t_n|x_{n-1},t_{n-1},\cdots,x_0,t_0)P(x_{n-1},t_{n-1}|x_{n-2},t_{n-2},\cdots,x_0,t_0)\cdots P(x_0,t_0)
+\end{equation}
+中的条件概率只与最近的时刻有关，即
+\begin{equation}
+P(x_n,t_n,x_{n-1},t_{n-1},\cdots,x_0,t_0)=P(x_n,t_n|x_{n-1},t_{n-1})P(x_{n-1},t_{n-1}|x_{n-2},t_{n-2})\cdots P(x_0,t_0)
+\end{equation}
+即我们称为历史无关。于是对于任选的一个中间时刻 $t>t'>t_0$ ，穷尽随机变量在这时刻可能的取值，我们有Chapman-Komogorov方程
+\begin{equation}
+P(x;t|x_0;t_0)=\int_\mathbb{R} P(x,x';t,t'|x_0,t_0)dx'=\int_\mathbb{R} P(x;t|x';t')P(x';t'|x_0,t_0)dx'
+\end{equation}
+
+我们定义态转移函数 $W(x\to x')dt=P(x';t+dt|x;t)$ （如果 $x\neq x'$ ），为$dt$时间内变量从$x$附近变至$x'$附近的概率密度。显然$dt$时间后变量还留在$x$附近的概率密度是 $P(x;t+dt|x;t)=1-dt\int_{x\neq x'} W(x\to x')dx'$ 。套用CK方程即
+\begin{equation}
+P(x;t+dt)=dt\int_{x\neq x'} W(x'\to x)P(x';t)dx'+P(x;t)\left(1-dt\int_{x\neq x'} W(x\to x')dx'\right)
+\end{equation}
+即（因为对称性，积分有没有去掉 $x=x'$ 反而不重要了）
+\begin{equation}
+\frac{\partial P(x;t)}{\partial t}=\int W(x'\to x)P(x';t)dx'-\int W(x\to x')P(x;t)dx'
+\end{equation}
+这表示马尔可夫过程的概率密度随时间的增量等于这段时间内流入这一区域的概率，减去流出这一区域的概率（平时我们就是这样直接写出主方程的）。或者对于离散随机过程，
+\begin{equation}
+\frac{\partial P(x;t)}{\partial t}=\sum_{x'}W(x'\to x)P(x';t)-\sum_{x'} W(x\to x')P(x;t)
+\end{equation}
+这个方程称为（正向）主方程，描述了概率密度函数随时间的变化。或者利用马尔可夫过程的时间平移对称性，类似地还有
+\begin{equation}
+-\frac{\partial P(x;t|x_0;t_0)}{\partial t_0}=\int W(x_0\to x')(P(x;t|x';t_0)-P(x;t|x_0;t_0))dx'
+\end{equation}
+称为反向主方程。
+
+重要的基本概念先介绍到这里，实际上，我们将要得到的Fokker-Planck方程，就是朗之万方程对应的马尔可夫过程的主方程。（我曾以为所有连续状态空间的主方程都是FP方程，但老板告诉我FP方程往往只指与朗之万方程对应的主方程，其他场合我们依然沿用主方程的称呼。）这里我们使用一个物理上比较直观但数学上不够严格的推导。假设一个粒子的轨迹 $x(t)$ （作为一个随机过程）满足朗之万方程（记号和以前维持一致，头上加点一般表示对时间求导）
+\begin{equation}
+\dot{x}(t)=f(x,t)+\sqrt{2D(x,t)}\xi(t)
+\end{equation}
+我们考虑任意一个 $C^2$ 光滑的实函数 $g(x)$ ，我们定义它在t时刻的（系综）期望是
+\begin{equation}
+\langle g(x(t)|x(0)=x_0)\rangle\equiv\int_\mathbb{R} dx'\, g(x')P(x';t|x_0;0)
+\end{equation}
+对时间求导，有
+\begin{equation}
+\int_\mathbb{R} dx'\,g(x')\frac{\partial P(x';t|x_0,0)}{\partial t}=\left\langle\frac{d g(x(t)|x(0)=x_0)}{dt}\right\rangle
+\end{equation}
+这时候我们要用伊藤积分公式了，等式右边于是等于
+\begin{equation}
+\left\langle\frac{d g(x(t)|x(0)=x_0)}{dt}\right\rangle=\left\langle\frac{d g}{dx}\frac{dx}{dt}+D(x,t)\frac{d^2g}{dx^2}\right\rangle=\left\langle\frac{d g}{dx}(f(x,t)+\sqrt{2D(x,t)}\xi(t))+D(x,t)\frac{d^2g}{dx^2}\right\rangle
+\end{equation}
+还记得伊藤积分的特性告诉我们 $\xi$ 和 $x$ 无关，而且因为 $\xi$ 是高斯分布，其系综平均为 $\langle\xi\rangle=0$ （你如果感觉到这里不太严格，很正常，因为 $\xi$ 本身不良定）。那么按照定义式，
+\begin{equation}
+\left\langle\frac{dg}{dx}f(x,t)+D(x,t)\frac{d^2g}{dx^2}\right\rangle=\int_\mathbb{R} dx'\left(g'(x')f(x',t)+D(x',t)g''(x')\right)P(x';t|x_0;0)
+\end{equation}
+接下来对$g(x)$做分部积分。在以下三种通常使用的情况下边界项等于0：
+\begin{enumerate}
+\item 周期性边界，两边界取值相等。
+\item 闭盒子，在盒子外粒子概率为0。
+\item 无穷空间，这时候概率密度可积保证了$P(x,t)$在无穷远处为0。
+\end{enumerate}
+这时我们有
+\begin{align} 
+\int_\mathbb{R} dx'\,\left(g'(x')f(x',t)+D(x',t)g''(x')\right)P(x';t|x_0;0)=&\int_\mathbb{R}dx'\, \left(-\frac{\partial f(x',t)P(x';t|x_0;0)}{\partial x'}+\frac{\partial^2D(x',t)P(x';t|x_0;0)}{\partial x'^2}\right)g(x') \non 
+=&\int_\mathbb{R} dx'\,g(x')\frac{\partial P(x';t|x_0,0)}{\partial t} 
+\end{align}
+
+考虑到$g(x)$的任意性，这意味着
+\begin{equation}
+\frac{\partial P(x;t|x_0,0)}{\partial t}=\frac{\partial^2D(x,t)P(x;t|x_0;0)}{\partial x^2}-\frac{\partial f(x,t)P(x;t|x_0;0)}{\partial x}
+\end{equation}
+这就是我们想要得到的对应于朗之万方程的主方程——（正向）Fokker-Planck方程。在高维情形，对于朗之万方程
+\begin{equation}
+\frac{d \bm{X_t}}{dt}=\bm{f}(\bm{X}_t,t)+\bm{\sigma}(\bm{X}_t,t)\bm{\xi}(t)
+\end{equation}
+与之前完全一样的推导可以得到其FP方程是
+\begin{equation}
+\frac{\partial P(\bm{x};t)}{\partial t}=\sum_{i,j,k=1}^d\nabla_i\nabla_j\frac{\sigma_{ik}\sigma_{jk}}{2}P-\sum_{i=1}^d \nabla_if_iP
+\end{equation}
+（特别（不严格）地可以取$g(x)$为微观的密度函数，注意$x'$是粒子的轨迹，$x$是空间坐标，
+\begin{equation}
+\hat\rho(x,x',t)=\delta(x-x')
+\end{equation}
+因为 $P(x,t|x_0,0)=\langle\hat{\rho}(x-x'(t))\rangle_{x'}$ ，从这个记号可以更简单地推出FP方程。）
+
+注意，这个FP方程是在伊藤积分的诠释下得到的。同样的一维朗之万方程按Stratonovich积分诠释，对应的FP方程应该是
+\begin{equation}
+\frac{\partial P(x;t|x_0,0)}{\partial t}=\frac{\partial}{\partial x}\sqrt{D(x,t)}\left(\frac{\partial\sqrt{D(x,t)}P(x;t|x_0;0)}{\partial x}\right)-\frac{\partial f(x,t)P(x;t|x_0;0)}{\partial x}
+\end{equation}
+作为主方程，FP方程包含马尔可夫过程的全部信息，因此是与特定的随机过程——或者说物理——一一对应的。只有朗之万方程可以有不同的诠释。熟悉扩散方程的读者应该已经看出来了，FP方程实际上就是概率密度的扩散-漂移方程。定义扩散张量 $D_{ij}=\frac{1}{2}\sum_k\sigma_{ik}\sigma_{jk}$ ，我们可以把多维FP方程写成连续性方程的形式
+\begin{equation}
+\frac{\partial P}{\partial t}=-\nabla\cdot\bm{J}
+\end{equation}
+\begin{equation}
+\bm{J}=\nabla(\bm{D}P)-\bm{f}P
+\end{equation}
+最后，与反向主方程类似地，我们也有反向Fokker-Planck方程
+\begin{equation}
+-\frac{\partial P(x;t|x',t')}{\partial t'}=D(x',t')\frac{\partial^2P(x;t|x';t')}{\partial x'^2}+f(x',t')\frac{\partial P(x;t|x';t')}{\partial x'}
+\end{equation}
+其推导利用正向FP方程和马尔可夫过程的性质不难得出（此题老板上课时是留作作业的嗯）。
+
+下面两节会稍微离题一下，做一点简明但较为深入的讨论。之后从第八节开始我们再回到引言中所说的平衡态统计的问题。
+
+\section{细致平衡条件}
+这里我们简单讨论一下FP方程描述的系统，其稳态的细致平衡条件。对于
+\begin{equation}
+\dot{x}(t)=f(x)+\sqrt{2D(x)}\xi(t)
+\end{equation}
+细致平衡条件是说，联合概率密度 $P(x',t',x,t)=P(x,t',x',t)$ ，即在稳态的一定时间$t'-t$内，观察到从相空间中的一个点到另一个点的概率， 等于其逆过程的概率。考虑到稳态条件，这也意味着
+\begin{equation}
+P(x',t'|x,t)P_{SS}(x)=P(x,t'|x',t)P_{SS}(x')
+\end{equation}
+其中 $P_{SS}(x)$ 是稳态的概率分布。记FP方程的微分算子为
+\begin{equation}
+\partial_t P(x;t)=-\hat{\mathcal{H}}(x)P(x;t)
+\end{equation}
+\begin{equation}
+\hat{\mathcal{H}}(x)=-\partial^2_xD+\partial_x f
+\end{equation}
+取$t'=t+dt$，非常接近于$t$，考虑到 $P(x';t|x;t)=\delta(x'-x)$ ，则
+\begin{equation}
+(1-dt\hat{\mathcal{H}}(x))\delta(x-x')P_{SS}(x')=(1-dt\hat{\mathcal{H}}(x'))\delta(x'-x)P_{SS}(x)
+\end{equation}
+考虑到$\delta$函数是偶函数，这意味着
+\begin{equation}
+\hat{\mathcal{H}}(x)\delta(x-x')P_{SS}(x')=\hat{\mathcal{H}}(x')\delta(x-x')P_{SS}(x)
+\end{equation}
+在 $\mathbb{L}_2$ 内积 $\langle f,g\rangle=\int dx\, f(x)g(x)$ 下， $\hat{\mathcal{H}}(x)$ 的伴随算子满足 $\hat{\mathcal{H}}^\dagger(x')\delta(x-x')=\hat{\mathcal{H}}(x)\delta(x-x')$ ，容易验证
+\begin{equation}
+\hat{\mathcal{H}}^\dagger(x)=-D\partial^2_x-f\partial_x
+\end{equation}
+（如果你还记得反向FP方程，这正是它对应的微分算子。）于是
+\begin{equation}
+\hat{\mathcal{H}}(x)\delta(x-x')P_{SS}(x')=\hat{\mathcal{H}}(x)P_{SS}(x)\delta(x-x') （ \langle P,\hat{\mathcal{H}}\delta\rangle=\langle \hat{\mathcal{H}}P,\delta\rangle ）
+\end{equation}
+\begin{equation}
+\hat{\mathcal{H}}(x')\delta(x-x')P_{SS}(x)=P_{SS}(x)\hat{\mathcal{H}}(x')\delta(x-x')=P_{SS}(x)\hat{\mathcal{H}}^\dagger(x)\delta(x-x')
+\end{equation}
+细致平衡条件等价于
+\begin{equation}
+\hat{\mathcal{H}}(x)P_{SS}(x)=P_{SS}(x)\hat{\mathcal{H}}^\dagger(x)
+\end{equation}
+如果$f$不含时，可积， $f=-\partial_x V$ ，而$D$是常数，那么容易验证 $P_{SS}\propto e^{-V/D}$ ，于是代入上式可以发现细致平衡条件是成立的。而同样的朗之万方程则具有时间反演对称性。一般情况下，细致平衡条件成立往往意味着朗之万方程具有时间反演对称性。
+
+\section{路径积分构造}
+这一节简单阐述一下如何将概率密度表示为路径积分的方式。首先考虑维那过程的概率密度函数。根据CK方程，
+\begin{equation}
+P(x;t|x_0;t_0)=\int dx_1\,P(x;t|x_1;t_1)P(x_1;t_1|x_0;t_0)
+\end{equation}
+我们在其中取无数个分点
+\begin{equation}
+P(x;t|x_0;t_0)=\int\cdots\int dx_1\cdots dx_n\,P(x;t|x_n;t_n)P(x_n;t_n|x_{n-1};t_{n-1})\cdots P(x_1;t_1|x_0;t_0)
+\end{equation}
+考虑到维那过程的增量服从正态分布，即 $P(x',t'|x,t)=e^{-(x'-x)^2/2(t'-t)}/\sqrt{2\pi(t'-t)}$ ，那么上式可以写成（记 $t_{n+1}=t,\ x_{n+1}=x$ ）
+\begin{equation}
+P(x;t|x_0;t_0)=\int\cdots\int dx_1\cdots dx_n\,\prod_{k=1}^{n+1} \frac{1}{\sqrt{2\pi(t_k-t_{k-1})}}\exp\left(-\sum_{l=1}^{n+1}\frac{(x_l-x_{l-1})^2}{2(t_l-t_{l-1})}\right)
+\end{equation}
+在形式极限 $\max_k\{t_{k}-t_{k-1}\}\to0$ 下，前面的系数我们假装可以用一个归一化系数 $Z^{-1}$ 表示。而求和号内部的东西
+\begin{equation}
+\sum_{l=1}^{n+1}\frac{(x_l-x_{l-1})^2}{2(t_l-t_{l-1})}=\frac{1}{2}\sum_{l=1}^{n+1}\left(\frac{x_l-x_{l-1}}{t_l-t_{l-1}}\right)^2(t_l-t_{l-1})=\frac{1}{2}\sum_l\dot{x}_l^2 \Delta t_l\sim\frac{1}{2}\int_0^t\dot{x}^2\, ds
+\end{equation}
+我们引入对路径 $(x_1,x_2,\cdots,x_n)\sim x(t)$ 的积分
+\begin{equation}
+\int\cdots\int dx_1dx_2\cdots dx_n\sim \int Dx(t)
+\end{equation}
+于是维那过程的概率密度可以形式地写为
+\begin{equation}
+P(x;t|x_0;t_0)=\frac{1}{Z}\int Dx(t)\, e^{-A[x]}
+\end{equation}
+其中积分对所有可能的路径（虽然其测度的定义还不清楚）积分，且泛函
+\begin{equation}
+A[x]=\frac{1}{2}\int_0^t \dot{x}^2 ds
+\end{equation}
+对于一般的朗之万方程，因为（ $\bm{\sigma}^{-1}$ 是逆矩阵）
+\begin{equation}
+\frac{d\bm{x}}{dt}=f(\bm{x},t)+\bm{\sigma}(\bm{x},t)\frac{d\bm{W}_t}{dt}
+\end{equation}
+\begin{equation}
+\frac{d\bm{W}_t}{dt}=\bm{\sigma}^{-1}(\bm{x},t)\left(\frac{d\bm{x}}{dt}-f(\bm{x},t)\right)
+\end{equation}
+代入到泛函中，我们得到（$^T$表示转置）
+\begin{equation}
+A[\bm{x}]=\frac{1}{2}\int_0^t \left(\dot{\bm{x}}^T-\bm{f}^T\right)(\bm{\sigma}^{-1})^T\bm{\sigma}^{-1}\left(\dot{\bm{x}}-\bm{f}\right)\,ds
+\end{equation}
+\begin{equation}
+P(\bm{x};t|\bm{x}_0;t_0)=\frac{1}{Z}\int D\bm{x}(t)\, e^{-A[\bm{x}]}
+\end{equation}
+我们便得到了概率幅的路径积分构造。考虑粒子走某条路径的概率
+\begin{equation}
+P[x]\propto e^{-A[x]}
+\end{equation}
+我们的概率分布就有了大偏差定理的形式。
+
+\section{回到平衡态统计}
+有了概率密度，有了主方程，现在我们终于可以开始回答引言中提到的问题了——液体中悬浮的粒子这种通常用朗之万方程描述的系统还能不能使用正则系综？为此我们回想第二节中我们写下的在外场中、无相互作用的粒子的朗之万方程
+\begin{align} 
+\frac{d\bm{q}}{dt}=&\frac{\bm{p}}{M}\\ 
+\frac{d\bm{p}}{dt}=&-\nabla V(\bm{q})-\frac{\mu}{M}\bm{p}+\sqrt{2\mu k_BT}\bm{\xi}(t) 
+\end{align}
+根据第五节给出的结果，我们现在可以轻易地写出它的概率密度 $P(\bm{q},\bm{p};t)$ 满足的FP方程
+\begin{equation}
+\partial_t P(\bm{q},\bm{p};t)=-\frac{1}{M}\nabla_{\bm{q}}\cdot(\bm{p}P)+\nabla_{\bm{p}}\cdot\left(\frac{\mu}{M}\bm{p}P+\nabla_{\bm{q}}V(\bm{q})P\right)+\nabla^2_{\bm{p}}(\mu k_BTP)
+\end{equation}
+
+要验证它是否满足正则系综其实很简单。考虑这个系统的稳态， $\partial_tP=0$ ，我们将正则系综 $P=Z^{-1}e^{-H(\bm{q},\bm{p})/k_BT}$ 代入验证一下是不是方程的解就可以了。其中哈密顿量$H$就是正常的哈密顿量
+\begin{equation}
+H(\bm{q},\bm{p})=\frac{p^2}{2M}+V(\bm{q})
+\end{equation}
+考虑到$Z$只是一个常数，我们不用管它，于是
+\begin{equation}
+-\frac{1}{M}\nabla_{\bm{q}}\cdot(\bm{p}P)=-\frac{\bm{p}}{M}\cdot\nabla_{\bm{q}}P=\frac{\bm{p}\cdot\nabla_{\bm{q}}H}{ZMk_BT}e^{-H/k_BT}=\frac{\bm{p}\cdot\nabla_{\bm{q}}V}{ZMk_BT}e^{-H/k_BT}
+\end{equation}
+\begin{equation}
+\nabla_{\bm{p}}\cdot\frac{\mu}{M}\bm{p}P=\frac{d\mu}{M}P+\frac{\mu\bm{p}}{M}\cdot\nabla_{\bm{p}}P=\frac{d\mu}{ZM}e^{-H/k_BT}-\frac{\mu p^2}{ZM^2k_BT}e^{-H/k_BT}
+\end{equation}
+\begin{equation}
+\nabla_{\bm{p}}\cdot(\nabla_{\bm{q}}V(\bm{q})P)=-\frac{\bm{p}\cdot\nabla_{\bm{q}}V}{ZMk_BT}e^{-H/k_BT}
+\end{equation}
+\begin{equation}
+\nabla^2_{\bm{p}}(\mu k_BTP)=-\mu k_BT\nabla_{\bm{p}}\cdot(\frac{\bm{p}}{ZMk_B T}e^{-H/k_BT})=-\frac{d\mu}{ZM}e^{-H/k_BT}+\frac{\mu p^2}{ZM^2k_BT}e^{-H/k_BT}
+\end{equation}
+把它们全部加起来，你可以看到每一项都被精确地抵消。也就是说，$P=Z^{-1}e^{-H(\bm{q},\bm{p})/k_BT}$ 的确就是系统的稳态解，而且这个稳态解不与阻尼系数 $\mu$ 有关——也就是说在一个过阻尼系统中这个结论依然成立，只是这种情况下动量的部分就直接被积分掉了。这符合我们对阻尼系数的概念——它是一个过程参量，不应该参与影响稳态（当然，更普遍的情况下这个结论不成立）。
+
+那么，既然概率分布函数依然保持了正则系综的形式，那么基于概率分布函数定义的一切物理量——熵、自由能等等，以及基于这些函数的所有分析，都回到了仿佛没有流体的平衡态统计之中，尽管我们的运动方程因为阻尼项和噪声项的存在，并不是一个经典的哈密顿系统！之所以可以回到平衡态，大概就是因为涨落耗散定理使得系统的涨落和耗散有紧密的联系，使得它们对概率密度的贡献恰好抵消。于是我们看到，在没有相互作用的情况下，朗之万方程描述的粒子的统计依然是满足正则系综的。下一节我们则要考虑多粒子相互作用的情况。
+
+\section{平均场近似}
+
+现在我们考虑相互作用的$N$个全同粒子，第$i$个粒子的朗之万方程为
+\begin{align} 
+\frac{d\bm{q}_i}{dt}=&\frac{\bm{p}_i}{m}\\ 
+\frac{d\bm{p}_i}{dt}=&-\nabla V_{\mathrm{ext}}(\bm{q}_i)-\sum_{j\neq i}\nabla_{\bm{q}_i} V(\bm{q}_i-\bm{q}_j)-\frac{\mu}{m}\bm{p}_i+\sqrt{2\mu k_BT}\bm{\xi}_i(t) 
+\end{align}
+其中 $V_{\mathrm{ext}}$ 是外场的势， $V$ 是相互作用势。我们当然可以写出$N$粒子概率密度函数 $P(\{\bm{q}_i,\bm{p}_i\};t)$满足的FP方程，但考虑到$d$维空间中$P$有$2dN+1$个变量，不用写出来也知道这个方程会非常长，而且因为相互作用造成的耦合，它不能表示为单粒子概率密度的积，我们很难处理这个大方程。我们转而考虑粒子的微观密度
+\begin{equation}
+\hat{\rho}(\bm{q},\bm{p};t)=\sum_{i=1}^N\delta(\bm{q}-\bm{q_i}(t))\delta(\bm{p}-\bm{p_i}(t))
+\end{equation}
+而实验中可以观测到的，是这个函数的系综平均，我们称为（宏观）密度（注意，第二行积分中的变量全是相空间中的坐标，不再表示粒子的轨迹）
+\begin{align} 
+\rho(\bm{q},\bm{p};t)=&\left\langle\sum_{i=1}^N\delta(\bm{q}-\bm{q_i}(t))\delta(\bm{p}-\bm{p_i}(t))\right\rangle \non
+ =&\int\cdots\int d\bm{q}_1\cdots d\bm{q}_Nd\bm{p}_1\cdots d\bm{p}_N P(\{\bm{q}_i,\bm{p}_i\};t)\sum_{i=1}^N\delta(\bm{q}-\bm{q_i})\delta(\bm{p}-\bm{p_i}) \non
+ =&\sum_{i=1}^N\int\cdots\int d\bm{q}_1\cdots d\bm{q}_{i-1}d\bm{q}_{i+1}\cdots d\bm{q}_Nd\bm{p}_1\cdots d\bm{p}_{i-1}d\bm{p}_{i+1}\cdots d\bm{p}_N P(\{\bm{q}_j,\bm{p}_j|\bm{q}_i=\bm{q},\bm{p}_i=\bm{p}\};t)
+\end{align}
+
+这个函数展开后看起来非常吓人，不过我们不用算它。我们可以利用伊藤积分计算密度随时间的演化。首先有（等式第二项利用了 $\partial\delta(\bm{q}-\bm{q}_j)/\partial\bm{q}_i=0$ 如果 $i\neq j$ ）
+\begin{align} 
+\frac{d\hat{\rho}}{dt}=&\sum_i\left(\frac{\partial\hat\rho}{\partial\bm{q}_i}\cdot\dot{\bm{q}}_i+\frac{\partial\hat\rho}{\partial\bm{p}_i}\cdot\dot{\bm{p}}_i\right)+\mu k_BT\sum_{i,j}\frac{\partial^2\hat{\rho}}{\partial\bm{p}_i\partial\bm{p}_j} \non
+ =&\sum_i\left(\frac{\partial\delta(\bm{q}-\bm{q_i})\delta(\bm{p}-\bm{p_i})}{\partial\bm{q}_i}\cdot\dot{\bm{q}}_i+\frac{\partial\delta(\bm{q}-\bm{q_i})\delta(\bm{p}-\bm{p_i})}{\partial\bm{p}_i}\cdot\dot{\bm{p}}_i+\mu k_BT\frac{\partial^2\delta(\bm{q}-\bm{q_i})\delta(\bm{p}-\bm{p_i})}{\partial\bm{p}_i^2}\right) \non
+ =&-\sum_i\left(\frac{\partial\delta(\bm{q}-\bm{q_i})\delta(\bm{p}-\bm{p_i})}{\partial\bm{q}}\cdot\dot{\bm{q}}_i+\frac{\partial\delta(\bm{q}-\bm{q_i})\delta(\bm{p}-\bm{p_i})}{\partial\bm{p}}\cdot\dot{\bm{p}}_i+\mu k_BT\frac{\partial^2\delta(\bm{q}-\bm{q_i})\delta(\bm{p}-\bm{p_i})}{\partial\bm{p}^2}\right)
+\end{align}
+代入朗之万方程，我们得到 
+\begin{align} 
+\frac{d\hat{\rho}}{dt}=&-\sum_i\left(\frac{\partial\delta(\bm{q}-\bm{q_i})\delta(\bm{p}-\bm{p_i})}{\partial\bm{q}}\cdot\frac{\bm{p}_i}{m}\right. \non
+&\left.+\frac{\partial\delta(\bm{q}-\bm{q_i})\delta(\bm{p}-\bm{p_i})}{\partial\bm{p}}\cdot\left(-\nabla V_{\mathrm{ext}}(\bm{q}_i)-\sum_{j\neq i}\nabla_{\bm{q}_i} V(\bm{q}_i-\bm{q}_j)-\frac{\mu}{m}\bm{p}_i+\sqrt{2\mu k_BT}\bm{\xi}_i(t)\right)\right)+\mu k_BT\frac{\partial^2\hat{\rho}}{\partial\bm{p}^2} 
+\end{align}
+
+然后我们对方程做系综平均（实际上就是前面那个$2dN$重积分）。注意到$\int \delta(x-x')f(x')\,dx'=\int \delta(x-x')f(x)\,dx'$ ，$\int f(x')\partial_x\delta(x-x')\,dx'=\int \partial_x(\delta(x-x')f(x))\,dx'$，系综平均中的积分中不含 $\bm{p}$ 和 $\bm{q}$ ，以及伊藤积分保证了噪声项的平均是0，再利用
+\begin{equation}
+\sum_{j|j\neq i}\nabla_{\bm{q}_i}V(\bm{q}_i-\bm{q}_j)=\int d\bm{q}'\, \nabla_{\bm{q}_i}V(\bm{q}_i-\bm{q}')\sum_{j|j\neq i}\delta(\bm{q}'-\bm{q}_j)
+\end{equation}
+我们得到
+\begin{align} 
+\frac{d\rho}{dt}=&-\frac{\partial}{\partial\bm{q}}\cdot\frac{\rho\bm{p}}{m}-\frac{\partial}{\partial\bm{p}}\cdot\left(-\nabla V_{\mathrm{ext}}(\bm{q})\rho-\frac{\mu}{m}\bm{p}\rho\right. \non 
+&\left.-\int d\bm{q}'d\bm{p}'\,\nabla_{\bm{q}} V(\bm{q}-\bm{q}')\left\langle\sum_{i,j|i\neq j}\delta(\bm{q}-\bm{q}_i)\delta(\bm{p}-\bm{p}_i)\delta(\bm{q}'-\bm{q}_j)\delta(\bm{p}'-\bm{p}_j))\right\rangle\right)+\mu k_BT\frac{\partial^2\rho}{\partial\bm{p}^2} \non
+ =&-\frac{\partial}{\partial\bm{q}}\cdot\frac{\rho\bm{p}}{m}+\frac{\partial}{\partial\bm{p}}\cdot\left(\nabla V_{\mathrm{ext}}(\bm{q})\rho+\int d\bm{q}'d\bm{p}'\,\nabla_{\bm{q}} V(\bm{q}-\bm{q}')\rho^{(2)}(\bm{q},\bm{p},\bm{q'},\bm{p'};t)+\frac{\mu}{m}\bm{p}\rho\right)+\mu k_BT\frac{\partial^2\rho}{\partial\bm{p}^2} 
+\end{align}
+
+这里我们引入了两点粒子密度
+\begin{equation}
+\rho^{(2)}(\bm{q},\bm{p},\bm{q'},\bm{p'};t)=\left\langle\sum_{i,j|i\neq j}\delta(\bm{q}-\bm{q}_i)\delta(\bm{p}-\bm{p}_i)\delta(\bm{q}'-\bm{q}_j)\delta(\bm{p}'-\bm{p}_j))\right\rangle
+\end{equation}
+为在相空间内两个点看到的粒子密度。虽然这个方程看起来比原来简单了一点，但因为我们不知道两点粒子密度的演化是什么，所以它并不是一个封闭的方程。诚然我们可以继续利用主方程将两点粒子密度的时间演化写下来，它肯定会与三点粒子密度相关。然后我们一步步走下去，会得到无穷多个微分方程——然后没有办法解了。所以，我们又到了要做近似的时候了。这个近似就是平均场近似
+\begin{equation}
+\rho^{(2)}(\bm{q},\bm{p},\bm{q}',\bm{p}';t)=\rho(\bm{q},\bm{p};t)\rho(\bm{q}',\bm{p}';t)
+\end{equation}
+即假设相空间上两点的概率密度不相关。于是我们终于得到了一个闭合的方程来描述粒子的密度
+\begin{equation}
+\frac{d\rho}{dt}=-\frac{\partial}{\partial\bm{q}}\cdot\frac{\rho\bm{p}}{m}+\frac{\partial}{\partial\bm{p}}\cdot\left(\nabla V_{\mathrm{ext}}(\bm{q})+\int d\bm{q}'d\bm{p}'\,\nabla_{\bm{q}} V(\bm{q}-\bm{q}')\rho(\bm{q'},\bm{p'};t)+\frac{\mu}{m}\bm{p}\right)\rho+\mu k_BT\frac{\partial^2\rho}{\partial\bm{p}^2}\
+\end{equation}
+当然，这个方程既不是线性的，也不是局域的。但是，我们又可以猜方程的稳态解或许满足正则系综。现在我们取哈密顿量
+\begin{equation}
+H(\bm{q},\bm{p})=\frac{p^2}{2m}+V_{\mathrm{ext}}(\bm{q})+\int d\bm{q}'d\bm{p}'\,V(\bm{q}-\bm{q'})\rho(\bm{q}',\bm{p'})
+\end{equation}
+然后我们猜$\rho(\bm{q},\bm{p})=Z^{-1}e^{-H(\bm{q},\bm{p})/k_BT}$ 是系统的稳态解（当然，现在正则系综只给出了 $\rho$ 满足的一个积分方程）。接下来的计算和上一节完全一样，只是更长一点，我们很容易验证正则分布给出的的确就是方程的稳态解。于是，我们又回到了和上节一样的结论，在平均场近似下，有相互作用朗之万方程粒子系统也可以用平衡态正则系综来处理，且液体阻尼不影响平衡态结果。
+
+前面的近似做得太快，以至于我们现在需要仔细思考一下刚才发生了什么事情。这个数学上没有道理的近似，在物理上对应着什么样的考虑？首先相空间内的粒子密度要足够高，而且势函数足够平缓，以至于我们去掉 $i\neq j$ 的限制——即加上了一个粒子对自己的“相互作用”——而引入的误差小到可以被忽略。其次，相空间上两点的密度不相关，意味着这两点之间几乎没有相互作用或关联。换句话说，空间两点之间的距离远大于系统的特征关联尺度 $\eta$ （粗略地说， $\langle\rho(x)\rho(x+l)\rangle\sim e^{-l/\eta}$ ）。这个条件在两种情况下被破坏：长程相互作用和相变临界点。如果我们选取的描述系统的尺度不合适，使得相互作用距离相对于空间尺度太大，那么显然平均场假设不能随意使用。而在相变临界点，众所周知的是，尽管相互作用是短程的，系统内的关联长度却是发散的，这时候空间任意两点的概率辐都是相关的，平均场近似也就失效了。事实也确实表明，平均场理论对于临界现象是不起作用的。而在两种情况下还能否回到平衡态正则系综，也是尚不清楚的。
+
+在平均场近似之后，我们复杂的相互作用势变成了一个类似外场一样的东西
+\begin{equation}
+V_{\mathrm{MF}}(\bm{q})=\int d\bm{q}'d\bm{p}'\,V(\bm{q}-\bm{q'})\rho(\bm{q}',\bm{p'})
+\end{equation}
+粒子感受到的平均场，是周围粒子在平均的意义下给自己的贡献之和。在抹平了周围粒子的贡献之后，多粒子系统的密度演化方程重新变得好像是单粒子一样了。而这种用更大的尺度来平滑点粒子场，进而用平滑的函数来描述粒子系统的方式，我们称为粗粒化。
+
+接下来我们就可以像平时一样，用热力学来研究粒子系统，并计算相变发生时的相平衡条件。然而遗憾的是，通常用作描述分子间相互作用的Lennard-Jones势，性质并没有好到可以让我们直接使用前述的平均场近似，因为加入粒子与自己的相互作用必然得到发散的结果。这意味着我们可能需要更复杂的技巧来处理这类问题，而之后相关的问题也将缺少解析解。而究竟如何处理以LJ势相互作用的粒子，这是我现在还不清楚的。
+
+\section{密度泛函理论}
+
+现在我们只考虑平均场近似下有相互作用的粒子系统，在拓展一些概念的同时验证一下热力学定律。这时之前定义的粒子密度 $\rho(\bm{r},\bm{p})$ 其实某种意义下可以认为正比于在相空间 $(\bm{r},\bm{p})$ 处找到粒子的概率。那么我们可以仿照一般统计力学中的定义，定义熵
+\begin{equation}
+s=-k_b\rho\ln\rho
+\end{equation}
+那么（亥姆霍兹）自由能密度 $f$ 依然可以写成
+\begin{equation}
+f=h-Ts
+\end{equation}
+其中$h$是能量密度。
+
+在实践中我们常常只关心粒子在位型空间中的密度，因此我们可以将动量的部分积分掉。这其实相当于考虑一个过阻尼的系统——如果粒子感受到的阻尼非常强，我们总可以选取一个足够长的时间尺度，使得粒子的动量变化可以被忽略 $\dot{\bm{p}}_i=0$ 。而我们之前也指出过系统的稳态性质实际上与阻尼系数无关，所以过阻尼系统的平衡态热力学应该是与一般系统一样的。在这种情况下，我们可以忽略粒子运动的动能部分。其朗之万方程简化为
+\begin{equation}
+\frac{d\bm{r}_i}{dt}=-\frac{1}{\mu}\nabla V_{\mathrm{ext}}(\bm{r}_i)-\frac{1}{\mu}\sum_{j\neq i}\nabla_{\bm{r}_i} V(\bm{r}_i-\bm{r}_j)+\sqrt{\frac{2 k_BT}{\mu}}\bm{\xi}_i(t)
+\end{equation}
+而平均场近似下，粒子数密度 $\rho(\bm{r})$ 满足的运动方程简化为
+\begin{equation}
+\frac{d\rho}{dt}=\nabla\cdot\left(\frac{1}{\mu}\nabla V_{\mathrm{ext}}(\bm{r})+\frac{1}{\mu}\int d\bm{r}'\,\nabla_{\bm{r}} V(\bm{r}-\bm{r}')\rho(\bm{r'};t)\right)\rho+\frac{k_BT}{\mu}\nabla^2\rho
+\end{equation}
+既然忽略了动量部分，那么系统的能量密度可以写为所有势能的贡献之和（注意任意两个点之间的势能在积分时被计算了两次，所以要除以2）
+\begin{equation}
+h(\bm{r})=V_{\mathrm{ext}}(\bm{r})\rho(\bm{r})+\frac{1}{2}\int_{\mathbb{R}^d}\rho(\bm{r}) V(\bm{r}-\bm{r}')\rho(\bm{r}')\,d^d\bm{r}'
+\end{equation}
+那么我们有自由能密度
+\begin{equation}
+f(\bm{r})=V_{\mathrm{ext}}(\bm{r})\rho(\bm{r})+\frac{1}{2}\int_{\mathbb{R}^d}\rho(\bm{r}) V(\bm{r}-\bm{r}')\rho(\bm{r}')\,d^d\bm{r}'+k_BT\rho(\bm{r})\ln\rho(\bm{r})
+\end{equation}
+而它对整个空间的积分，就是整个系统的自由能（文献中更常见的做法是把外场拿出来放在自由能外面，这样我们可以把粒子间相互作用和外场分开来处理。这里为了行文方便没有这样做）
+\begin{equation}
+\mathcal{F}[\rho]=\int_{\mathbb{R}^d}\left(V_{\mathrm{ext}}(\bm{r})\rho(\bm{r})+\frac{1}{2}\int_{\mathbb{R}^d}\rho(\bm{r}) V(\bm{r}-\bm{r}')\rho(\bm{r}')\,d^d\bm{r}'+k_BT\rho(\bm{r})\ln\rho(\bm{r})\right)\,d^d\bm{r}
+\end{equation}
+
+对于一个给定的密度函数 $\rho(\bm{r})$ ，我们计算出的整个系统的自由能是一个实数，也就是说，系统的自由能称为了密度函数的泛函。那么平衡态时密度还是否还对应于自由能泛函的极小？首先我们可以把 $\rho(\bm{r})$ 满足的运动方程写成
+\begin{equation}
+\frac{\partial\rho}{\partial t}=\nabla\cdot\left(\frac{\rho}{\mu}\nabla\frac{\delta\mathcal{F}[\rho]}{\delta\rho}\right)
+\end{equation}
+也就是说，我们发现粒子的流
+\begin{equation}
+\bm{J}=-\frac{\rho}{\mu}\nabla\frac{\delta\mathcal{F}[\rho]}{\delta\rho}
+\end{equation}
+平衡态时我们要求系统没有宏观流动 $\bm{J}=0$ （注：没有宏观流动主要指位型空间没有宏观流动，而不是相空间没有宏观流动。而且，实际上流的定义有一个“规范”自由度——所有可以表示为 $\bm{J}'=\bm{J}+\nabla\times\bm{A}$ 的流实际上是等价的。恰当地选取$\bm{A}$也可以让平衡态时的流在相空间没有流动。）那么这意味着
+\begin{equation}
+\nu=\frac{\delta\mathcal{F}[\rho]}{\delta\rho}
+\end{equation}
+是一个与空间坐标无关的常数。如果回想起化学势是等温等体条件下单位粒子的自由能，这里我们可以称 $\nu(\bm{r})$ 为自由能密度。
+
+那么自由能密度等于常数是否就意味着这时候的自由能取道极值呢？自由能——或者说势能，其实有零点选取的自由。这意味着我们可以随意给 $\mathcal{F}[\rho]$ 加上一个常数。而实际上因为粒子数守恒，我们对粒子的密度有一个额外的限制条件 $\int_{\mathbb{R}^d}\rho\, d^d\bm{r}=N$ 是常数。也就是说，自由能
+\begin{equation}
+\mathcal{F}'[\rho]=\mathcal{F}[\rho]+\int_{\mathbb{R}^d} A\rho(\bm{r})\, d^d\bm{r}
+\end{equation}
+与原自由能是等价的。但是，
+\begin{equation}
+\frac{\delta\mathcal{F}'[\rho]}{\delta\rho}=\frac{\delta\mathcal{F}[\rho]}{\delta\rho}+A
+\end{equation}
+因此我们总可以恰当地选取$A$使得化学势等于0，因此化学势为常数就意味着自由能取到了极值。换句话说，化学势的绝对值也没有意义。
+
+如果我们考察的空间尺度足够大，势能和密度的变化足够平滑，我们还可以将相互作用势展开，即
+\begin{align} \int_{\mathbb{R}^d}\rho(\bm{r}) V(\bm{r}-\bm{r}')\rho(\bm{r}')\,d^d\bm{r}'=&\int_{\mathbb{R}^d}\rho(\bm{r}) V(\bm{r}')\rho(\bm{r}-\bm{r}')\,d^d\bm{r}' \\ =&\int_{\mathbb{R}^d}\rho(\bm{r}) V(\bm{r}')\left(\rho(\bm{r})-\bm{r'}\cdot\nabla\rho(\bm{r})+\frac{1}{2}\sum_{\alpha,\beta}r'_\alpha r'_\beta\partial_\alpha\partial_\beta\rho+o(\nabla^3\rho)\right)\,d^d\bm{r}' \end{align}
+如果 $V(\bm{r})=V(r)$ 是一个球对称的势函数，那么对称性使得 $\int_\mathbb{R} r_\alpha V(r)\,dr_\alpha=0$ ，所有的奇数次项都是0。于是，我们记
+\begin{equation}
+\gamma=\frac{1}{2}\int_{\mathbb{R}^d}V(r)\,d^d\bm{r}
+\end{equation}
+\begin{equation}
+\kappa=-\frac{1}{2}\int_{\mathbb{R}^d} r_\alpha^2V(r)\,d^d\bm{r}=-\frac{1}{2d}\int_{\mathbb{R}^d} r^2V(r)\,d^d\bm{r}
+\end{equation}
+那么我们有
+\begin{equation}
+\frac{1}{2}\int_{\mathbb{R}^d}\rho(\bm{r}) V(\bm{r}-\bm{r}')\rho(\bm{r}')\,d^d\bm{r}'=\gamma\rho^2(\bm{r})-\frac{\kappa}{2}\rho(\bm{r})\Delta\rho(\bm{r})+o(\nabla^4\rho)
+\end{equation}
+
+我们把一个卷积形式的项改写为了局域项。在最后积分时如果再对拉普拉斯项做一次分部积分，假设边界项为0，我们可以把自由能泛函写成
+\begin{equation}
+\mathcal{F}[\rho]=\int_{\mathbb{R}^d}\left(V_{\mathrm{ext}}(\bm{r})\rho+\gamma\rho^2+\frac{\kappa}{2}(\nabla\rho)^2+k_BT\rho\ln\rho\right)\,d^d\bm{r}
+\end{equation}
+这正是标准Cahn-Hilliard自由能的形式
+\begin{equation}
+\mathcal{F}[\rho]=\int_{\mathbb{R}^d}\left(g(\rho)+\frac{\kappa}{2}(\nabla\rho)^2\right)\,d^d\bm{r}
+\end{equation}
+因为所有的量都是局域的，所以自由能密度也成了 $\rho$ 的函数
+\begin{equation}
+f(\rho)=V_{\mathrm{ext}}(\bm{r})\rho+\gamma\rho^2+\frac{\kappa}{2}(\nabla\rho)^2+k_BT\rho\ln\rho
+\end{equation}
+
+\section{相变和相平衡条件}
+
+我们可以对无外场时的动力学方程
+\begin{equation}
+\frac{d\rho}{dt}=\nabla\cdot\frac{1}{\mu}\int d\bm{r}'\,\nabla_{\bm{r}} V(\bm{r}-\bm{r}')\rho(\bm{r'})\rho(\bm{r})+\frac{k_BT}{\mu}\nabla^2\rho
+\end{equation}
+进行线性稳定性分析，令$\rho=\rho_0+\int_{\mathbb{R}^d}\delta\rho(\bm{k}) e^{i\bm{r}\cdot\bm{k}}\,d^d\bm{k}$保留到 $\delta\rho$ 的线性项，来判断粒子的均匀分布失稳的条件。相应的分岔条件给出的粒子密度 $\rho_0$ ，称为spinodal密度。在spinodal密度给出的区间内，粒子的均匀状态是不稳定的，也就是说此时系统内不存在单一相，系统必然会相分离——气体会凝结成液滴。简单计算可以得到失稳条件是
+\begin{equation}
+k_BT+\rho_0V(k)<0
+\end{equation}
+
+然而这个条件只是线性失稳条件。完全相分离时，两相的密度我们称为binodal密度。非线性的作用使得spinodal和binodal并不重合。观察相图，往往能看到参数空间中的一个区域在binodal曲线的内部，而在spinodal曲线的外部。在这个区域内，系统的均匀状态是线性稳定的，但相分离的状态也是稳定的。大的扰动有可能使均匀的状态失稳，而造成相分离。这正类似于过冷水结冰或者过饱和水蒸汽凝结。
+
+为了计算相分离时的两相密度，我们来寻找相分离条件。前一节实际上已经给出了一个条件：平衡态时化学势
+\begin{equation}
+\nu=\frac{\delta\mathcal{F}[\rho]}{\delta\rho}=\int_{\mathbb{R}^d} V(\bm{r}-\bm{r}')\rho(\bm{r}')\,d^d\bm{r}'+k_BT\ln\rho(\bm{r})+k_BT
+\end{equation}
+是常数，这和热力学保持一致。但这一个方程还无法解出两相的密度。对于另一个条件，从热力学中我们可以猜出来是压强也是常数。为了理解这一点，我们我们要尝试找到一个应力张量 $\bm{\sigma}$ ，使得
+\begin{equation}
+\rho\nabla\frac{\delta\mathcal{F}}{\delta\rho}=-\nabla\cdot\bm{\sigma}=-\sum_\beta\partial_\beta\sigma_{\alpha\beta}
+\end{equation}
+那么第二个相平衡条件即是 $\nabla\cdot\bm{\sigma}=0$ ，或者说应力张量为常数。之所以说它是应力，是因为如果给系统放一个外场，系统的粒子流可以写为
+\begin{equation}
+\bm{J}=\frac{1}{\mu}(\nabla\cdot\bm{\sigma}-\rho\nabla V_{\mathrm{ext}})
+\end{equation}
+如果将外场受力在任意一个区域$V$内做体积分，那么受力转换为一个面积分
+\begin{equation}
+-\int_V \rho\nabla V_{\mathrm{ext}}\,dV=-\int_V\nabla\cdot\bm{\sigma}\,dV=-\oint_{\partial V}\bm{\sigma}\cdot d\bm{S}
+\end{equation}
+于是我们看到， $\bm{\sigma}\cdot d\bm{S}$ 的确是粒子在 $d\bm{S}$ 面上提供的压强，与外力平衡，所以这个相平衡条件的确是压强相等，或者说力学平衡。这两个条件是独立的，因为一个相当于对 $\nabla(\delta\mathcal{F}/\delta\rho)$ 积分，另一个相当于对$\rho\nabla(\delta\mathcal{F}/\delta\rho)$ 积分。
+
+如果粒子相互作用的势是球对称的，经过一个较为复杂的计算（可以参考Exact formulation and coarse grained theory），我们可以得到
+\begin{equation}
+\sigma_{\alpha\beta}=-k_BT\rho\delta_{\alpha\beta}+\frac{1}{2}\int d^d\bm{r'}\,\frac{r_\alpha' r_\beta'}{r'}\frac{dV(r')}{dr'}\int_0^1d\lambda\,\rho(\bm{r}-\lambda\bm{r}')\rho(\bm{r}+(1-\lambda)\bm{r}')
+\end{equation}
+第一项是熟悉的理想气体压强，它是各项同性的。而第二项则是相互作用带来的修正，容易理解它在均匀相内也是各项同性的。但是，在两相交界处，它就不再是各项同性的了。这时我们可以找到表面张力——也就是在气液界面处法向与切向的压强差。如果界面垂直于$z$轴，系统有$x$-$y$平面内的平移对称性，考虑积分的两端在两相内部深处，那么我们可以定义表面张力为
+
+\begin{align} 
+\gamma=&\int_{z_g}^{z_l}((\sigma_{xx}+\sigma_{yy})/2-\sigma_{zz})\,dz \non 
+=&\frac{1}{2S}\int d^d\bm{r}d^d\bm{r}'\, \frac{(x'^2+y'^2)/2-z'^2}{r'}\frac{dV(r')}{dr'}\int_0^1d\lambda\,\rho(\bm{r}-\lambda\bm{r}')\rho(\bm{r}+(1-\lambda)\bm{r}')
+ \end{align}
+
+其中$S$是界面的面积。如果界面处弯曲，考虑一个球形的气泡，假设气泡半径为$R$，那么我们在极坐标系内沿径向做积分
+\begin{equation}
+\int_{r_g}^{r_l}\nabla\cdot\bm{\sigma}\cdot d\bm{r}=\int_{r_g}^{r_l}\left(\partial_r\sigma_{rr}+\frac{1}{r}(\sigma_{rr}-\sigma_{\theta\theta})\right)\,dr=0
+\end{equation}
+考虑到积分几乎只在气泡界面 $r_f$ 处有贡献，有
+\begin{equation}
+\sigma_{rr}(r_l)-\sigma_{rr}(r_g)=-\int_{r_g}^{r_l}\frac{1}{r}(\sigma_{rr}-\sigma_{\theta\theta})\,dr\approx\frac{\gamma}{r_f}
+\end{equation}
+即气泡内外侧的压强差与气泡大小成反比，与表面张力成正比，这正是拉普拉斯压强。至此我们发现这个系统的热力学和传统的热力学定律并没有什么区别。
+
+在结束整个平衡态统计的内容之前，最后再提一下，对于类似Cahn-Hilliard的自由能泛函（比如朗道-金兹堡理论），一般地可以写成
+\begin{equation}
+\mathcal{F}[\rho]=\int f(\rho,\nabla\rho)d^d\bm{r}
+\end{equation}
+这类自由能泛函没有卷积项，是局域的，那么应力张量可以简单地得到
+\begin{equation}
+\sigma_{\alpha\beta}=-\left(\rho\frac{\delta\mathcal{F}}{\delta\rho}-f\right)\delta_{\alpha\beta}-\frac{\partial f}{\partial(\partial_\alpha\rho)}\partial_\beta\rho
+\end{equation}
+我们依然有压强项和表面张力项，与之前的分析并没有什么不同。
+
+\section{活性粒子的两相共存条件}
+这个漂亮的工作属于A. P. Solon, J. Stenhammar, M. E. Cates, Y. Kafri和J. Tailleur。
+
+前一节我们已经得到了平衡态热力学系统的两相共存的条件，可以总结为两相压强相等、化学势相等。有了这些条件，在给定系统温度、体积、总粒子数的前提下，我们就可以知道有多少水处于液态，有多少水处于气态。如果给一个这类系统的微观模型，比如van der Waals方程，我们可以通过麦克斯韦构造来计算它的相平衡条件。
+
+但对于可以发生相变的非平衡态系统，就没那么简单了。比如诸如细菌、过氧化氢中的合金粒子这样可以自我推动的粒子，它们在一定相互作用（并不需要相互吸引，互斥的相互作用也可以）下也可以发生相变，出现分离的“液相”和“气相”。但人们发现，这些粒子系统中常常没有可以作为状态函数的压强，我们也不知道化学势该怎么定义，压强相等和化学势相等均不存在。所以，这种系统的两相共存条件便是一个问题了。
+
+这里，我们考虑一个普遍的活性物质模型，它们在大的时空尺度上的动力学可以用一个标量场（密度 $\rho(\bm{r},t)$ ）表示为类似扩散方程的形式。
+\begin{equation}
+\frac{\partial\rho}{\partial t}=\nabla\cdot(M[\rho]\nabla g(\rho))
+\end{equation}
+其中 $M[\rho]$ 是密度的泛函。我们将 $g(\rho)$ 展开至梯度的四阶项\footnote{梯度展开之所以是可行的，正是因为我们只考虑粗粒化的大尺度的动力学。这时高阶的梯度都成为“快”变量，其弛豫时间比起低阶导数要短，在长时间的变化中可以认为是始终处于稳态的。这一点可以通过傅里叶变换看出来，n阶导数的特征时间正比于 $1/q^n$ 。}。因为所有三阶项都可以通过重新定义吸收进系数中，不失一般性，可以写作
+\begin{equation}
+g(\rho)=g_0(\rho)+\lambda(\rho)(\nabla\rho)^2-\kappa(\rho)\Delta\rho
+\end{equation}
+接下来考虑一个已经完全相分离的无穷大系统，经过足够长时间进入无宏观粒子流动的稳态，其气液交界的界面是一个平面。这样的系统中，因为对称性，系统简化为一维问题：我们只需要考虑沿界面法向的直线上的粒子密度分布，如此一来，所有的梯度算符都简化为对一维坐标x的求导。那么，对比连续性方程，这个系统的流是
+\begin{equation}
+J=-M[\rho]\partial_xg(\rho)
+\end{equation}
+无宏观粒子流动的稳态要求$J=0$，这要求$g$对于所有$x$是一个常数。如果考虑液相内部深处和气相内部深处的两个点，其附近的粒子密度均不再变化，并分别等于液相密度 $\rho_l$ 和气相密度 $\rho_g$ ，那么$g$的所有导数项均为0，我们得到了一个平凡的两相共存条件：
+\begin{equation}
+g_0(\rho_l)=g_0(\rho_g)\equiv\bar{g}
+\end{equation}
+这个条件是显然的，它没有考虑到任何系统的特殊性质。仅仅一个条件还不够我们解出 $\rho_l$ 和 $\rho_g$ ，我们还需要一个条件，但得到它我们需要一些数学技巧。
+
+我们假设有一个待定的严格单调函数 $R(\rho)$ ，然后我们来计算
+\begin{equation}
+\int_{x_l}^{x_g}g(\rho)\partial_xR\,dx
+\end{equation}
+其中积分上下限取在液相和气相内部深处的任意一点。首先，由于稳态是$g$是常数，有
+\begin{equation}
+\int_{x_l}^{x_g}g(\rho)\partial_xR\,dx=\bar{g}(R(\rho_g)-R(\rho_l))
+\end{equation}
+另一方面，带入$g$的定义我们可以得到
+\begin{equation}
+\int_{x_l}^{x_g}g(\rho)\partial_xR\,dx=\int_{x_l}^{x_g}g_0(\rho)\partial_xR\,dx+\int_{x_l}^{x_g}(\lambda(\partial_x\rho)^2-\kappa\partial_{xx}\rho)\partial_xR \,dx
+\end{equation}
+如果选取$R$使其满足（今后所有的撇号都表示对函数的宗量求导，而非对空间求导）
+\begin{equation}
+\kappa R''(\rho)=-(2\lambda+\kappa')R'(\rho)
+\end{equation}
+我们可以验证
+\begin{equation}
+(\lambda(\partial_x\rho)^2-\kappa\partial_{xx}\rho)\partial_xR=-\partial_x\left(\frac{\kappa R'}{2}(\partial_x\rho)^2\right)
+\end{equation}
+于是第二项被积函数化为全导数，因为在两相内部，粒子密度是均匀的，所以这一项的贡献是0。最后，记
+\begin{equation}
+\phi(R)=\int g_0\, dR
+\end{equation}
+即
+\begin{equation}
+\frac{d\phi}{d R}=g_0
+\end{equation}
+那么这个积分提供给我们第二个相平衡条件：
+\begin{equation}
+\phi'(R(\rho_l))R(\rho_l)-\phi(R(\rho_l))=\phi'(R(\rho_g))R(\rho_g)-\phi(R(\rho_g))
+\end{equation}
+于是我们可以通过这样的步骤计算两相平衡时的密度分布：
+\begin{enumerate}
+\item 通过解 $\kappa R''(\rho)=-(2\lambda+\kappa')R'(\rho)$ 得到 $R(\rho)$ 。
+\item 联立相平衡条件 $g_0(\rho_l)=g_0(\rho_g)\equiv\bar{g}$ 与 $\phi'(R(\rho_l))R(\rho_l)-\phi(R(\rho_l))=\phi'(R(\rho_g))R(\rho_g)-\phi(R(\rho_g))$ ，解得 $\rho_l$ 和 $\rho_g$。
+\end{enumerate}
+这样一来，问题就解决了。
+
+
+这两个平衡条件可以赋予一定的物理意义。我们可以看出，系统的动力学方程中，$g$可以写作一个泛函导数
+\begin{equation}
+g(\rho)=\frac{\delta\mathcal{F}[R]}{\delta R}
+\end{equation}
+其中\footnote{这个变分的计算是这样的：
+\begin{equation}
+\delta\mathcal{F}[R]=\frac{d\phi}{dR}+\int(\nabla R)^2\frac{\delta}{\delta R}\frac{\kappa}{2R'}\delta R\, d\bm{r}+\int\frac{\kappa}{2R'}\frac{\delta}{\delta R}(\nabla R)^2\delta R\, d\bm{r}
+\end{equation}
+第一项按照定义等于 $g_0$ 。第三项好算，注意到链式法则 $\nabla R=R'(\rho)\nabla\rho$ ，分部积分后它等于
+\begin{equation}
+-\int\nabla\left(\frac{\kappa}{R'}\nabla R\right)\delta R\,d\bm{r}=-\int\nabla\left(\kappa\nabla \rho\right)\delta R\,d\bm{r}=-\int\left(\kappa'(\nabla \rho)^2+\kappa\Delta\rho\right)\delta R\,d\bm{r}
+\end{equation}
+第二项则要用到链式法则，注意$R$与 $\rho$ 是双射，有
+\begin{equation}
+\frac{\delta}{\delta R}\frac{\kappa}{2R'}=\frac{\delta\rho}{\delta R}\frac{\delta}{\delta \rho}\frac{\kappa}{2R'}=\frac{1}{R'}\frac{\delta}{\delta \rho}\frac{\kappa}{2R'}=\frac{1}{2R'}\frac{R'\kappa'-\kappa R''}{R'^2}
+\end{equation}
+利用$\kappa R''(\rho)=-(2\lambda+\kappa')R'(\rho)$ ，有
+\begin{equation}
+(\nabla R)^2\frac{\delta}{\delta R}\frac{\kappa}{2R'}=(\nabla R)^2\frac{\kappa'+\lambda}{R'^2}=(\kappa'+\lambda)(\nabla \rho)^2
+\end{equation}
+于是全部整合起来，有
+\begin{equation}
+\frac{\delta\mathcal{F}}{\delta R}=g_0+\lambda(\nabla\rho)^2-\kappa\Delta\rho
+\end{equation}
+正是我们想要计算的。}
+\begin{equation}
+\mathcal{F}[R]=\int[\phi(R)+\frac{\kappa(\rho)}{2R'(\rho)}(\nabla R)^2]d\,\bm{r}
+\end{equation}
+如果我们认为 $\mathcal{F}$ 是某种广义的自由能，那么相平衡条件正是对印着 $\mathcal{F}$ 的极值。于是我们可以将  $g_0(\rho)$ 看作广义的化学势，而 $h(R)=\phi'(R)R-\phi(R)$ 是广义的（热力学）压强。不要忘了这一类系统中，力学压强和热力学压强可能不相等。
+
+所有的计算可以退化到经典粒子平衡态统计的情形，这时Cahn-Hilliard的自由能为
+\begin{equation}
+\mathcal{F}[\rho]=\int[f(\rho)+\frac{c(\rho)}{2}(\nabla\rho)^2]\,d\bm{r}
+\end{equation}
+因为附加了条件 $2\lambda+\kappa'=0$ ，可以解得 $R=\rho$ ，于是相平衡条件还原为经典的情形。
+
+这个理论可以用于有相互作用（两两相互作用，或者局域的平均场响应）的做旋转布朗运动的活性粒子，或者细菌这样的随机打转的活性粒子。理论预测和模拟结果吻合得很完美。
+
+\section{化学反应系统}
+
+最后再用一点点篇幅简单介绍一下这一套方法在化学反应系统中的应用。我们考虑充分混合均匀的化学反应系统，从而不考虑空间坐标。这时我们的相空间变为了系统各种分子的分子数构成的空间  $\bm{x}=(x_1,\cdots,x_N)$ ，其中$N$是系统中分子的种类数。我们考虑有$M$个可能的反应，其中第$j$个反应发生的概率为指数分布，且发生率为 $a_j(\bm{x})$ ，发生这个反应后系统的状态从 $\bm{x}$ 变为 $\bm{x}+\bm{\nu}_j$ 。（比如 \ce{2H_2 + O_2 = 2H_2O} ， $\bm{\nu}=(-2,-1,2)$ ），那么系统的状态作为随机过程，依然是马尔可夫的。显然这个系统的主方程是
+\begin{equation}
+\frac{\partial p(\bm{x};t)}{\partial t}=\sum_{j=1}^{M}a_j(\bm{x}-\bm{\nu}_j)p(\bm{x}-\bm{\nu}_j;t)-\sum_{j=1}^{M}a_j(\bm{x})p(\bm{x};t)
+\end{equation}
+对于二元反应，比如， $x_1+x_2\to x_3$ ，考虑到反应是分子间短程相互作用——即碰撞的结果，有确定能量的分子在碰撞中应该有确定的概率反应，其概率由量子力学决定。那么反应发生的概率应该正比于粒子发生碰撞的概率，固定体系体积则正比于分子数，即 $a(x_1,x_2)=kx_1x_2$ 。一般来说$k$和系统体积有关系。如果我们计算系统的平均分子数
+\begin{equation}
+\langle\bm{x}\rangle=\sum_{\bm{x}} \bm{x}p(\bm{x};t)
+\end{equation}
+那么它满足
+\begin{equation}
+\frac{d\langle\bm{x}\rangle}{dt}=\sum_{j=1}^M \bm{\nu}_j\langle a_j(\bm{x})\rangle
+\end{equation}
+称为反应速率方程。但一般来说$a(x)$是非线性函数，这个方程不封闭，我们依然需要“平均场假设” $\langle a_j(\bm{x})\rangle=a_j(\langle \bm{x}\rangle)$ 。这意味着系统内分子数很大，两种分子的涨落之间的关联小到可以忽略。这时方程封闭，且如果对于$d$元反应有 $k\propto V^{-d}$ ，我们又得到了质量作用定律。
+
+注意到，当粒子数极多的时候，单个反应对系统状态的改变很小，作泰勒展开保留至二阶项，主方程可以近似为偏微分方程
+\begin{equation}
+\frac{\partial p(\bm{x};t)}{\partial t}=-\sum_{j=1}^{M}\sum_{i=1}^N\nu_{ji}\frac{\partial a_j(\bm{x})p(\bm{x};t)}{\partial x_i}+\frac{1}{2}\sum_{j=1}^{M} \sum_{k,l=1}^N\nu_{jk}\nu_{jl} \frac{\partial^2 a_j(\bm{x})p(\bm{x};t)}{\partial x_k\partial x_l}
+\end{equation}
+考虑到 $\nu$ 一般情况下都是常数，这其实正是Fokker-Planck方程的形式。对照之前的结果，也就是说这时候系统可以用化学朗之万方程描述
+\begin{equation}
+\frac{d\bm{x}}{dt}=\sum_{j=1}^M a_j(\bm{x})\bm{\nu}_j+\sum_{j=1}^{M}\sqrt{a_j(\bm{x})}\bm{\nu}_j\bm{\xi}_j
+\end{equation}
+其中 $\bm{\xi}_j$ 是$\delta$关联的高斯白噪声。
+
+最后简单提一下，从原始的主方程出发硬算，我们可以得到化学反应系统中的涨落耗散定理
+\begin{equation}
+\frac{d\sigma_{kl}}{dt}=\langle A_k(\bm{x})(x_l-\langle x_l\rangle)+A_l(\bm{x})(x_k-\langle x_k\rangle)\rangle+\langle B_{kl}(\bm{x})\rangle
+\end{equation}
+其中 $\sigma_{kl}=\langle(x_k-\langle x_k\rangle)(x_l-\langle x_l\rangle)\rangle$ 是协方差矩阵，而
+\begin{equation}
+A_k(\bm{x})=\sum_{j=1}^M \nu_{jk}a_j(\bm{x})
+\end{equation}
+\begin{equation}
+B_{kl}(\bm{x})=\sum_{j=1}^M \nu_{jk}\nu_{jl}a_j(\bm{x})
+\end{equation}
+正是在Fokker-Planck方程近似中出现的系数
+\begin{equation}
+\frac{\partial p(\bm{x};t)}{\partial t}=-\sum_{i=1}^N\frac{\partial A_i(\bm{x})p(\bm{x};t)}{\partial x_i}+\frac{1}{2}\sum_{k,l=1}^N \frac{\partial^2 B_{kl}(\bm{x})p(\bm{x};t)}{\partial x_k\partial x_l}
+\end{equation}
+也就是说，我们再一次将平衡系统的涨落项与耗散项联系了起来。
+\end{document}
