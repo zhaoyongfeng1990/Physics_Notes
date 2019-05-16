@@ -1,0 +1,876 @@
+\documentclass{ctexart}
+
+\usepackage{mhchem}
+\usepackage{array}
+\usepackage{graphicx,bm}
+\usepackage{amsmath,amssymb}
+\usepackage{appendix}
+\usepackage{color}
+\usepackage[standard]{ntheorem}
+\usepackage{siunitx}
+\newcommand\cincludegraphics[1]{\centerline{\includegraphics[scale=0.75]{#1}}}
+\newcommand\diff[2]{\frac{d #1}{d #2}}
+\newcommand\Diff[2]{\frac{D #1}{D #2}}
+\newcommand\ddiff[2]{\frac{d^2 #1}{d #2^2}}
+\newcommand\ndiff[3]{\frac{d^{#3}#1}{d #2^{#3}}}
+\newcommand\pdiff[2]{\frac{\partial #1}{\partial #2}}
+\newcommand\pddiff[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\newcommand\pndiff[3]{\frac{\partial^{#3} #1}{\partial #2^{#3}}}
+\newcommand\mathmx[1]{\bm{#1}}
+\newcommand\E[2]{\ensuremath{#1\times10^{#2}}}
+\newcommand\ii{\mathrm{i}}
+\newcommand\dd{\mathrm{d}}
+\newcommand\non{\nonumber \\}
+\newcommand\ecoli{\textit{E. coli }}
+\newcommand\um{\ensuremath{\mathrm{\mu m}}}
+\newcommand\red[1]{{\color{red}#1}}
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    linkcolor=blue,  %choose some color if you want links to stand out
+}
+\renewcommand\arraystretch{1.8}
+
+\DeclareRobustCommand{\vect}[1]{\bm{#1}}
+\pdfstringdefDisableCommands{%
+  \renewcommand{\vect}[1]{#1}%
+}
+
+\bibliographystyle{unsrt}
+
+\usepackage[margin=1.0in]{geometry}
+
+%\usepackage{ctex}
+\usepackage{enumitem}
+
+\begin{document}
+\title{量子力学}
+\maketitle
+\tableofcontents
+\section{推荐用书}
+
+量子力学的好书确实很多。如果有时间，想看看各种观点，可以多看几本。我看过的有3本：
+
+\begin{enumerate}
+\item Griffiths《Introduction to Quantum Mechanics》Griffiths的书看起来很令人享受，非常好懂，平易近人，拿来做入门实在是非常适合。
+
+\item P.A.M. Dirac《The Principle of Quantum Mechanics》不过我是拿这一本来当做量子力学的入门……引用Fang的话，敢叫Principle的书都特别牛。这本书一直被当做量子力学“圣经”一样的存在，当然批评者认为这本书有些陈旧，而且实用性不高。他的原则问题讲得清楚，Dirac符号讲得也很清楚（因为他自己发明的呗= =），不过最后一章QED写得很乱，鉴于Dirac写书的时代量子场论没有发展得很成熟，我觉得这一章可以跳过去。
+
+\item Sakurai（樱井）《Modern Quantum Mechanics》我看的是2011年的第二版，这个版本内容现代很多。不过因为樱井去世得早，后面的内容是他的同事修订的，整本书的质量有点参差不齐。前几章写得不错，但总给我一种Dirac扩写版的感觉。原则问题和Dirac符号讲得也还清楚，另一个很大的优点是包括了很多实验结果，来阐述量子力学中某些毁三观的概念。缺点是有几章写得很乱，比如散射和微扰论，物理图像不清楚数学推导也怪怪的，看起来不知所云。
+\end{enumerate}
+
+以下几本我没看过，但是推荐的人很多：
+
+\begin{enumerate}
+\item Shankar《Principles of Quantum Mechanics》据说适合用来入门。
+
+\item Landau《Quantum Mechanics》朗道的书还用我多说么？不过因为俄国的体系和欧美不太一样，Landau这本书通篇没用Dirac符号，看起来可能会不习惯。而且Landau的数学很犀利，所以看起来或许压力会很大。
+
+\item Claude Cohen-Tannoudji，他的书据说也很不错，适合初学，但缺点是特别厚……而且国内没有影印版……
+\end{enumerate}
+
+\section{历史}
+量子力学的开端，来源于20世纪初“两朵乌云”其中的一朵：黑体辐射的问题。所谓黑体，是黑色的物体……其实是理想中不能反射与透射电磁波、与环境达到热平衡的物体。当然，理想的模型往往是不存在的，然而，一个只留有一个小孔的空腔和黑体已经非常接近了。黑体虽然不能反射电磁波，但它自己依然可以发出电磁波。当黑体达到热平衡时，它吸收的电磁波和发射的电磁波应当是平衡的，使得它的能量不再变化，这时候，它辐射的电磁波称为黑体辐射。如果我们去测量黑体辐射的谱，看看不同频率的电磁波强度分别是多少，会得到一个黑体辐射谱，这个谱的形状只与黑体的温度有关。
+
+于是一个自然的想法是用统计力学的方法来解释黑体辐射谱为什么是这个形状。于是，有了Wien近似和Rayleigh-Jeans公式，但这两个曲线的形状都不能完美地吻合实验，一个仅在长波区域符合，另一个仅在短波区域符合。1900年，Planck在改进Wien近似的过程中，唯象地找到了一个公式，能够与实验完美符合，但在解释这个公式的物理意义时，却遇到了麻烦：Planck的公式中电磁场的能量似乎是一份一份而不连续的。然而，作为古典的物理学家，Planck是不会承认这一点的。
+
+1905年，Einstein针对光电效应（这个应该在高中课本中被讨论烂了）提出了光量子的概念，认为电磁波的能量不是连续的，而是以光量子为单位的一份一份的，简称光子。一个光子的能量与光子的频率成正比，而光照的强度只与光子的数目有关。
+
+另一方面，1909年Rutherford发现原子核的存在之后，原子模型也引起了人们的兴趣。因为按照经典的电磁理论，具有加速度的电子会不断辐射电磁波而损失能量，因此原子的行星模型不可能稳定存在。而对原子光谱的测量结果也令人费解，一种原子似乎只能吸收或发射特定频率的光，如果原子的能量是可以连续变化的，应该可以发出任意频率的光才对。为此，1913年波尔提出Bohr模型来解决原子光谱的问题。Bohr模型认为原子核外电子的轨道不是任意的，电子只能在满足特定量子化条件的轨道上运动。这个模型比较好地预测了类氢原子的光谱，但是不能预测其他原子的光谱。
+
+1924年，de Broglie通过类比，提出了物质波的假说，认为电子之类的粒子也具有和光子类似的波动特性。结果，1927年完全与之独立的一个实验组在晶体中观测到了电子的衍射图样，发现电子运动确乎具有波的特征，让de Broglie撞上了大运。
+
+1921年，测量原子磁矩的Stern-Gerlach实验也发现了令人奇怪的结果。实验用一个非均匀的磁场来偏转带有磁矩的银原子，原子带有的磁矩角度与原子被偏转的角度相关。原本人们预期会看到一个宽阔的斑——因为随机运动的原子磁矩应该可以有各种取向，然而实验结果看到的却是两个条带，这意味着原子磁矩只有两个取向，角动量也是量子化的。
+
+1924年为进一步解决原子光谱的问题，泡利提出电子具有一个内禀的双值的自由度，1925年Ralph Kronig、George Uhlenbeck与Samuel Goudsmit提出基本粒子的自转与角动量的概念，1927年泡利提出了形式化的自旋理论。然而电子自旋仍然是一个奇怪的东西，因为电子为达到自旋角动量，其“转动”会超过光速。在量子力学的范畴中，自旋只是被唯象地描述。1928年Dirac提出相对论性的Dirac方程，描述了相对论性电子的运动，而此时电子自然地带有一个内禀的角动量，与自转无关。
+
+关于量子力学的公理形式，1920年代先后有Schrödinger的波动力学与Heisenberg的矩阵力学，后来1926年Schrödinger证明了两种力学的等价性，于是（非相对论性）量子力学的公理形式便完成了。1948年，Feynman提出路径积分表述，作为第三种构建量子力学的方式，并明确了量子力学与经典力学的关系。其思想可以参见理论力学——哈密顿力学 - Everything is Physics 万物皆理 - 知乎专栏最后一节。
+
+至此提出的量子力学是不包含相对论的。关于相对论性量子力学有诸多尝试，Schrödinger在提出非相对论性的Schrödinger方程之前，也曾想到了Klein–Gordon方程，但它不能保证粒子出现的概率是正的，具有严重问题。1928年Dirac方程解决了这个问题，但依然有问题：相对论意味着描述单粒子的理论框架不再准确。正式的相对论性的量子理论框架则是1950年代逐渐建立起的量子场论。
+
+\section{科普}
+先推荐一本比较靠谱的量子力学的科普书：
+
+《新量子世界》:这本书态度诚恳，内容也很准确，准确到几乎感觉就是将普物级别的量子物理书中的公式去掉而已。原则问题绝不含糊，不过缺点是进入场论之后，后半部分展开很难跟上，我当时就没怎么看懂。
+
+微观粒子毁三观的运动方式令人不得不放弃宏观的图像：粒子运动不再具有确定的轨迹，甚至不再具有确定的位置。人们转而描述粒子的状态。关于粒子的状态，最重要的假设是它是可以叠加的。态的叠加特性，按照Sakurai的说法，可以在测量粒子自旋的Stern-Gerlach实验这个“最简单且最量子的”实验中得到验证。一束自旋朝向$+z$轴的电子，在测量其$x$方向的自旋时，会观察到具有$+x$轴方向与$-x$轴方向自旋的电子各占50\%。然而在继续测量这些电子在$z$方向的自旋时，会发现有一半的电子的自旋变成了$-z$轴方向。然而，一束自旋朝向$+z$轴的电子，无论多少次测量其$z$方向的自旋，都找不到自旋朝向-z方向的电子。
+
+首先，这意味着自旋朝向正$z$方向的电子并不是两种电子的混合。电子并不是某种贴着“自选方向：$+x$,$+z$”与“自选方向：$-x$,$+z$”标签的东西。自旋的$z$方向和$x$方向存在某种联系，而这种联系最适合用线性代数来描述：一个自旋$+z$方向的电子状态，是自旋$+x$方向与$-x$方向两种状态的叠加。这种叠加，甚至不同于将50\%的+x方向与50\%的$-x$方向的两种粒子混合起来。
+
+而两个测量过程不可交换，意味着测量改变了粒子的状态。在经过$x$方向的自旋测量之后，粒子便不再处于自旋$+z$方向的状态了。这正是不确定性原理，粒子的某些特征是不能被同时测量的，一旦进行了一个特征的测量，另一个特征就被改变了。比粒子自旋/角动量各个方向的不确定性更有名的，是粒子的位置-动量满足的不确定性原理。实际上，是同样的缘故。
+
+注意时间和能量并没有相应的不确定性原理。在非相对论性的理论中，时间不是粒子的可观测量，不是粒子的属性，只是一个参数。因此，没有与位置-动量类似的不确定性关系，实验上也不存在。相对论性理论中，位置与时间必须要统一处理，因此在场论中，位置也不再是算符，和时间一样变作参数。
+
+然而测量为何会改变粒子的状态，这应该是比较显然的。观察粒子的运动，我们只能通过它和其他东西的相互作用的结果来观察，而这种相互作用，常常会干扰粒子的运动。比如观察粒子的位置，我们要用光子去撞击它，或者让它撞上某个屏幕，这时候，它的动量必然就改变了。在SG实验中，我们用了一个非均匀的磁场干扰了粒子的自旋。注意这里并没有人意识的作用。
+
+测量的结果，就是一个有意思的事情了。测量改变粒子的状态并不是完全随机的，而是只能将粒子的状态改变至特定的几个状态：比如测量x方向自旋之后，你只能得到自旋处于$+x$方向的粒子和$-x$方向的粒子，而得不到其他的自旋状态，比如$+z$，$+y$等等。然而，我们无法预测会得到具体的哪一个状态，只能预测得到某个状态的概率。
+
+这个过程中究竟发生了什么，历史上有诸多种解释方法，这称为诠释。查看wiki中的Interpretations of quantum mechanics页面可以找到现在被提出的所有诠释。但依然需要提醒的是，除了极个别诠释，大多数诠释无法带来可观测的差异，无法在实验中加以区分，因此诠释问题往往并不真正被人关心。下面挑几个比较有名的诠释：
+
+\begin{enumerate}
+
+\item 隐参量诠释。早期Bohm等人认为微观粒子运动之所以具有不确定性，是因为粒子仍然具有没有被人发现的隐参量，因而造成与统计力学类似的不确定性。这个诠释最接近经典力学的世界观，然而，随着Bell不等式的相关实验，人们发现局域的隐变量是不存在的，因此这个诠释不再被人提及了。
+
+\item 多世界诠释。这个诠释被各种科幻小说改编，但基本都是错的。多世界诠释认为波函数被测量时并没有坍缩，只是将观测者与系统纠缠起来，整个宇宙波函数的演化依然是可逆且确定的。观测的不同结果是因为宇宙发生了“分裂”。很多人不喜欢这个诠释，因为它引入了太多不可观测的假设的宇宙。一些更为高级的多世界理论称可以提供可观测的验证，这些我就不清楚了。
+
+\item 系综诠释。Einstein等人主张这一诠释。这个诠释认为波函数不是描述单粒子行为的，而是一个描述一堆相近系统的系综。量子力学的结论只是统计意义下的结论，不能用于预测单个粒子的行为。
+
+\item Copenhagen诠释。这个诠释是流传最为广泛影响最大的诠释，很多教材实际上都采用了这一诠释。Copenhagen诠释认为，波函数描述了粒子的全部状态，而这种状态确实是非确定的，测量导致坍缩也确实是存在的。至于为何导致坍缩，Copenhagen诠释并没有提出假说。这种诠释造成了很大的争论，也因此带来了很多佯谬，比如著名的Schrödinger的猫和EPR佯谬。
+\end{enumerate}
+
+Schrödinger的猫是这样一个系统：将一只猫置于一个黑盒子中，盒子配备一块放射性物质与盖革计数器，放射性物质在固定时间内有1/2的概率发生衰变，一旦盖革计数器探测到原子衰变，就打破装有氰化物的瓶子将猫毒死。Schrödinger认为，在这系统中，一定时间后猫的状态成为死与活的叠加态，只有人打开盖子时这个量子态才坍缩。猫的生死似乎决定于人打开盖子的行为，这是一个很荒谬的事情。
+
+
+毕竟Schrödinger的猫是一个佯谬。实际上，宏观的量子纠缠态是存在的，这在一些介观的实验中被观测到了。超导、超流等现象都与宏观的量子纠缠态有关。而另一方面，退相干使得Schrödinger的猫无法稳定在一个确定的纠缠态之中。因为猫、盖革计数器等等都是包含大量粒子的、自由度极高的经典系统，我们几乎无法使它处于确定的量子态之中，与它们发生纠缠的系统会很快脱散。因此，Schrödinger的猫难以长时间维持在叠加态之中。
+而EPR佯谬也与纠缠态有关。如果我们让两个电子进入总自旋为0的纠缠态，并将两个电子隔离，一旦我们对其中一个电子A进行测量，它的自旋状态会被确定，而由于两个电子总自旋为0，另一个电子B的状态也会被随之确定。Einstein当年认为这其中存在超光速传递信息。在哥本哈根诠释中，另一个电子B波函数的坍缩原因显得有些诡异，似乎测量电子A后有种超光速的信号告诉了电子B，使它的波函数坍缩了。
+
+但是抛开哥本哈根诠释，在观测上，纠缠态其实没有传递任何信息。因为我们无法控制电子A的测量结果。当我们对电子B进行测量后，如果不与保管电子A的那些人联络，我们甚至无从得知电子A有没有被测量。不论A是否被测量，B的测量结果都会是一半自旋向上一半自旋向下。虽然我们测量A之后便立刻知道了B的测量结果，但这种关联，并不是超光速的信息传递。这种“信息传递”的方式就好比把装有黑球和白球的两个盒子分开，并把其中一个带到很远的地方。虽然打开一个盒子，我们就会知道另一个盒子里球的颜色，但这并没有超光速的信息传递。
+
+关于EPR佯谬，它作为一个量子效应和经典效应的主要区别，正体现在前文提到的Bell不等式上。同样考虑两个总自旋为0的电子（类似的系统可以由$\eta$介子的衰变得到）。现在，我们对电子A测某一方向的自旋，对电子B测另一方向的自旋，两个方向可以不正交，那么两个测量结果在统计上会如何联系？
+
+（以下出自Sakurai《Modern Quantum Mechanics》）如果我们有很多对纠缠中的电子，按照隐参量的理解，测量结果是由粒子的不知道但确定的属性决定的，三个方向自旋的测量结果可以分为8种：
+\begin{equation}
+\begin{array}{c|c|c}
+\hline
+\mbox{粒子数目} & A & B \\\hline
+N_1 & (a+,b+,c+) & (a-,b-,c-) \\\hline
+N_2 & (a+,b+,c-) & (a-,b-,c+) \\\hline
+N_3 & (a+,b-,c+) & (a-,b+,c-) \\\hline
+N_4 & (a+,b-,c-) & (a-,b+,c+) \\\hline
+N_5 & (a-,b+,c+) & (a+,b-,c-) \\\hline
+N_6 & (a-,b+,c-) & (a+,b-,c+) \\\hline
+N_7 & (a-,b-,c+) & (a+,b+,c-) \\\hline
+N_8 & (a-,b-,c-) & (a+,b+,c+) \\\hline
+\end{array}
+\end{equation}
+那么，比如，测量A在c方向的自旋得到+，B在a方向的自旋得到-的概率是：
+\begin{equation}
+P(c+,a-)=\frac{N_1+N_3}{\sum N_i}
+\end{equation}
+同样，有：
+\begin{equation}
+P(c+,b-)=\frac{N_1+N_5}{\sum N_i}
+\end{equation}
+\begin{equation}
+P(b-,a-)=\frac{N_3+N_4}{\sum N_i}
+\end{equation}
+
+很显然，$P(c+,a-)\leq P(c+,b-)+P(b-,a-)$
+这个长得有点像“三角形两边之和大于第三边”的不等式，就是贝尔不等式。然而，如果从量子力学出发进行推导，会发现，很容易举出反例使贝尔不等式不成立。比如，$a$沿$x$方向，$b$沿$y$方向，而$c$沿45度角的方向。于是，纠缠态中不正交的状态体现了一种经典统计无法理解的奇妙的相关性。
+
+微观尺度上还有很多新奇的事情，比如粒子全同性。同类的微观粒子是完全相同、不可辨认的。两个电子是没有区别的，我们无法分辨它们。这个假设源于统计的结果。粒子是否具有全同性，会导致不同的统计分布。对于可分辨粒子，不同能级上的粒子数满足Boltzmann分布，但对于不可分辨粒子，则满足Fermi-Dirac分布或Bose-Einstein分布（取决于一个能级上是否只允许存在一个粒子），不同的统计分布在观测上有很大的区别，因此可以很容易被实验所区分。
+
+\section{态}
+一切应该要从态的概念说起。
+
+物理各式各样的理论，都是在描述一个系统的状态。只不过在描述宏观现象的经典力学中，我们发现粒子的坐标和动量足够标记它的状态。但实验发现，诸如电子这些细小的粒子，运动的不确定性使得我们无法再用坐标和动量来标记它的状态。于是，在量子力学中，我们直接处理系统的状态本身。这时我们需要一个不同于经典力学的数学结构来描述系统的状态。暂时我们按照Dirac记号，将态用一个\textbf{右矢（ket）}来表示：$|\cdot\rangle$，然后来讨论它应该是怎样的数学结构。（当年线性代数老师说莱布尼茨说，好的记号可以启迪人的思维，Dirac记号对于量子力学就是一个好的记号系统。）
+
+原则上，没有经典量子之分，量子力学可以处理任何系统。所以这里所讨论的系统，可以是一个粒子，也可以是很多粒子，甚至是场（当然，场论中场和粒子是一回事）。如果一个系统是由若干子系统构成，那我们可以简单地用子系统的态的直积（笛卡尔积）来构造系统的态。数学上，A与B的直积仅仅是将它们“拼”成一个元素：$A\otimes B=(A,B)$。在Dirac记号中，两个右矢的直积可以仅仅将他们拼在一起：$|a\rangle\otimes |b\rangle=|a\rangle|b\rangle$，或者在不产生歧义的前提下，干脆写在一起：$|a,b\rangle$。
+
+由诸如SG实验等实验所暗示的那样，量子力学中的态似乎有别于我们以往熟悉的状态的概念。比如一个自旋朝向$+z$方向的电子，它在$x$方向自旋的状态一半可能朝向$+x$方向，一半可能朝向$-x$方向；但一个自旋朝向$+x$方向的电子，它在$z$方向自旋的状态却一半可能朝向$+z$方向，一半可能朝向$-z$方向。这种性质我们可以用态的叠加来描述，即态叠加原理——系统的两个状态的“叠加”依然是系统的状态。记$\mathcal{S}$为系统所有状态的集合，形式上粗略地可以写作：
+\begin{equation}
+\forall |a\rangle, |b\rangle\in\mathcal{S},\  |a\rangle+|b\rangle\in\mathcal{S}
+\end{equation}
+
+这样看来，$\mathcal{S}$的数学结构很像一个线性空间。但为了用线性空间来描述系统的状态，我们需要对数乘运算做出规定，于是进一步假设态$|a\rangle$与数乘后的$\lambda|a\rangle$（$\lambda\neq 0$，$\lambda\in\mathcal{C}$）表示同一个状态。同时，数乘运算满足分配率：
+\begin{equation}
+\lambda_1|a\rangle+\lambda_2|a\rangle=(\lambda_1+\lambda_2)|a\rangle，
+\end{equation}
+且如果结果非零，依然表示同一状态。值得注意的是，虽然$|a\rangle$与$\lambda|a\rangle$是同一个状态，但$\lambda$并不是没有意义的。在两个系统发生干涉时我们会看到，$\lambda$携带了相位的信息，正如两列机械波的干涉。如果我们将$0|a\rangle$视作真空态加入进来，（扩充的）系统所有状态的集合构成一个复线性空间。但这样的定义还有一个麻烦，因为一个状态对应于复线性空间的无穷多个矢量，这样我们不知道应该用哪个矢量来进行运算。这个问题需要引入内积后才能够解决。
+
+这里有必要复习一下线性代数，想想使用线性空间来描述有什么好处。对于一个线性空间，我们总可以找到一组基矢量，然后将线性空间中每一个矢量用这组基分解：$|a\rangle=c_1|e_1\rangle+c_2|e_2\rangle+\cdots+c_n|e_n\rangle$。对于给定的基矢量，这种分解是唯一的。如果使用矩阵来表示，右矢相当于列向量：
+\begin{equation}
+|a\rangle=\begin{pmatrix}c_1 \\ c_2 \\ \vdots\\ c_n\end{pmatrix}
+\end{equation}
+当然这种表示并不总是可能的，因为状态空间的维数不一定是有限的，甚至不一定是可数的，这取决于问题的性质。比如粒子的位置状态就是不可数无穷维的线性空间。这种情况常常称为连续谱。对于连续谱，我们可以将态的叠加推广为态的积分，但并没有太多本质的不同。
+
+对于任意一个线性空间$\mathcal{S}$，以其为定义域的所有线性函数$f:\mathcal{S}\to\mathcal{C}$也组成一个线性空间。这两个线性空间实际上具有对称的地位，所以我们常常称两个空间是对偶的。对于描述系统状态的右矢组成的线性空间，我们将它的对偶空间中的元素称为\textbf{左矢（bra）}。在Dirac记号中，由于这种对偶特性，我们不再使用一般的函数记号$f(|a\rangle)$，而使用$\langle\cdot|$。由定义，左矢作用于右矢我们会得到一个复数，记为$\langle f|a\rangle$。
+
+既然左矢也组成线性空间，当然也可以找到一组基来将任一个左矢展开。不过如果右矢空间的基$|e_i\rangle$已经确定，我们总可以按照如下规则产生一组左矢空间的基，即令左矢空间的基$\langle e_i|$满足：
+\begin{equation}
+\langle e_i|e_j\rangle=\delta_{ij}（或者对于连续谱：\langle e(x_1)|e(x_2)\rangle=\delta(x_1-x_2)）
+\end{equation}
+这个称为正交归一化条件。这样选取的基往往更为方便计算：如果$|a\rangle=c_1|e_1\rangle+c_2|e_2\rangle+\cdots+c_n|e_n\rangle$，$\langle f|=d_1\langle e_1|+d_2\langle e_2|+\cdots+d_n\langle e_n|$，那么$\langle f|a\rangle=c_1d_1+c_2d_2+\cdots+c_nd_n$。如果可以写作矩阵形式，这组基下的左矢相当于行向量：
+\begin{equation}
+\langle f|=(d_1,d_2,\cdots,d_n)
+\end{equation}
+而$\langle f|a\rangle$正是两个矩阵的积。对于连续谱，仅仅需要将求和改成积分。
+
+这样一来，对于任意一个右矢$|a\rangle=c_1|e_1\rangle+c_2|e_2\rangle+\cdots+c_n|e_n\rangle$，我们可以找到一个与它相对应的左矢：$\langle a|=c^*_1\langle e_1|+c^*_2\langle e_2|+\cdots+c^*_n\langle e_n|$（提醒：星号表示复共轭），称为与$|a\rangle$共轭的左矢。如果写成矩阵形式，共轭相当于对矩阵每一个元素求复共轭后再进行转置，这个运算在线性代数中，用上标$^\dagger$（dagger，小刀，不是十字哟）来表示。有了共轭的概念，我们终于可以定义两个右矢$|a\rangle,|b\rangle$的内积为：$\langle a|b\rangle$。注意这个内积是有顺序的，因为显然，$\langle a|b\rangle=(\langle b|a\rangle)^*$。这样一来，虽然中间还缺点什么，bra和ket合成了bra(c)ket。由此我们会发现，\textbf{当$\langle$和$\rangle$匹配为一个完整的括号时，括号整体总是表示一个数}。这是Dirac记号的一个方便的特性。
+
+对于$|a\rangle=c_1|e_1\rangle+c_2|e_2\rangle+\cdots+c_n|e_n\rangle$，由于$\langle a|a\rangle=c_1c_1^*+c_2c_2^*+\cdots+c_nc_n^*=|c_1|^2+|c_2|^2+\cdots+|c_n|^2\geq 0$，这个内积的定义是符合内积空间的要求的。因此在这个内积的定义之下，所有右矢构成的空间，是一个复内积空间，又称希尔伯特空间。
+
+现在终于可以解决先前的问题了。我们进一步规定，与真实的物理状态对应的右矢$|a\rangle$，必须是归一化的：$\langle a|a\rangle=1$。这样一来，描述同一个态的右矢最多相差一个模1的相因子：$e^{i\theta}|a\rangle$，虽然仍不唯一，但至少我们可以得到具有确定的模的内积了。这样我们今后的讨论，只限定于希尔伯特空间中单位球上的点，而不是整个希尔伯特空间。当然，偶尔遇到没有归一化的态我们依然会认为是系统的状态，但是归一化之前不能参与内积运算。
+
+除去内积，左矢和右矢也可以以相反的顺序相乘，正如一个列向量乘以一个行向量，得到的是一个矩阵，称为外积。在Dirac记号中，外积则可以写成：$|a\rangle\langle b|$。作为矩阵乘法，很容易证明，内积和外积都满足对加法的分配律和结合律。
+
+有了这两个的定义，我们可以用很简洁的方式写出任意一个矢量在基矢量下的展开式。因为如果$|a\rangle=c_1|e_1\rangle+c_2|e_2\rangle+\cdots+c_n|e_n\rangle$，由正交归一化条件，有：
+\begin{equation}
+\langle e_i|a\rangle=c_1\langle e_i|e_1\rangle+c_2\langle e_i|e_2\rangle+\cdots+c_n\langle e_i|e_n\rangle=c_i\langle e_i|e_i\rangle=c_i
+\end{equation}
+这样我们可以把展开式写成（注意矩阵的数乘是可交换的，而$\langle\rangle$括起来的，永远是一个数字）：
+\begin{equation}
+|a\rangle=\langle e_1|a\rangle|e_1\rangle+\langle e_2|a\rangle|e_2\rangle+\cdots+\langle e_n|a\rangle|e_n\rangle=\sum_i| e_i\rangle\langle e_i|a\rangle
+\end{equation}
+这个展开式很有意思，相当于把一组基$|e_i\rangle$与自己做外积后相加，再把得到的矩阵：$\sum_i|e_i\rangle\langle e_i|$乘在$|a\rangle$上，然后得到$|a\rangle$本身。这实际上意味着，对于任意一组基，矩阵$\sum_i|e_i\rangle\langle e_i|$正是单位矩阵$\hat{I}$！
+
+\section{可观测量}
+
+接下来一个重要的问题，就是我们对一个处于$|a\rangle$状态的系统进行测量，会发生什么？实验告诉我们，首先，测量的结果往往不是连续取值的。回想线性代数中可以得到离散取值的结构，线性算符/矩阵的特征值是个合适的选择。在量子力学中，我们假定可观测量是希尔伯特空间中的线性算符，且算符的特征值则是测量的所有可能结果。因为要求测量值，也就是算符的特征值必须全部是实数，我们要求可观测量只能为Hermitian算符，即表示算符的矩阵的转置共轭，依然是算符自身。在Dirac记号中，用字母加“帽子”（hat）来表示，比如$\hat{H}$。比如，我们有坐标算符$\hat{\bm{x}}$，动量算符$\hat{\bm{p}}$，角动量算符$\hat{\bm{L}}$，哈密顿（能量）算符$\hat{H}$。算符的厄密（Hermitian）性质意味着$\hat{A}^\dagger=\hat{A}$。
+
+注意，在量子力学中，时间不是可观测量，也不是算符，仅仅作为参数出现。因为我们对时间的测量，其实和其他测量有着很大不同：时间的测量并不直接干扰系统，我们相当于一边测量粒子的其他状态（比如位置、自旋），一边“看表”。而“看表”是通过考察时钟的状态来完成的。在相对论性的量子理论中，我们需要把坐标和时间统一处理以满足洛伦茨不变性，但这个过程是通过把坐标也当做参数来完成的，而不是把时间变成算符。
+
+继续复习线性代数。我们知道，线性算符是将线性空间中的矢量映射到另一个矢量的数学结构（$\hat{A}:\mathcal{S}\to\mathcal{S}$），并且在选取线性空间的基矢量之后，可以用矩阵来表示。如果$|e_i\rangle$是一组基矢量，那么有：
+\begin{equation}
+\hat{A}=\sum_i\sum_j|e_i\rangle\langle e_i|\hat{A}|e_j\rangle\langle e_j|=\sum_i\sum_j\langle e_i|\hat{A}|e_j\rangle|e_i\rangle\langle e_j|
+\end{equation}
+运用结合律，注意到括号匹配变成了一个数！这相当于将算符$\hat{A}$用矩阵$|e_i\rangle\langle e_j|$展开，而这个数$\langle e_i|\hat{A}|e_j\rangle$可以看做矩阵第$i$行第$j$列的矩阵元。
+
+（这样一来，如果把算符看做c，那么bra+c+ket就是一个完整的括号（bracket）了。）
+
+如果存在某个不为0的矢量$|\lambda\rangle$，使得算符$\hat{A}$作用于矢量上得到的还是矢量本身，只是有一个比例系数：
+\begin{equation}
+\hat{A}|\lambda\rangle=\lambda|\lambda\rangle
+\end{equation}
+则称$\lambda$是$\hat{A}$的特征值，$|\lambda\rangle$是$\hat{A}$的特征矢量。一个维数为$N$的矩阵最多可以有$N$个特征值，如果$N$个特征值均不为0，则意味着$\hat{A}$是满秩的。特征矢量$|\lambda\rangle$是可以相差一个常数因子的，但通常为了方便起见，我们总是使用归一化的特征矢量。对于任意给定的矩阵$\hat{A}$，我们可以通过解特征方程——关于$\lambda$的代数方程$\det(\hat{A}-\lambda\hat{I})=0$来求出所有特征值，特征矢量则由$\hat{A}|\lambda\rangle=\lambda|\lambda\rangle$配合归一化条件即可解出。
+
+有意思的是，一个满秩的Hermitian矩阵的所有特征矢量实际上构成了这个线性空间的一组正交的基矢量。因为，对于属于不同特征值的特征矢量，其实是线性无关且正交的：
+\begin{equation}
+\lambda_2\langle\lambda_2|\lambda_1\rangle=\langle\lambda_2|\lambda_2|\lambda_1\rangle=\langle\lambda_2|\hat{A}|\lambda_1\rangle=\langle\lambda_2|\lambda_1|\lambda_1\rangle=\lambda_1\langle\lambda_2|\lambda_1\rangle
+\end{equation}
+如果$\lambda_1\neq\lambda_2$，则必须$\langle\lambda_2|\lambda_1\rangle=0$。因为每个特征矢量都不能为0，这意味着几个特征矢量不能线性相关。（如果要证明，$n$个特征矢量线性相关意味着$c_1|\lambda_1\rangle+c_2|\lambda_2\rangle+\cdots+c_n|\lambda_n\rangle=0$，尝试用随便一个特征矢量$\langle\lambda_i|$乘以上式就会得到矛盾。）如果矩阵的特征方程有$m$重根（称为$m$重简并），那么情况会稍微复杂一点——这个$m$重的（简并的）特征值对应的所有特征矢量构成一个线性空间，且这个线性空间是$m$维的。相关的证明在任何一本线性代数书中均可以找到。而在这组基下，Hermitian算符的矩阵表示是一个对角矩阵，且对角元是算符的特征值。换言之：
+\begin{equation}
+\hat{I}=\sum_i|\lambda_i\rangle\langle\lambda_i|
+\end{equation}
+\begin{equation}
+\hat{A}=\sum_i\sum_j\langle \lambda_i|\hat{A}|\lambda_j\rangle|\lambda_i\rangle\langle \lambda_j|=\sum_i\sum_j\lambda_j\delta_{ij}|\lambda_i\rangle\langle \lambda_j|=\sum_i\lambda_i|\lambda_i\rangle\langle \lambda_i|
+\end{equation}
+这个结论意味着，我们实际上可以用任意可观测量的特征矢量来作为态空间的一组基。比如，对于粒子的位置算符$\hat{\bm{x}}$，它有无穷多个测量值，因此有无穷多个特征值。还记得前面说过的吗？这种情况称为连续谱，因为特征值不但有无穷多个，而且是连续的，态空间也是无穷维的，叠加也需要改写为积分的形式。对于每一个特征值$\bm{x}$，它相应的特征矢量$|\bm{x}\rangle$构成了粒子运动状态的一组基。对于粒子的任何状态$|\phi\rangle$，我们都可以用这组特征矢量来展开（这里会出现的积分都是对全空间的定积分，不要和不定积分混淆了）：
+\begin{equation}
+|\phi\rangle=\int d^3\bm{x'}\, \phi(\bm{x'})|\bm{x'}\rangle
+\end{equation}
+展开式前面的系数，可以用内积$\langle\bm{x}|\phi\rangle$算出，因为：
+\begin{equation}
+\langle\bm{x}|\phi\rangle=\int d^3\bm{x'}\, \phi(\bm{x'})\langle\bm{x}|\bm{x'}\rangle=\int d^3\bm{x'}\, \phi(\bm{x'})\delta(\bm{x}-\bm{x'})=\phi(\bm{x})
+\end{equation}
+这个系数，可以看做关于特征值$\bm{x}$的函数，称为波函数。同样的态我们也可以用动量算符的特征值来展开：
+\begin{equation}
+|\phi\rangle=\int d^3\bm{p'}\, \phi(\bm{p'})|\bm{p'}\rangle
+\end{equation}
+并把系数$\phi(\bm{p})=\langle\bm{p}|\phi\rangle$称为动量表象中的波函数。
+
+对于同样的问题，我们往往可以选择不同的可观测量的特征矢量作为基函数，得到不一样但又相互等价的描述。不同的基函数选择，我们称为不同的表象。对于物理问题我们有选择表象的自由。比如我们可以用坐标表象中的波函数来描述粒子运动，也可以用动量表象中的波函数，这种描述是完全等价的。而基函数的变换，则需要知道两组基之间的内积，灵活利用$\hat{I}=\sum_i|\lambda_i\rangle\langle\lambda_i|$即可。
+
+对粒子的测量结果常常是不确定的。即使对于给定的态$|\phi\rangle$，对它的位置测量结果我们也无法预知。但是，我们发现测量到不同结果的概率是确定的。因此，量子力学假定，如果对于一个态$|\phi\rangle$，用可观测量$\hat{A}$的特征矢量$|\lambda_i\rangle$展开的展开式是：
+\begin{equation}
+|\phi\rangle=\sum_ic_i|\lambda_i\rangle
+\end{equation}
+（或$|\phi\rangle=\int d\lambda\, \phi(\lambda)|\lambda\rangle$）
+
+那么测量值为$\lambda_i$（或测量值在$\lambda$与$\lambda+d\lambda$之间）的概率为：
+\begin{equation}
+|c_i|^2
+\end{equation}
+（或$|\phi(\lambda)|^2d\lambda$）。注意到态的归一化要求$\sum_i|c_i|^2=1$（或$\int|\phi(\lambda)|^2d\lambda=1$），这个定义完全符合概率（或概率密度函数）定义的要求！这样一来，如果我们有一大堆处于$|\phi\rangle$状态的粒子，那么我们对$\hat{A}$测量得到的平均值是：
+\begin{equation}
+\sum_i|c_i|^2\lambda_i=\sum_i(\langle\lambda_i|\phi\rangle)^*\langle\lambda_i|\phi\rangle\lambda_i=\sum_i\langle\phi|\lambda_i\rangle\langle\lambda_i|\phi\rangle\lambda_i=\langle\phi|\sum_i(\lambda_i|\lambda_i\rangle\langle\lambda_i|)|\phi\rangle=\langle\phi|\hat{A}|\phi\rangle
+\end{equation}
+如果不会造成歧义，我们也可以简单地写成$\langle\hat{A}\rangle$。
+
+我们知道测量也会干扰系统的状态。那么对于系统进行测量后系统变成了什么？这个规律大概是量子力学中最饱受争议的规律：如果用可观测量$\hat{A}$测量态$|\phi\rangle$得到的测量值为$\lambda_i$，那么测量后系统从态$|\phi\rangle$变为态$|\lambda_i\rangle$。基本上所有诠释争论的核心问题，就是这个规律很不自然，这种态的突变和一般的时间演化不一样。现在一种影响力比较大的观点认为，实际上测量是系统$|\mbox{粒子}\rangle\otimes |\mbox{仪器}\rangle$的时间演化，这个总体的态依然满足时间演化的规律。但因为仪器是个经典的、微观态不确定的系统，粒子与仪器的退相干效应使得粒子的态看上去像是突变了。
+
+这样，我们基本完成了量子力学框架的所有基础假设。
+
+\section{对易}
+在线性代数中，矩阵的乘法是不满足交换律的，也就是说，对于一般的矩阵，$\hat{A}\hat{B}\neq\hat{B}\hat{A}$。然而，如果两个矩阵对易$\hat{A}\hat{B}=\hat{B}\hat{A}$，那么可以找到一组基将$\hat{A}$与$\hat{B}$同时对角化。
+
+然而这个性质对于量子力学来说有着无比的重要性。因为，如果两个可观测量对易，意味着可以找到这两个可观测量的共同的基。在没有简并的情况下，可观测量$\hat{A}$的特征矢量同时也是可观测量$\hat{B}$的特征矢量。这时，如果对可观测量$\hat{A}$测量使得系统的状态变为一个基，那么之后再测量$\hat{B}$也不会改变系统的状态，此后无论怎样测量$\hat{A}$或$\hat{B}$总会得到确定的结果。反之，如果两个可观测量不对易，它们一定无法被同时对角化（否则就可对易了），这意味着如果接着$\hat{A}$测量之后对$\hat{B}$进行测量，总是会改变系统的状态。而经过$\hat{A}\to\hat{B}\to\hat{A}$测量之后，因为每次测量都一定会扰动系统，测量结果又会变得不确定。
+
+这就导致了科普中常常提到的不确定性关系：如果两个可观测量$\hat{A}$与$\hat{B}$不对易，那么这两个可观测量无法被同时测准，因为对其中一个量的测量必然会扰动系统，使得对另一个量的测量结果变得不确定。
+
+更进一步，我们定义对易子：$[\hat{A},\hat{B}]=\hat{A}\hat{B}-\hat{B}\hat{A}$
+
+如果对易子等于0，显然$\hat{A}$与$\hat{B}$对易；但如果对易子不为0，我们就有不确定性关系：
+\begin{equation}
+\langle(\Delta \hat{A})^2\rangle\langle(\Delta \hat{B})^2\rangle\geq\frac{1}{4}|\langle[\hat{A},\hat{B}]\rangle|^2
+\end{equation}
+这里，算符$\Delta\hat{A}=\hat{A}-\langle\hat{A}\rangle$。数学上的证明比较tricky，需要引用Schwarz不等式，有兴趣可以尝试一下。这里介绍一个实验上被人熟知的不确定性关系，是坐标和动量的不确定性关系：
+\begin{equation}
+\sqrt{(\Delta x)^2}\cdot\sqrt{(\Delta p)^2}\geq\frac{\hbar}{2}
+\end{equation}
+这正是因为坐标和动量有对易子：
+\begin{equation}
+[\hat{x},\hat{p}]=i\hbar\neq 0
+\end{equation}
+（完整写出，是$[\hat{x_i},\hat{p_j}]=i\hbar\delta_{ij}$，$[\hat{x}_i,\hat{x}_j]=0$，$[\hat{p}_i,\hat{p}_j]=0$，其中$i,j=1,2,3$是空间的三个方向，$\delta_{ij}=0$如果$i\neq j$，否则$\delta_{ij}=1$。）
+
+然而，为何是这个对易子，就是件比较不好解释的事情了。这个对易关系是量子力学最为基本的对易关系，但它基本上无法只从前面所提到的基本假设中推导出来，因为坐标虽然我们有先验的概念，动量的概念却并没有那么直观。一种理解方式是从动量的定义出发，认为动量是空间平移操作的生成子。所以，平移$\delta\bm{x}$后的状态$|a'\rangle$与平移前的状态$|a\rangle$可以形式地写成：
+\begin{equation}
+|a'\rangle=e^{-\frac{i}{\hbar}\hat{\bm{p}}\cdot \delta\bm{x}}|a\rangle\approx(1-\frac{i}{\hbar}\hat{\bm{p}}\cdot \delta\bm{x})|a\rangle
+\end{equation}
+在坐标表象中，我们将态用坐标特征矢量展开：
+\begin{equation}
+|a\rangle=\int|\bm{x}\rangle\langle \bm{x}|a\rangle d^3\bm{x}
+\end{equation}
+那么（第一步的平移就是把态平移而已，第二步则是做了代换$\bm{x}'=\bm{x}+\delta \bm{x}$，因为积分限是全空间所以不变，第三部就是单纯的函数泰勒展开）
+\begin{equation}
+|a'\rangle=\int|\bm{x}+\delta\bm{x}\rangle\langle \bm{x}|a\rangle d^3\bm{x}=\int|\bm{x}'\rangle\langle \bm{x}'-\delta\bm{x}|a\rangle d^3\bm{x}'=\int|\bm{x}'\rangle(1-\delta\bm{x}\cdot\nabla)\langle \bm{x}'|a\rangle d^3\bm{x}'
+\end{equation}
+我们和
+\begin{equation}
+|a'\rangle=(1-\frac{i}{\hbar}\hat{\bm{p}}\cdot \delta\bm{x})|a\rangle
+\end{equation}
+对比一下，由于平移$\delta\bm{x}$是任意（小）的，所以
+\begin{equation}
+\hat{\bm{p}}|a\rangle=-i\hbar\int|\bm{x}'\rangle\nabla\langle\bm{x}'|a\rangle
+\end{equation}
+\begin{equation}
+\langle\bm{x}'|\hat{\bm{p}}|a\rangle=-i\hbar\nabla\langle\bm{x}'|a\rangle
+\end{equation}
+也就是对坐标表象中的波函数而言，$\hat{\bm{p}}=-i\hbar\nabla$。由此可以得到对易子
+\begin{equation}
+[\hat{x}_i,\hat{p}_i]|a\rangle=-i\hbar x_i\nabla_i|a\rangle+i\hbar\nabla_i(x_i|a\rangle)=i\hbar (\nabla_ix_i)|a\rangle=i\hbar|a\rangle
+\end{equation}
+即
+\begin{equation}
+[\hat{x},\hat{p}]=i\hbar
+\end{equation}
+另一方面，我们可以把它看做是由与经典力学的类比得到的。在对易子的定义下、算符的代数结构和泊松括号的定义下、经典轨迹的代数结构是同构的，它们同样满足Jacobi方程，构成了同一类李代数。于是，经典力学的正则量子化认为我们在$\hbar$有限的时候，可以做对应：
+\begin{equation}
+\{A,B\}\to \frac{1}{i\hbar}[\hat{A},\hat{B}]
+\end{equation}
+关于这个量子化的具体讨论，可以参见问题泊松括号（Poisson bracket）是怎么量子化到李括号（Lie bracket）的？下的诸多答案。如果从不同的角度出发，比如先验地假定粒子波函数的平面波形式，我们可以某种意义上“证明”这个量子化关系。或者，通过路径积分方法构建量子力学，也应该可以证明对易子与泊松括号的关系。但因为这里涉及到路径积分这个不太显然的数学，甚至需要引入维纳测度，所以实际上要复杂得多。
+
+有了这个基本的对易关系，我们可以得到在坐标表象下动量算符的表达式。由于微分的乘法规则，有显然的恒等式：
+\begin{equation}
+\frac{\partial}{\partial x}(x|\phi\rangle)-x\frac{\partial}{\partial x}|\phi\rangle=|\phi\rangle
+\end{equation}
+或者写成算符的形式：
+\begin{equation}
+\frac{\partial}{\partial x}x-x\frac{\partial}{\partial x}=\hat{I}
+\end{equation}
+注意到微分算符$\frac{\partial}{\partial x}$也是一个线性算符，而且由分部积分可以发现它与Hermitian算符相差一个虚数单位，因为：
+\begin{equation}
+\int\langle a|(i\frac{\partial}{\partial x}|b\rangle) dx=i\langle a|b\rangle|^\infty_{-\infty}-\int(i\frac{\partial}{\partial x}\langle a|)|b\rangle dx=-\int(i\frac{\partial}{\partial x}\langle a|)|b\rangle dx=-\int(\langle a|(i\frac{\partial}{\partial x})^*)|b\rangle dx=\int(\langle a|i\frac{\partial}{\partial x})|b\rangle dx
+\end{equation}
+所以$-i\hbar\frac{\partial}{\partial x}$具有和$\hat{p}$同样的对易关系，所以我们可以认为$\hat{p}=-i\hbar\frac{\partial}{\partial x}$.
+
+知道动量算符在坐标表象中的表达式后我们可以知道坐标表象和动量表象是如何相联系的。回忆之前的内容，在坐标表象下，一个态可以用坐标特征矢量展开：
+\begin{equation}
+|a\rangle=\int|\bm{x}\rangle\langle \bm{x}|a\rangle d^3\bm{x}
+\end{equation}
+其中$\langle\bm{x}|a\rangle$称作波函数。动量波函数则写作$\langle\bm{p}|a\rangle$。如果我们在其中插入一个单位算符$\int|\bm{x}\rangle\langle\bm{x}|d^3\bm{x}$，有：
+\begin{equation}
+\langle\bm{p}|a\rangle=\int\langle\bm{p}|\bm{x}\rangle\langle\bm{x}|a\rangle d^3\bm{x}
+\end{equation}
+于是，如果我们会算$\langle\bm{p}|\bm{x}\rangle$，我们就知道如何在两种表象中切换。这是前面第二节中已经提到过的。为了计算$\langle\bm{p}|\bm{x}\rangle$，我们把动量算符在坐标表象的表达式插进去：
+\begin{equation}
+\langle p_i|\hat{p_i}|x_i\rangle=p_i\langle p_i|x_i\rangle=(\langle x_i|\hat{p_i}|p_i\rangle)^*=\left(-i\hbar\langle x_i|\frac{\partial}{\partial x_i}|p_i\rangle\right)^*=i\hbar\langle p_i|\frac{\partial}{\partial x_i}|x_i\rangle=i\hbar\frac{\partial}{\partial x_i}\langle p_i|x_i\rangle
+\end{equation}
+解这个微分方程得到：
+\begin{equation}
+\langle p_i|x_i\rangle=\frac{1}{\sqrt{2\pi\hbar}}e^{-\frac{i}{\hbar}p_ix_i}
+\end{equation}
+或
+\begin{equation}
+\langle \bm{p}|\bm{x}\rangle=\frac{1}{\sqrt{(2\pi\hbar)^3}}e^{-\frac{i}{\hbar}\bm{p}\cdot\bm{x}}
+\end{equation}
+其中归一化系数由归一化条件：
+\begin{equation}
+\langle x_i'|x_i\rangle=\int\langle x_i'|p_i\rangle\langle p_i|x_i\rangle dp_i=\delta(x_i'-x_i)
+\end{equation}
+得到。于是坐标表象波函数和动量表象波函数由一个类似傅里叶逆变换与傅里叶变换的形式相联系起来：
+\begin{equation}
+\langle\bm{p}|a\rangle=\frac{1}{\sqrt{(2\pi\hbar)^3}}\int e^{-\frac{i}{\hbar}\bm{p}\cdot\bm{x}}\langle\bm{x}|a\rangle d^3\bm{x}
+\end{equation}
+\begin{equation}
+\langle\bm{x}|a\rangle=\frac{1}{\sqrt{(2\pi\hbar)^3}}\int e^{\frac{i}{\hbar}\bm{p}\cdot\bm{x}}\langle\bm{p}|a\rangle d^3\bm{p}
+\end{equation}
+把$\langle \bm{p}|a\rangle$换成$\phi(\bm{p})$，$\langle \bm{x}|a\rangle$换成$\phi(\bm{x})$，就是大家常见的形式了。
+
+\section{时间演化}
+
+量子力学的基本描述框架已经完成，现在要让这个世界动起来。动起来意味着某些东西要开始与时间$t$有关，但关于此，我们有至少2种观点，我们称为图像——薛定谔图像和海森堡图像。回忆一下，我们用右矢表示态，用算符表示可观测量，而且，我们常常用算符的基向量来做系统状态的基，于是，我们有了至少两种选择：
+
+\begin{enumerate}
+\item 薛定谔图像：系统的态随时间变化，但可观测量及其基向量不随时间变化。
+\item 海森堡图像：可观测量及其基向量随时间变化，但系统的态不随时间变化。
+\end{enumerate}
+
+这两种图像是完全等价的，其区别就好像是对于一个运动的粒子，我们可以在静止的坐标系中描述它位置的变化，也可以在与粒子相对静止的、运动的坐标系中描述它。
+
+但在微扰论的实际应用中，我们还常常有用到第三种图像：
+
+\begin{enumerate}[resume]
+\item 相互作用图像：系统的态、可观测量及其基向量均以某种方式随时间变化。只是其变化分别遵循不同的哈密顿量（见后文，如果我会提到的话……）。
+\end{enumerate}
+
+这种处理有时也是有好处的，因为它可以做到让复杂的相互作用与单粒子的哈密顿量分开处理。
+
+在薛定谔图像中，系统的态会随时间变化，于是我们的问题自然就是，对于态$|a(0)\rangle$，经过时间$t$后，它（$|a(t)\rangle$）变成了什么？
+
+假设联系这两个态的映射是$\hat{U}(t)$，因为我们要保证态的可叠加性，即$|a_1(t)\rangle+|a_2(t)\rangle=\hat{U}(t)|a_1(0)\rangle+\hat{U}(t)|a_2(0)\rangle=\hat{U}(t)(|a_1(0)\rangle+|a_2(0)\rangle)$，$\hat{U}(t)$应当是一个线性算符，称为时间演化算符。那么这是个什么样的算符呢？我们可以很容易地得到它的一些性质。
+
+\begin{enumerate}
+\item $\hat{U}(-t)\hat{U}(t)=\hat{U}(t)\hat{U}(-t)=\hat{I}$，这个应该比较显然吧，因为$\hat{U}(-t)$表示倒退时间$t$，一个态经过一段时间又倒退回去，显然还是自己。
+\item $\hat{U}^\dagger(t)=\hat{U}^{-1}(t)$，这是因为演化后的态依然要保证归一化，即$\langle a(t)|a(t)\rangle=\langle a(0)|\hat{U}^\dagger(t)\hat{U}(t)|a(0)\rangle=\langle a(0)|a(0)\rangle=1$，显然要有$\hat{U}^\dagger(t)\hat{U}(t)=\hat{I}$。
+\item $\lim_{t\to 0}\hat{U}(t)=\hat{I}$，因为我们假定时间演化是个连续的过程，如果经过时间无限接近于0，演化后的状态应该无限接近于初始状态。
+\end{enumerate}
+
+前两个条件意味着一般情况下$\hat{U}^\dagger(t)=\hat{U}(-t)\neq\hat{U}(t)$，这意味着时间演化算符不是Hermitian算符，不是可观测量。于是，我们现在要找一个可观测量和它联系起来。首先我们可以猜一下$\hat{U}(t)$应该长什么样。（当然，薛定谔当年并不是这么猜的，而是用一种看起来更不严谨的方式猜出来的——这很自然，因为一个理论的历史发展顺序往往并不是理论严格化后的逻辑顺序。）首先，$\hat{U}^\dagger(t)=\hat{U}(-t)$意味着时间大概和虚数单位乘在一起；其次，第二条和第三条性质看起来像是复数的指数表示。于是我们猜测时间演化算符可以形式地写成：
+\begin{equation}
+\hat{U}(t)=e^{-\frac{i}{\hbar}\hat{H}t}
+\end{equation}
+其中我们用$\hbar$作为某种尺度，它的意义我们马上就会看到。而$\hat{H}$如果我们假设是一个Hermitian算符，$\hat{U}(t)$就满足了上面写的全部三条性质。而$\hat{H}$究竟是什么？我们来猜猜看：一方面，在经典力学中，时间演化总是和哈密顿量联系在一起；另一方面，如果考虑粒子是一个波动函数$e^{-i\omega t}$，我们知道德布罗意关系告诉我们$E=\omega\hbar$（这就是为什么我们要加入一个$\hbar$作为某种尺度），而经典力学中哈密顿量$H(q,p,t)=E$，于是，我们猜测$\hat{H}$是哈密顿量。这样，我们将态的演化写成：
+\begin{equation}
+|a(t)\rangle=e^{-\frac{i}{\hbar}\hat{H}t}|a(0)\rangle
+\end{equation}
+当然，这个算符的指数函数终究只是形式写法，虽然我们可以用幂级数来定义这个指数，但计算并不见得容易。所以我们对时间进行微分，得到方程：
+\begin{equation}
+i\hbar\frac{\partial}{\partial t}|a(t)\rangle=\hat{H}|a(t)\rangle
+\end{equation}
+这就是著名的薛定谔方程，常常我们把这个方程作为量子力学的基本假设之一。对于经典粒子，量子化让我们可以直接把经典力学的哈密顿量改写成算符：$\hat{H}=\frac{\hat{p}^2}{2m}+V(\hat{\bm{x}})$（当然，为了摒弃经典力学的第一性，这个哈密顿量也可以由路径积分构造），如果写在坐标表象中，带入动量算符的表达式，我们可以得到一个常见的形式：
+\begin{equation}
+i\hbar\frac{\partial}{\partial t}\phi(\bm{x},t)=-\frac{\hbar^2}{2m}\nabla^2\phi(\bm{x},t)+V(\hat{\bm{x}})\phi(\bm{x},t)
+\end{equation}
+如果给定一个势能$V(\hat{\bm{x}})$，我们可以从薛定谔方程解出波函数随时间的演化。比如可以从$V(\hat{\bm{x}})=-\frac{ke^2}{r}$解出氢原子的能级。如果我们更仔细地看看薛定谔方程，会发现哈密顿算符的特征矢量有着特别重要的地位。如果系统原本处于其中一个基矢，$\hat{H}|a(0)\rangle=E|a(0)\rangle$，那么，根据薛定谔方程，我们可以直接解出：
+\begin{equation}
+|a(t)\rangle=e^{-\frac{i}{\hbar}Et}|a(0)\rangle
+\end{equation}
+即经过时间t后，系统只改变了一个相位！我们还记得如果两个态只单纯相差一个相位，那么对于这个态的所有宏观的测量结果都不会改变，也就是说在这个意义上，这个态并不随时间变化，于是能量E也不会随时间变化。这正是能量守恒在量子力学中的体现。因此，我们把方程$\hat{H}|a\rangle=E|a\rangle$称为不含时的薛定谔方程。我们可以从它解出哈密顿量的所有特征矢量，这些特征矢量称为系统的能级。当一个系统处于某一能级时，它将一直处于这一能级中。这里需要提醒的是，当个全同的系统发生干涉时，相位会起到至关重要的作用，所以，这个相位的差别并不是没有意义的。
+
+下面我们转向海森堡图像。在海森堡图像中，系统的状态$|a\rangle$不随时间变化，但我们关系的可观测量$\hat{A}$从$\hat{A}(0)$变成了$\hat{A}(t)$。那么怎么算出$\hat{A}(t)$？
+
+因为海森堡图像和薛定谔图像是等价的，所以我们用任何一个图像都应该预测出相同的测量结果。一般宏观的测量结果会体现为内积$\langle a|\hat{A}|a\rangle$，我们用下标$_S$表示薛定谔图像，下标$_H$表示海森堡图像，显然有：
+\begin{equation}
+\langle a(t)|_S\hat{A}_S|a(t)\rangle_S=\langle a|_H\hat{A}_H(t)|a\rangle_H
+\end{equation}
+因为海森堡图像中系统状态不随时间变化，假设初始状态时我们让两种图像中的算符和态完全相同，即$|a\rangle_H=|a(0)\rangle_H=|a(0)\rangle_S$，我们有：
+\begin{equation}
+\langle a(0)|_S\hat{U}^\dagger(t)\hat{A}_S\hat{U}(t)|a(0)\rangle_S=\langle a(0)|_S\hat{A}_H(t)|a(0)\rangle_S
+\end{equation}
+由于上式对任何系统状态都成立，有：
+\begin{equation}
+\hat{A}_H(t)=\hat{U}^\dagger(t)\hat{A}_S\hat{U}(t)=e^{\frac{i}{\hbar}\hat{H}t}\hat{A}_H(0)e^{-\frac{i}{\hbar}\hat{H}t}
+\end{equation}
+同样，我们对时间进行微分，得到：
+\begin{equation}
+\frac{d}{dt}\hat{A}(t)=\frac{i}{\hbar}\hat{H}e^{\frac{i}{\hbar}\hat{H}t}\hat{A}(0)e^{-\frac{i}{\hbar}\hat{H}t}-\frac{i}{\hbar}e^{\frac{i}{\hbar}\hat{H}t}\hat{A}(0)e^{-\frac{i}{\hbar}\hat{H}t}\hat{H}=\frac{i}{\hbar}\hat{H}\hat{A}(t)-\frac{i}{\hbar}\hat{A}(t)\hat{H}
+\end{equation}
+（显然，$\hat{H}$与它的函数$e^{\frac{i}{\hbar}\hat{H}t}$是对易的。）于是有：
+\begin{equation}
+\frac{d}{dt}\hat{A}(t)=\frac{i}{\hbar}[\hat{H},\hat{A}(t)]=\frac{1}{i\hbar}[\hat{A}(t),\hat{H}]
+\end{equation}
+这个就是量子力学中另一个重要的运动方程：海森堡方程。有趣的是，在正则量子化$\{A,B\}\to \frac{1}{i\hbar}[\hat{A},\hat{B}]$之下，上式和经典物理的运动方程（$A$不显含时间）：
+\begin{equation}
+\frac{d}{dt}A(t)=\{A(t),H\}
+\end{equation}
+完全相同。
+
+\section{二次量子化}
+
+现在我们考虑一个例子。对于类似谐振子的哈密顿量：
+\begin{equation}
+\hat{H}=\frac{\hat{p}^2}{2m}+\frac{1}{2}m\omega^2\hat{x}^2
+\end{equation}
+它的能级是什么样的？
+
+当然，我们可以用薛定谔方程硬解，但这里我们有更聪明的办法。我们把哈密顿量因式分解（注意，乘法不能交换！），写成：
+\begin{equation}
+\hat{H}=\hbar\omega(\frac{\hat{p}}{\sqrt{2m\hbar\omega}}+i\sqrt{\frac{m}{2\hbar\omega}}\omega\hat{x})(\frac{\hat{p}}{\sqrt{2m\hbar\omega}}-i\sqrt{\frac{m}{2\hbar\omega}}\omega\hat{x})+\frac{1}{2}\hbar\omega
+\end{equation}
+然后定义一个新的没有量纲的算符：
+\begin{equation}
+\hat{a}=\frac{\hat{p}}{\sqrt{2m\hbar\omega}}-i\sqrt{\frac{m}{2\hbar\omega}}\omega\hat{x}
+\end{equation}
+显然：
+\begin{equation}
+\hat{H}=\hbar\omega\left(\hat{a}^\dagger\hat{a}+\frac{1}{2}\right)
+\end{equation}
+如果记$\hat{N}=\hat{a}^\dagger\hat{a}$（显然，这是一个可观测量！），哈密顿量和$\hat{N}$是线性的。这意味着，哈密顿量的特征矢量一定也是$\hat{N}$的特征矢量。如果记$\hat{N}$对应于特征值$n$的特征矢量为$|n\rangle$，则显然：
+\begin{equation}
+\hat{H}|n\rangle=\hbar\omega\left(n+\frac{1}{2}\right)|n\rangle
+\end{equation}
+于是，系统$|n\rangle$的能量是：
+\begin{equation}
+E=\hbar\omega\left(n+\frac{1}{2}\right)
+\end{equation}
+但我们还是不知道关于能级$|n\rangle$的任何信息。先不要着急，我们把$\hat{a}$作用在上面看看，因为：
+\begin{equation}
+[\hat{a},\hat{a}^\dagger]=\frac{i}{2\hbar}[\hat{p},\hat{x}]-\frac{i}{2\hbar}[\hat{x},\hat{p}]=1
+\end{equation}
+\begin{equation}
+[\hat{a},\hat{N}]=[\hat{a},\hat{a}^\dagger\hat{a}]=\hat{a}\hat{a}^\dagger\hat{a}-\hat{a}^\dagger\hat{a}\hat{a}=[\hat{a},\hat{a}^\dagger]\hat{a}=\hat{a}
+\end{equation}
+于是因为
+\begin{equation}
+\hat{N}\hat{a}|n\rangle=(\hat{a}\hat{N}-\hat{a})|n\rangle=(\hat{a}n-\hat{a})|n\rangle=(n-1)\hat{a}|n\rangle
+\end{equation}
+$\hat{a}|n\rangle$仍然是$\hat{N}$的特征矢量，但特征值变成了$n-1$！这说明$\hat{a}|n\rangle$应该与$|n-1\rangle$成正比！这个比例系数依然可以通过归一化得到，因为$\langle n|\hat{a}^\dagger\hat{a}|n\rangle=\langle n|\hat{N}|n\rangle=n$，而$\langle n-1|n-1\rangle=1$，所以：
+\begin{equation}
+\hat{a}|n\rangle=\sqrt{n}|n-1\rangle
+\end{equation}
+类似地我们可以发现，$\hat{a}^\dagger|n\rangle$也仍然是$\hat{N}$的特征矢量，但却对应特征值$n+1$。相同的计算可以得到
+\begin{equation}
+\hat{a}^\dagger|n\rangle=\sqrt{n+1}|n+1\rangle
+\end{equation}
+
+现在我们来想想我们都得到了些什么。如果某一个态$|n\rangle$是系统的能级，那么将$\hat{a}$和$\hat{a}^\dagger$作用在上面，我们将得到两个“相邻”的能级——$\hat{a}$似乎总是降低系统的能量，而$\hat{a}^\dagger$总是增加系统的能量。由此，我们称$\hat{a}$为降算符，而$\hat{a}^\dagger$为升算符。
+
+注意到一个物理的系统应该要有一个最低的能级，否则系统可以不停地降低自己的能级来释放出能量——这显然是破坏能量守恒的。所以，我们“降低”能级的操作$\hat{a}$必须是有尽头的，也就是说，对于某些能级，要有$\hat{a}|n\rangle=0$。由$\hat{a}|n\rangle=\sqrt{n}|n-1\rangle$，只有这个能级对应的特征值$n=0$，才能保证$\hat{a}|n\rangle=0$。于是，我们发现特征值$n$必须取整数，这样，反复“降级”才能让系统降到最低能级$|0\rangle$。但即使最低能级，它的能量也不是$0$，这可以看做是不确定性原理的必然结果。
+
+我们虽然可以通过升降算符构造出所有的能级，但关于能级的具体波函数，我们还是需要解不含时薛定谔方程才能得到，这个计算可能会比较复杂，结果需要用到一类特殊多项式——Hermite多项式。
+
+既然$n$为整数，我们打开脑洞可以对这个结果做一番诠释：我们把体系假想成为一堆粒子，而$n$是粒子的数目。由于$E=\hbar\omega\left(n+\frac{1}{2}\right)$，每个粒子似乎携带了相同的能量$\hbar\omega$，这个关系式与德布罗意关系完全一致。另外有趣的是，我们可以发现即使没有任何粒子，依然有一个零点能$\frac{1}{2}\hbar\omega$。$\hat{a}$使一个粒子消失了，而$\hat{a}^\dagger$却产生了一个粒子。在这样的图像下，我们可以给这几个算符取个更加高洋上的名字：我们把$\hat{N}$叫做粒子数算符，$\hat{a}$叫做湮灭算符，而$\hat{a}^\dagger$叫做产生算符。
+
+转向粒子数可变的Fock空间，从粒子数的角度出发，用产生湮灭算符来表述系统的哈密顿量，这种处理方式我们称为二次量子化。实际上，量子场论用了相似的处理方式。在量子场论中，我们使用海森堡图像，不再关心单粒子的波函数，而关心一个量子化的场算符$\hat{\phi}(x_\mu)$。一个场（系统）中可以有任意数目的粒子，所以我们的状态空间不再是固定粒子数目的希尔伯特空间，而改为粒子数可变的Fock空间。场算符$\hat{\phi}(x_\mu)$可以用产生湮灭算符来展开。这样，我们可以通过场算符$\hat{\phi}(x_\mu)$来从真空态$|0\rangle$构造出系统的状态。将系统用场算符表达的哈密顿量改成由产生湮灭算符表达，并得到基本的对易关系，就完成了正则量子化。而系统的时间演化，将由海森堡方程给出。这时由于场具有无穷的自由度，相当于无穷多个谐振子，场的零点能会变成无穷大。不过，这种发散并不是太严重的问题。一般情况下，量子场论有一系列重整化方法来解决甚至更复杂的发散问题。
+
+\section{角动量}
+
+角动量理论是量子力学中无论理论还是应用，都比较重要的一部分。在经典力学中，角动量与空间的转动有关，在量子力学中，我们也可以通过将经典力学量子化，来定义角动量：
+\begin{equation}
+\hat{\bm{J}}=\hat{\bm{x}}\times\hat{\bm{p}}
+\end{equation}
+但这个定义是无法推广到自旋角动量的。更本质的定义，则是考虑空间转动与角动量的关系。与前面讨论平移与时间演化类似地，我们用一个空间转动算符$\hat{U}_z(\phi)$来联系沿某一轴（比如$z$轴）转动$\phi$角度前后的态：
+\begin{equation}
+|a'\rangle=\hat{U}_z(\phi)|a\rangle
+\end{equation}
+然后把空间转动算符形式地写成：
+\begin{equation}
+\hat{U}_z(\phi)=e^{-\frac{i}{\hbar}\hat{J}_z\phi}
+\end{equation}
+这个形式我们已经见到太多次了。对于其中的Hermitian算符$\hat{J}_z$，我们定义它为（$z$方向的）角动量。
+
+我们现在想要知道一个粒子的角动量可以有哪些取值，以及有哪些随时间演化的特征。从二次量子化的例子中我们应该发现，找出对易关系可以帮助我们更方便地解决这些问题。对于角动量来说，这也是非常重要的。所以我们现在要设法求出和角动量相关的对易关系。如果用$\hat{\bm{J}}=\hat{\bm{x}}\times\hat{\bm{p}}$我们可以轻易得到很多对易关系，但我们现在尝试使用第二个定义。
+
+首先，我们知道一般意义下的旋转操作是用SO(3)群表示的，空间转动算符应该同样是SO(3)群的表示，只是这个表示是在希尔伯特空间之上。SO(3)群在三维空间中的表示我们可以简单写出，比如，沿$z$轴旋转$\phi$角度的旋转矩阵为：
+\begin{equation}
+R_z(\phi)=\begin{pmatrix}
+\cos\phi &-\sin\phi & 0 \\
+\sin\phi &\cos\phi & 0 \\
+0 & 0 & 1
+\end{pmatrix}
+\end{equation}
+如果转动角度趋于无穷小，我们用泰勒展开：
+\begin{equation}
+R_z(\epsilon)=\begin{pmatrix}
+1-\frac{\epsilon^2}{2} &-\epsilon & 0 \\
+\epsilon &1-\frac{\epsilon^2}{2} & 0 \\
+0 & 0 & 1
+\end{pmatrix}
+\end{equation}
+类似地可以轻松写出$R_x(\epsilon)$和$R_y(\epsilon)$，我们通过计算可以得到，在忽略$o(\epsilon^3)$的前提下：
+\begin{equation}
+R_x(\epsilon)R_y(\epsilon)-R_y(\epsilon)R_x(\epsilon)=R_z(\epsilon^2)-1
+\end{equation}
+这并不意外，因为我们已经体验过无数次转动操作是不对易的。因为$R$和$\hat{U}$是同一个群的表示，这个式子必须也对$\hat{U}$成立，即：
+\begin{equation}
+\hat{U}_x(\epsilon)\hat{U}_y(\epsilon)-\hat{U}_y(\epsilon)\hat{U}_x(\epsilon)=\hat{U}_z(\epsilon^2)-1
+\end{equation}
+将$\hat{U}_n(\phi)=e^{-\frac{i}{\hbar}\hat{J}_n\phi}$带入，并用泰勒展开到忽略$o(\epsilon^3)$以上的项，有：
+\begin{equation}
+\left(1-\frac{i\hat{J}_x\epsilon}{\hbar}-\frac{\hat{J}^2_x\epsilon^2}{2\hbar^2}\right)\left(1-\frac{i\hat{J}_y\epsilon}{\hbar}-\frac{\hat{J}^2_y\epsilon^2}{2\hbar^2}\right)-\left(1-\frac{i\hat{J}_y\epsilon}{\hbar}-\frac{\hat{J}^2_y\epsilon^2}{2\hbar^2}\right)\left(1-\frac{i\hat{J}_x\epsilon}{\hbar}-\frac{\hat{J}^2_x\epsilon^2}{2\hbar^2}\right)=1-\frac{i\hat{J}_z\epsilon^2}{\hbar}-1
+\end{equation}
+展开忽略$o(\epsilon^3)$以上的项并化简，我们就得到了：
+\begin{equation}
+[\hat{J}_x,\hat{J}_y]=i\hbar\hat{J}_z
+\end{equation}
+轮换指标，我们可以完全同样地得到：
+\begin{equation}
+[\hat{J}_y,\hat{J}_z]=i\hbar\hat{J}_x
+\end{equation}
+\begin{equation}
+[\hat{J}_z,\hat{J}_x]=i\hbar\hat{J}_y
+\end{equation}
+或者借用Levi-Civita符号，写成（注意爱因斯坦求和约定：重复指标表示求和）：
+\begin{equation}
+[\hat{J}_i,\hat{J}_j]=i\hbar\varepsilon_{ijk}\hat{J}_k
+\end{equation}
+事实上这个对易关系完全刻画了角动量（包括自旋）满足的代数结构。
+
+为了解出角动量的本征值，我们先定义总角动量算符：
+\begin{equation}
+\hat{\bm{J}^2}=\hat{J}_x\hat{J}_x+\hat{J}_y\hat{J}_y+\hat{J}_z\hat{J}_z
+\end{equation}
+经过简单计算，可以得到
+\begin{equation}
+[\hat{\bm{J}^2},\hat{J}_i]=0
+\end{equation}
+因此，虽然角动量的三个分量不对易，不能同时对角化，但任何一个角动量分量都可以与总角动量同时对角化。我们可以随便选一个分量，比如$z$分量，让它与总角动量同时对角化。然后进一步，我们定义升降算符：
+\begin{equation}
+\hat{J}_\pm=\hat{J}_x\pm i\hat{J}_y
+\end{equation}
+显然有：
+\begin{equation}
+[\hat{J}_\pm,\hat{J}_z]=[\hat{J}_x,\hat{J}_z]\pm i[\hat{J}_y,\hat{J}_z]=-i\hbar\hat{J}_y\mp\hbar\hat{J}_x=\mp\hbar\hat{J}_\pm
+\end{equation}
+\begin{equation}
+[\hat{J}_+,\hat{J}_-]=2\hbar\hat{J}_z[\hat{J}_\pm,\hat{\bm{J}^2}]=0
+\end{equation}
+那么，如果一个态是$\hat{\bm{J}^2}$和$\hat{J_z}$的特征矢量$|a,b\rangle$：
+\begin{equation}
+\hat{\bm{J}^2}|a,b\rangle=a|a,b\rangle\hat{J_z}|a,b\rangle=b|a,b\rangle
+\end{equation}
+那么，与前面二次量子化类似地，$\hat{J}_\pm|a,b\rangle$也依然是这两个算符的特征矢量：
+\begin{equation}
+\hat{\bm{J}^2}\hat{J}_\pm|a,b\rangle=\hat{J}_\pm\hat{\bm{J}^2}|a,b\rangle=a\hat{J}_\pm|a,b\rangle
+\end{equation}
+即升降算符不改变总角动量，且：
+\begin{equation}
+\hat{J}_z\hat{J}_\pm|a,b\rangle=(\hat{J}_\pm\hat{J}_z\pm\hbar\hat{J}_\pm)|a,b\rangle=(b\hat{J}_\pm\pm\hbar\hat{J}_\pm)|a,b\rangle=(b\pm\hbar)\hat{J}_\pm|a,b\rangle
+\end{equation}
+即升算符使得$z$方向角动量加一个单位（$\hbar$），而降算符使它减一个单位。因此和谐振子类似地，我们应当有正比例关系：
+\begin{equation}
+\hat{J}_\pm|a,b\rangle=c_\pm|a,b\pm\hbar\rangle
+\end{equation}
+我们等一会儿再算这个比例系数。进一步，我们考察算符：
+\begin{equation}
+\hat{\bm{J}^2}-\hat{J}_z^2=\hat{J}_x^2+\hat{J}_y^2=\frac{1}{2}(\hat{J}_+\hat{J}_-+\hat{J}_-\hat{J}_+)=\frac{1}{2}(\hat{J}_-^\dagger\hat{J}_-+\hat{J}_+^\dagger\hat{J}_+)
+\end{equation}
+对于特征矢量$|a,b\rangle$，有：
+\begin{equation}
+a-b^2=\langle a,b|\hat{\bm{J}^2}-\hat{J}_z^2|a,b\rangle=\frac{1}{2}\langle a,b|\hat{J}_-^\dagger\hat{J}_-|a,b\rangle+\frac{1}{2}\langle a,b|\hat{J}_+^\dagger\hat{J}_+|a,b\rangle=\frac{|c_-|^2}{2}+\frac{|c_+|^2}{2}\geq 0
+\end{equation}
+所以$b^2\leq a$。这意味着，我们通过升降算符增减角动量$z$分量的操作必须是有终结的，$b$的增加或减小不能突破$\sqrt{a}$。在经典的图像中，这看起来好像是废话——一个矢量的分量怎么可能比总长度还长呢？我们先找找$z$分量的上限，于是与谐振子情况完全相同，$b$应该有某些取值$b_m$，使得：
+\begin{equation}
+\hat{J}_+|a,b_m\rangle=0
+\end{equation}
+显然，这意味着：
+\begin{equation}
+\hat{J}_-\hat{J}_+|a,b_m\rangle=0
+\end{equation}
+然而，直接计算可以发现：
+\begin{equation}
+\hat{J}_-\hat{J}_+=\hat{J}_x^2+\hat{J}_y^2+i(\hat{J}_x\hat{J}_y-\hat{J}_y\hat{J}_x)=\hat{\bm{J}^2}-\hat{J}_z^2-\hbar\hat{J}_z
+\end{equation}
+于是：
+\begin{equation}
+\hat{J}_-\hat{J}_+|a,b_m\rangle=(\hat{\bm{J}^2}-\hat{J}_z^2-\hbar\hat{J}_z)|a,b_m\rangle=a-b_m^2-\hbar b_m=0
+\end{equation}
+这个方程只有两个根，其中一个负根不满足$b^2\leq a$，所以我们只保留一个正根，发现$z$分量只有一个上限，且满足：
+\begin{equation}
+b_m(b_m+\hbar)=a
+\end{equation}
+完全同样地我们可以发现$z$分量也只有一个下限$b_n$满足：
+\begin{equation}
+b_n(b_n-\hbar)=a
+\end{equation}
+这里我们因为同样的理由只取负根。如果比较这两个根，我们会发现：
+\begin{equation}
+b_n=-b_m
+\end{equation}
+不断对$b_m$对应的状态做降算符操作，我们一定会得到$b_n$。每次操作都使$b$减小$\hbar$，所以$b_m$与$b_n$应当相差$\hbar$的整数倍：
+\begin{equation}
+b_m=b_n+n\hbar
+\end{equation}
+结合两个式子我们可以解出：
+\begin{align}
+&b_m=\frac{n}{2}\hbar   &b_n=-\frac{n}{2}\hbar
+\end{align}
+方便起见，我们定义角量子数$j=\frac{n}{2}$，总角动量也可以算出：
+\begin{equation}
+a=b_m(b_m+\hbar)=j(j+1)\hbar^2
+\end{equation}
+整理一下我们的结果。一个系统的总角动量，可以用一个角量子数$j$来标记，一个具有角量子数$j$的系统，它的总角动量为$j(j+1)\hbar^2$。这个系统任意一个方向的角动量取值则在$-j\hbar\sim j\hbar$之间，不同的取值之间相差一定是$\hbar$的整数倍。我们由此可以定义另一个量子数——磁量子数$m=\frac{b}{\hbar}$，它标记了系统在某个特定选取的方向上的角动量分量大小。而使用这两个量子数来标记系统，我们直接把$|a,b\rangle$换成$|j,m\rangle$。
+
+借助$\hat{J}_-\hat{J}_+=\hat{\bm{J}^2}-\hat{J}_z^2-\hbar\hat{J}_z$我们可以轻易地用归一化来计算之前没算的那两个比例系数，与谐振子的情况完全一样。这个系数是：
+\begin{equation}
+\hat{J}_\pm|j,m\rangle=\sqrt{(j\mp m)(j\pm m+1)}|j,m\pm 1\rangle
+\end{equation}
+
+对于机械运动而言，角动量的涵义和经典的角动量并没有什么不同。机械运动本身会造成一个角动量，如果从类似经典的定义$\hat{\bm{J}}=\hat{\bm{x}}\times\hat{\bm{p}}$出发，我们可以得到以上全部结果。这也意味着，当我们用经典的办法测一个粒子的角动量时，我们只会得到离散的取值——角动量似乎仅仅被允许取特定的方向。而且，我们可以验算，对于有心力场$V(\hat{\bm{x}})=V(r)$而言，总角动量算符与哈密顿算符是对易的。这是角动量守恒在量子力学中的体现。这意味着我们可以同时对角化哈密顿量、总角动量和某一特定方向的角动量分量，给每个算符单独的量子数，以此来区分系统的不同能级。比如在氢原子能级中，我们用主量子数来标记哈密顿量的量子数。氢原子能级的解对于角动量理论是个很好的练习，不过其中涉及太多数学计算，有兴趣可以参考任意一本量子力学教材。
+
+实验中我们发现，粒子往往还有一种独特的角动量——自旋。自旋不是由任何一种经典的运动产生，如果按经典力学进行简单计算，电子根本无法旋转得如此之快来产生一个自旋。自旋角动量是粒子的内禀性质，粒子自旋的总大小——总角动量是不会随环境变化而变的。自然界的粒子总有固定的自旋——比如Higgs波色子的自旋为0，电子自旋为1/2，而光子的自旋为1。非相对论性的量子力学并不能解释自旋的产生，只对它做唯象的描述。比如实验发现电子有2种自旋状态，参考前面的结果，一个系统的角动量分量取值只有$2j+1$种，这意味着对于电子自旋来说，$j=\frac{1}{2}$。由此，我们称电子为自旋1/2的粒子。
+
+量子力学中描述自旋虽然与前述完全一致，但因为自旋没有任何经典图像的对应，我们不可能在坐标表象或是动量表象中写出自旋的波函数。事实上更进一步，自旋与机械运动是不属于一个希尔伯特空间的，比如说，这意味着：
+\begin{equation}
+\langle\bm{x}|S+\rangle=0
+\end{equation}
+所以一个粒子（比如电子）的态，是它的机械运动的波函数与自旋态的直积：
+\begin{equation}
+|\phi(\bm{x},t)\rangle\otimes|S\rangle
+\end{equation}
+而自旋态是一个典型的离散谱的态——比如电子的自旋我们只可能得到2个结果。所以，自旋角动量在自旋态下的矩阵表示只能是有限维的。但自旋不再起源于任何实际的旋转。不同的自旋态以SU(2)群相联系。于是SU(2)群的不同维度下的不可约表示，给出了不同自旋数粒子的自旋的描述。然而，SU(2)群与SO(3)群是同态的，所以并不会改变前述的描述。
+
+比如对于自旋1/2的电子，它对应于SU(2)群的二维表示。在二维下，SU(2)群的无穷小生成子是三个泡利矩阵：
+\begin{align}
+&\hat{\sigma}_x=\begin{pmatrix}
+0 & 1 \\
+1 & 0 
+\end{pmatrix} \\
+&\hat{\sigma}_y=\begin{pmatrix}
+0 & -i \\
+i & 0 
+\end{pmatrix} \\
+&\hat{\sigma}_z=\begin{pmatrix}
+1 & 0 \\
+0 & -1 
+\end{pmatrix}
+\end{align}
+则$\hat{S}_i=\frac{\hbar}{2}\hat{\sigma}_i$为自旋角动量算符，满足前述的对易关系。任意方向的角动量算符都可以用单位矢量$\hat{\bm{n}}$乘以自旋角动量算符得到：
+\begin{equation}
+\hat{S\bm{n}}=\sum_i\hat{S}_in_i=\hat{\bm{S}}\cdot\hat{\bm{n}}
+\end{equation}
+既然粒子可以同时有自旋角动量和轨道角动量，那么两个角动量是不是可以相加呢？当然，正因为实验发现是可以的，我们才将自旋角动量称为角动量。另一个常见的场景是一个系统有多个粒子组成，那么粒子的角动量与系统的角动量又有什么关系呢？为了解决这两个问题，我们需要知道角动量怎么相加。
+
+不同粒子的角动量，以及轨道角动量和自旋角动量都分属不同的希尔伯特空间，所以我们可以用各自的角量子数$j$和磁量子数$m$标记总的状态。如前述，总的状态应当是一个直积：
+\begin{equation}
+|j_1,m_1\rangle\otimes|j_2,m_2\rangle=|j_1,j_2;m_1,m_2\rangle
+\end{equation}
+另一方面，对于总系统的可观测量，我们应当理解为子系统的可观测量的扩充——即子系统中测量第一个角动量的算符$\hat{J}_{1z}$，在总系统中应当认为是$\hat{J}_{1z}\otimes\hat{I}$，当然，我们常常把后者省略。现在定义总角动量算符：
+\begin{equation}
+\hat{\bm{J}}=\hat{\bm{J}}_1\otimes\hat{\bm{I}}+\hat{\bm{I}}\otimes\hat{\bm{J}}_2
+\end{equation}
+显然，这个总角动量算符满足角动量的一切性质。这个总角动量算符的平方$\hat{\bm{J}}^2$与它自己的分量也是对易的，我们可以同时对角化，得到总角量子数j和总磁量子数$m$。显然，总角动量和任何一个子系的角动量都是对易的，所以角量子数$j_1,j_2$依然是好的量子数。于是我们也可以状态标记为$|j_1,j_2;j,m\rangle$
+
+$|j_1,j_2;j,m\rangle$与$|j_1,j_2;m_1,m_2\rangle$是同一个态空间的基，但是它们一般而言并不相同，因为$\hat{\bm{J}}^2$与子系统的角动量分量并不对易。这两组基可以互相转换，为此我们需要计算内积：
+\begin{equation}
+\langle j_1,j_2;j,m|j_1,j_2;m_1,m_2\rangle
+\end{equation}
+取不同的$j,m,m_1,m_2$，这一系列系数我们叫做Clebsch-Gordan系数，简称CG系数。计算这套系数有一系列标准步骤。在此之前我们可以从中得到点信息。将$\hat{J}_z-\hat{J}_{1z}-\hat{J}_{2z}=0$插进去，我们可以发现必须有$m=m_1+m_2$，否则CG系数为0。这意味着总的角动量的特定分量一定等于系统各部分角动量分量的和。其次，$j$必须满足：
+\begin{equation}
+|j_1-j_2|\leq j\leq j_1+j_2
+\end{equation}
+否则CG系数为0。严格证明比较麻烦，但要确认这一点，可以数一数$|j_1,j_2;j,m\rangle$与$|j_1,j_2;m_1,m_2\rangle$的数目，作为同一个空间的基它们应当是有相同的数目。我们知道每一个$j$取值有$2j+1$个允许的$m$取值，对于$|j_1,j_2;m_1,m_2\rangle$而言，基的数目为：
+\begin{equation}
+N=(2j_1+1)(2j_2+1)
+\end{equation}
+而对于$|j_1,j_2;j,m\rangle$而言，基的数目为：
+\begin{equation}
+N=\sum_{j=j_{\min}}^{j_{\max}}(2j+1)=(j_{\max}-j_{\min}+1)(j_{\max}+j_{\min}+1)
+\end{equation}
+所以只有$j_{\min}=|j_1-j_2|,j_{\max}=j_1+j_2$时，两个数目才会一致。这样我们至少定性地明白了，两个角动量的和会是什么样子。
+
+计算CG系数是个很麻烦但并不难的工作。这里不展开篇幅去说了。一点提示是先列出所有可能的组合。比如对于$j_1=1,j_2=1/2$，$m_1$的取值可以是$-1$、$0$和$1$，$m_2$的取值可以是$-1/2$和$1/2$，总共有6种组合。而$j$的取值可以是$3/2$与$1/2$，对应的$m$的取值可以是$3/2$、$1/2$、$-1/2$、$-3/2$与$1/2$、$-1/2$。总共也是6种组合。然后，我们找出最“边缘”的情况：$j=3/2，m=3/2$的状态，只可能由$m_1=1，m_2=1/2$的状态组合出来，这两种状态是完全一致的，即：
+\begin{equation}
+\langle j_1,j_2;m_1=1,m_2=1/2|j_1,j_2;j=3/2,m=3/2\rangle=1
+\end{equation}
+然后，我们在其中不断插入总角动量的升降算符$\hat{J}_\pm=\hat{J}_{1\pm}+\hat{J}_{2\pm}$，可以得到一系列递推关系。从这些关系中，我们可以解出每一个CG系数。
+
+\section{对称性}
+前面已经提到过能量守恒和角动量守恒，对应于时间演化不变与哈密顿量随空间转动不变。对于连续对称性，量子力学与经典力学有类似的结论，即一个连续对称性会带来一个守恒量。量子力学中的连续对称操作由一个Unitary算符体现，前述的时间演化算符与空间转动算符都是Unitary算符。而量子力学的对称性体现在哈密顿量在这个算符的对称操作下不变：
+\begin{equation}
+\hat{U}\hat{H}\hat{U}^{-1}=\hat{H}
+\end{equation}
+而我们总可以构造一个可观测量$\hat{G}$与这个Unitary算符联系起来：
+\begin{equation}
+\hat{U}(x)=e^{i\hat{G}x}
+\end{equation}
+其中$x$是与连续对称操作有关的参数——比如平移的距离、演化的时间、旋转的角度等等。那么，对称性$[\hat{U},\hat{H}]=0$意味着：
+\begin{equation}
+[\hat{G},\hat{H}]=0
+\end{equation}
+因为$\hat{G}$是可观测量，根据海森堡方程：
+\begin{equation}
+\frac{d\hat{G}}{dt}=0
+\end{equation}
+所以可观测量$\hat{G}$不随时间变化，是个不变量。将空间平移套用进来（还记得我们关于动量是空间平移操作的生成子的讨论吗？），我们可以得到，自由运动的粒子它的动量守恒——这和经典力学是一样的。
+
+除此以外，有几个离散的对称性在量子力学中会有独特的体现。首先需要特殊强调的对称性，是系统对于粒子交换的对称性。这我们也常常称为粒子的全同性，即微观粒子是完全不可分辨的。当然，如果两个粒子离得很远，我们也没有必要去“分辨”它们，它们自然就是“不同”的——具有不同的位置。但是，如果粒子发生相互作用，或者空间上离得很近，我们没有任何指标可以分辨出一个单独的粒子，每个粒子都没有任何不同。这会造成统计上的效应，造成波色/费米统计与玻尔兹曼统计截然不同的性质。
+
+如果我们将双粒子态写成$|a_1\rangle|a_2\rangle$，那么，粒子全同性意味着，交换两个粒子并不会本质上改变系统的状态。定义兑换算符$\hat{P}_{12}$为交换两个粒子的位置，显然$\hat{P}_{12}^2=\hat{I}$，于是也就是说：
+\begin{equation}
+\hat{P}_{12}|a_1\rangle|a_2\rangle=\pm|a_1\rangle|a_2\rangle
+\end{equation}
+前面的符号是正是负决定了粒子的统计性质——如果是正号，粒子称为波色子；如果是负号，则称为费米子。实验发现粒子的统计性质与它的自旋有关：半整数自旋的粒子一定是费米子，而整数自旋的粒子一定是波色子。这在量子力学的框架中并没有解释，只有量子场论解决了自旋的起源问题之后才能得到解答。
+
+粒子交换对称意味着，我们不能简单地用单粒子状态的直和来表示多粒子状态——真实的状态必须满足粒子交换对称。比如，考虑最简单的只有两个单粒子状态$k_1$与$k_2$的系统，对于两个粒子，可分辨的经典粒子允许4种状态：$|k_1\rangle|k_2\rangle$、$|k_2\rangle|k_1\rangle$、$|k_1\rangle|k_1\rangle$、$|k_2\rangle|k_2\rangle$，但对于波色子，考虑到交换对称性，系统只有3种状态：
+\begin{equation}
+|k_1\rangle|k_1\rangle,\ |k_2\rangle|k_2\rangle,\ \frac{\sqrt{2}}{2}(|k_1\rangle|k_2\rangle+|k_2\rangle|k_1\rangle)
+\end{equation}
+而对于费米子，两个粒子甚至不能占据同一个状态，因为交换粒子要使态矢变号，一个态矢不能等于自己的相反数。于是，费米子只有一种状态是允许的：
+\begin{equation}
+\frac{\sqrt{2}}{2}(|k_1\rangle|k_2\rangle-|k_2\rangle|k_1\rangle)
+\end{equation}
+
+当我们增加粒子数与状态数时，三种统计的差别会越来越大。但仔细描述这三种统计则是统计力学的工作了。这里简单地说，波色子会有波色-爱因斯坦凝聚的现象，即温度低于一定值后，所有粒子都处于基态。波色-爱因斯坦凝聚很可能是诸如超流、超导等现象的根源。而两个费米子不能填充同一个状态，使得系统总有一个最小能量——这种机制使得中子星不会因为重力的作用而继续塌缩。
+
+值得一提的是，在二次量子化时，波色子和费米子的产生湮灭算符会对应于不同的对易关系。波色子的对易关系就是普通的对易关系，但费米子要满足反对易关系，我们常常用$\{\cdot,\cdot\}$表示。反对易定义为：$\{\hat{A},\hat{B}\}=\hat{A}\hat{B}+\hat{B}\hat{A}$。
+
+另外两个常见的对称性是空间反演对称与时间反演对称。樱井的书这里写得很难看出Significance……正式的讨论请参考几本教材，这里只粗略整理一下一些想法。对于空间反演对称，如果一个系统的势场具有对称的双势井，那么粒子在任何一个势井中的状态都不是哈密顿量的特征矢量。特征矢量需要具有对称性或反对称性，但对称波函数与反对称波函数具有不同的能量，那么如果我们观察粒子在一个势井中出现的概率，会发现震荡。事实上，一些不中心对称的分子比如氨分子就相当于一个这样的系统，氮原子在三个氢原子构成的平面两边来回隧穿。而如果哈密顿量具有时间反演对称性，系统也会有一些特殊的性质，比如非简并的波函数一定是实函数（除去一个复的相位）。
+
+\section{微扰论}
+微扰论我不打算写得太多，一来我想任何一本教材都会比我写得好，二来这个其实没什么好玩的地方。对于一般的情况下，哈密顿量可以很复杂，我们很难从哈密顿量解出系统的能级以及时间演化。一种近似的处理方法是将哈密顿量$\hat{H}=\hat{H}_0+\hat{H}$'看做两部分，一部分容易解的、相对占主要的部分$\hat{H}_0$，而另一部分是“微扰”，是一个贡献相对小的部分$\hat{H}'$。微扰常常正比于一些小的参数，所以我们也常常写成$\hat{H}=\hat{H}_0+\lambda\hat{H}'$，其中$\lambda$是一个小参数，表征着微扰的大小。
+
+其实微扰论还是借助了万能的泰勒展开。由哈密顿量$\hat{H}$与微扰项$\hat{H}'$是否与时间有关，微扰论又分为不含时微扰和含时微扰。不含时微扰我们仅需要解不含时薛定谔方程：
+\begin{equation}
+(\hat{H}_0+\lambda\hat{H}')|\phi\rangle=E|\phi\rangle
+\end{equation}
+我们首先解不含微扰项的系统：$\hat{H}_0|\phi^{(0)}\rangle=E^{(0)}|\phi^{(0)}\rangle$，这被认为总是容易的。微扰项的存在，改变了系统的能量，所以我们现在要算出这个修正。如果系统没有简并，我们简单地将真实的能量与态对参数$\lambda$进行泰勒展开，因为$\lambda$趋于0时，微绕的系统趋于非微扰系统，所以有展开式：
+\begin{equation}
+E=E^{(0)}+\lambda E^{(1)}+\lambda^2 E^{(2)}+\cdots|\phi\rangle=|\phi^{(0)}\rangle+\lambda |\phi^{(1)}\rangle+\lambda^2 |\phi^{(2)}\rangle+\cdots
+\end{equation}
+然后我们可以一阶一阶算微扰修正。方法也很简单粗暴，我们把这两个式子带入原方程$(\hat{H}_0+\lambda\hat{H}')|\phi\rangle=E|\phi\rangle$，然后把$\lambda$的同阶数项收集起来，再在每一阶方程左边乘上非微扰的$\langle\phi^{(0)}|$，我们就可以一点点算出能量的移动和态矢的修正。
+
+但是，如果系统有简并，不同的态具有同样的能量，单纯这样做会失效。因此，我们需要将简并的子空间按照微扰哈密顿量进行对角化，在这个子空间中找到一组基，来继续进行微扰计算。通常，微扰在一阶修正时就会将这种简并破坏掉，此后的高阶修正就会变成非简并的微扰问题了。但也可能计算完一阶修正后简并依然存在，这种情况下又需要继续想办法消除简并。
+
+如果微扰项含时间，我们需要含时微扰论。这种情况下我们依然可以将系统的态按非微扰的基矢展开（这总是可以的）：
+\begin{equation}
+|\phi(t=0)\rangle=\sum_i c_i|i\rangle
+\end{equation}
+那么态随时间的演化可以写成：
+\begin{equation}
+|\phi(t)\rangle=\sum_i c_i(t)e^{-\frac{i}{\hbar}E_it}|i\rangle
+\end{equation}
+如果没有微扰项，显然$c_i$与时间无关。然而微扰项使得这个系数随时间变化。这样一来，我们把微扰项的作用看做是使系统在不同能级之间跃迁。将这个写法代入含时薛定谔方程，并左乘$\langle i|$，我们可以得到关于$c_i$的常微分方程组。我们可以将方程组转化为积分方程，然后把它改成递推公式来一阶一阶地近似求解这个方程组。
+
+含时微扰问题也可以在相互作用图像中处理，在这种图像中，可观测量按照微扰项来演化，而态矢按照非微扰哈密顿量来演化。这样可以更容易得到关于$c_i$的常微分方程组。
+
+\section{相对论性量子力学}
+任何构造单粒子的相对论性量子力学的尝试都是注定会失败的。因为在高能的情况下，相对论效应将不能保证粒子数不变。但是历史上有些尝试我们可以提一下。我们知道薛定谔方程用了类似经典力学的哈密顿量表达式，如果我们使用相对论性哈密顿量：
+\begin{equation}
+H=\sqrt{p^2c^2+m^2c^4}
+\end{equation}
+薛定谔方程会变成：
+\begin{equation}
+i\hbar\frac{\partial}{\partial t}|\phi\rangle=\sqrt{-\hbar^2c^2\nabla^2+m^2c^4}|\phi\rangle 
+\end{equation}
+但是鬼知道后面那个算符的开方应该怎么计算……于是我们在左右两边继续乘哈密顿量，把它变成：
+\begin{equation}
+-\hbar^2\frac{\partial^2}{\partial t^2}|\phi\rangle=(-\hbar^2c^2\nabla^2+m^2c^4)|\phi\rangle
+\end{equation}
+这个看起来好像不错的方程叫做Klein-Gordon方程，但遗憾的是，这个方程错得很离谱。它最严重的问题是，这个方程中的波函数不能再做概率解释，构造出的概率流是不守恒的！而且，为了解出这个方程我们还需要知道态矢随时间的一阶导数，也不现实。此外，方程还允许所谓的负能量解，这是人们不想看到的。
+
+于是，狄拉克认为问题的根源是方程必须对时间求一阶导数。于是他试图想办法把根号里面的东西开平方开出来。于是，假设有个线性算符的平方是根号里面的那一堆东西，$(i\hbar c\sum_{i=1}^3A_i\partial_i+cB)^2=-\hbar^2c^2\nabla^2+m^2c^4$，展开即：
+\begin{equation}
+-\hbar^2c^2\sum_{i=1}^3A_i^2\partial_i^2-\hbar^2c^2\sum_{i\neq j}A_iA_j\partial_i\partial_j+i\hbar c^2\sum_{i=1}^3(A_iB+BA_i)\partial_i+c^2B^2=-\hbar^2c^2\nabla^2+m^2c^4 
+\end{equation}
+比较两边，得到系数$A_i$与$B$应当满足关系：
+\begin{gather}
+A_i^2=1 \\
+A_iA_j+A_jA_i=0,\ (i\neq j) \\
+A_iB+BA_i=0 \\
+B^2=m^2c^2 \\
+\end{gather}
+显然，没有任何复数可以满足这四条关系。所以，这四个系数必须是矩阵。而且，要满足条件至少需要四阶矩阵。这里泡利矩阵正好可以用来满足这个条件，所以我们构造：
+\begin{align}
+&A_i=\begin{pmatrix}
+0 & \sigma_i\\
+\sigma_i & 0
+\end{pmatrix}&B=\begin{pmatrix}
+I & 0\\
+0 & -I
+\end{pmatrix}mc
+\end{align}
+于是，薛定谔方程变成了：
+\begin{equation}
+i\hbar\frac{\partial}{\partial t}|\phi\rangle=(i\hbar c\sum_{i=1}^3A_i\partial_i+cB)|\phi\rangle
+\end{equation}
+这个方程叫做狄拉克方程。通常，我们借助$\gamma$矩阵，把这个方程写成更为协变的形式，以方便体现洛伦茨变换的对称性：
+\begin{equation}
+(i\hbar\gamma^\mu\partial_\mu+mc)|\phi\rangle=0
+\end{equation}
+这里$\gamma^0=B/mc$，$\gamma^i=\gamma^0A_i$，注意$\partial_0=\frac{\partial}{\partial(ct)}$。在自然单位制中，方程更为简洁：
+\begin{equation}
+(i\gamma^\mu\partial_\mu+m)|\phi\rangle=0
+\end{equation}
+在狄拉克方程中，态矢$|\phi\rangle$不再是一个函数，而是四个函数！这个方程解决了概率不守恒的问题，但依然有负能量的问题。狄拉克将负能量解解释成正电子。狄拉克认为负能级是存在的而且全部填充了电子，如果某个负能级的电子被光子激发到正的能级，会在负能海中形成空穴，而空穴的运动方程对应于负能量解，它看起来正像一个拥有正电荷的电子。结果几年后，正电子还真的被实验发现了……
+
+狄拉克方程实际上是描述自旋1/2粒子的运动方程。运动满足狄拉克方程的粒子自动具有1/2的内禀自旋。具体计算就比较复杂了……狄拉克方程也可以自然地与电动力学结合起来，处理电子与电磁场的相互作用。这是量子电动力学的一点点雏形。在低能情况下，狄拉克方程可以很好地描述电子的运动。另外，在石墨烯之类的材料中，紧束缚近似下的电子运动也满足一个类似狄拉克方程的运动方程。
+
+但如我之前所说，相对论性量子力学的尝试是注定会失败的，只能作为过渡理论。正式的相对论性的量子力学是量子场论，它不再描述单粒子的运动，而通过正则量子化或路径积分描述量子化的场的运动。经过场量子化后，粒子和场也将用统一的语言进行描述。然而，在量子场论中，被废弃的相对论性量子力学方程又会有它独特的价值。量子场论中，标量场及旋量场的拉格朗日量，正是分别由Klein-Gordon方程与狄拉克方程构造出来的，而这两个场正好分别描述自旋0与自旋1/2的粒子。描述自旋1的粒子的场，即向量场，则是由麦克斯韦方程构造而来。
+\end{document}
