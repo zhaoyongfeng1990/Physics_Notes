@@ -1,0 +1,403 @@
+\documentclass{ctexart}
+
+\usepackage{mhchem}
+\usepackage{array}
+\usepackage{graphicx,bm}
+\usepackage{amsmath,amssymb}
+\usepackage{appendix}
+\usepackage{color}
+\usepackage[standard]{ntheorem}
+\usepackage{siunitx}
+\newcommand\cincludegraphics[1]{\centerline{\includegraphics[scale=0.75]{#1}}}
+\newcommand\diff[2]{\frac{d #1}{d #2}}
+\newcommand\Diff[2]{\frac{D #1}{D #2}}
+\newcommand\ddiff[2]{\frac{d^2 #1}{d #2^2}}
+\newcommand\ndiff[3]{\frac{d^{#3}#1}{d #2^{#3}}}
+\newcommand\pdiff[2]{\frac{\partial #1}{\partial #2}}
+\newcommand\pddiff[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\newcommand\pndiff[3]{\frac{\partial^{#3} #1}{\partial #2^{#3}}}
+\newcommand\mathmx[1]{\bm{#1}}
+\newcommand\E[2]{\ensuremath{#1\times10^{#2}}}
+\newcommand\ii{\mathrm{i}}
+\newcommand\dd{\mathrm{d}}
+\newcommand\non{\nonumber \\}
+\newcommand\ecoli{\textit{E. coli }}
+\newcommand\um{\ensuremath{\mathrm{\mu m}}}
+\newcommand\red[1]{{\color{red}#1}}
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    linkcolor=blue,  %choose some color if you want links to stand out
+}
+\renewcommand\arraystretch{1.8}
+
+\DeclareRobustCommand{\vect}[1]{\bm{#1}}
+\pdfstringdefDisableCommands{%
+  \renewcommand{\vect}[1]{#1}%
+}
+
+\bibliographystyle{unsrt}
+
+\usepackage[margin=1.0in]{geometry}
+
+%\usepackage{ctex}
+\usepackage{enumitem}
+
+\begin{document}
+\title{电动力学}
+\maketitle
+\tableofcontents
+\section{推荐用书}
+电动力学的推荐书是两本：
+
+\begin{itemize}
+\item Griffiths《Introduction to Electrodynamics》。Griffiths的教材都很经典，这本也不例外。讲得很清楚，也很容易入手。不过国内的学生读起来可能会感觉过于简单，其实大部分内容很接近一般普物电磁学教材的难度，但是数学更严格一点。
+\item Jackson《Classical Electrodynamics》。恐怕对这本书的批评和赞扬是差不多多的。批评主要在于这本书过于重视数学计算，内容太多太庞杂，习题超难。据说当年霍金做完了里面全部的习题，传为一段佳话。据说会教你解各种你一辈子也遇不到的奇葩边界条件。可能以它的篇幅，如果不是做电磁场相关的领域，还是留着当字典好了。
+\end{itemize}
+
+\section{麦克斯韦方程组（一般写法）}
+将高斯定理、电场环路定理、安培环路定理、磁高斯定理、法拉第电磁感应定律、位移电流假设等综合在一起，麦克斯韦总结出了描述电磁场运动的麦克斯韦方程组：
+
+$\nabla\cdot\bm{E}=\frac{\rho}{\varepsilon_0}$（高斯定律）
+
+$\nabla\cdot\bm{B}=0$（磁高斯定律）
+
+$\nabla\times\bm{E}=-\frac{\partial\bm{B}}{\partial t}$（法拉第电磁感应定律+电场环路定理）
+
+$\nabla\times\bm{B}=\mu_0\bm{J}+\mu_0\varepsilon_0\frac{\partial\bm{E}}{\partial t}$（安培环路定理+位移电流假设）
+
+对于给定的电荷$\rho$与电流密度$\bm{J}$，我们可以确定出在各个介质表面电磁场满足的边界条件。对于给定的边界条件，数学的偏微分方程理论告诉我们麦克斯韦方程有唯一确定的解，于是我们可以得知空间中电磁场的分布。接下来的问题只是怎么解这一组偏微分方程，但这是数学的事。
+
+而电荷在电磁场中的受力由洛伦茨力给出：
+\begin{equation}
+\bm{F}=\rho\bm{E}+\bm{J}\times\bm{B}
+\end{equation}
+
+接下来就是牛顿第二定律的事情了。
+
+好了，电动力学讲完了。
+
+………………………………………………
+
+等等，这样是不是太短了？
+
+嗯，总得多找点内容充充篇幅，不过解方程这种事情太繁琐了，大家看教材吧。接下来我们讲讲麦克斯韦方程的$N$种写法与狭义相对论。
+
+\section{麦克斯韦方程的N种写法}
+你知道麦克斯韦方程有至少5种写法吗？
+
+\subsection{积分写法}
+大家初次接触到麦克斯韦方程的时候，往往见到的是一组积分方程（尤其工程的教材）：
+\begin{align}
+\oint \bm{E}\cdot d\bm{S}&=\frac{q}{\varepsilon_0}, \\
+\oint \bm{E}\cdot d\bm{l}&=-\frac{\partial}{\partial t}\iint \bm{B}\cdot d\bm{S},\\
+\oint \bm{B}\cdot d\bm{S}&=0, \\
+\oint \bm{B}\cdot d\bm{l}&=\mu_0 I_0+\mu_o\varepsilon_0 \frac{\partial}{\partial t}\iint\bm{E}\cdot d\bm{S}.
+\end{align}
+
+这个写法一点也不简洁，也不方便解，但却直观地体现出了高斯定律等定律。积分方程和微分方程是通过（广义的）斯托克斯定律相互转化的：
+\begin{align}
+\oint_{\partial V} \bm{A}\cdot d\bm{S}&=\iiint_V \nabla\cdot\bm{A}\,dV \\
+\oint_{\partial S}\bm{A}\cdot d\bm{l}&=\iint_S(\nabla\times\bm{A})\cdot d\bm{S}
+\end{align}
+
+对于线性介质，我们常常定义新的参量：
+\begin{align}
+\bm{D}&=\varepsilon\varepsilon_0\bm{E}\\
+\bm{B}&=\mu\mu_0\bm{H}
+\end{align}
+
+然后改写第一个方程和第四个方程，使其中“源”的项只包含自由电荷——即除去了介质的极化电荷。这样改写的方程在工程中更方便使用，但请不要以为改写后的方程是麦克斯韦方程的基本形式！原本的麦克斯韦方程已经可以适用于任何情况，并不限于"真空"！
+
+\subsection{波动方程写法}
+从高中我们就知道，因为静电场的保守性，我们可以定义一个电势$\phi$，使得静电场满足：
+\begin{equation}
+\bm{E}=-\nabla\phi
+\end{equation}
+
+而磁高斯定律意味着磁场也可以用一个矢势$\bm{A}$写成：
+\begin{equation}
+\bm{B}=\nabla\times\bm{A}
+\end{equation}
+把它代到电磁感应定律中去，我们可以一般地，把电场写成：
+\begin{equation}
+\bm{E}=-\nabla\phi-\frac{\partial\bm{A}}{\partial t}
+\end{equation}
+电势和矢势不仅仅是数学上的处理，实际上，由Aharonov-Bohm实验所揭示的，电势和矢势是实际的物理存在，甚至可以说比电场和磁场更为基本。这个实验是在有矢势但无磁场的区域中，测量粒子受到的电磁场的影响。实验发现，虽然没有磁场，但矢势依然足以改变粒子的相位，使不同路径的粒子发生干涉。但尽管如此，电势和矢势依然包含一个冗余的对称性。如果假设$\Gamma$是一个实数函数，那么做规范变换：
+\begin{equation}
+\bm{A'}=\bm{A}+\nabla\Gamma
+\end{equation}
+\begin{equation}
+\phi'=\phi-\frac{\partial\Gamma}{\partial t}
+\end{equation}
+代入定义式我们会发现新的电磁势给出完全同样的电磁场。在纯经典的范畴中，所有可以观测到的效应只与电磁场有关，这意味着经典电动力学中我们可以做一个额外的规定，取一个特定的规范。当然，因为Aharonov-Bohm效应，这在量子电动力学中不成立。但规范对称性在量子场论中起着非常本质的作用，具有特定规范对称性（由相应的规范群描述）的规范场论就给出了自然界三种基本相互作用的描述。而具有U(1)规范对称性的场论，正是量子电动力学。这个U(1)对称性实际上给出了电荷守恒，而相应的联络给出了粒子与电磁场的耦合。这里我并没有很清晰的理解，无法细说。
+
+定义$c=1/\sqrt{\mu_0\varepsilon_0}$（后面我们会发现，这就是光速，这里先这样形式地定义一下），一般经典电动力学常用的规范是洛伦茨规范（协变规范）：
+\begin{equation}
+\nabla\cdot\bm{A}+\frac{1}{c^2}\frac{\partial \phi}{\partial t}=0
+\end{equation}
+这个形式虽然现在看起来很复杂，但其实是最方便的规范，而且后面我们会看到它可以写得很简洁。另一个常见规范是库仑规范$\nabla\cdot\bm{A}=0$。
+
+在这电磁势的定义下，麦克斯韦方程的第二条和第三条就自然满足了，带入第一条和第四条，我们可以得到两个二阶微分方程：
+\begin{equation}
+\nabla\cdot(-\nabla\phi-\frac{\partial\bm{A}}{\partial t})=-\nabla^2\phi-\frac{\partial(\nabla\cdot\bm{A})}{\partial t}=\frac{\rho}{\varepsilon_0}
+\end{equation}
+\begin{equation}
+\nabla\times\nabla\times\bm{A}-\frac{1}{c^2}\frac{\partial}{\partial t}(-\nabla\phi-\frac{\partial\bm{A}}{\partial t})=-\nabla^2\bm{A}+\frac{1}{c^2}\frac{\partial^2\bm{A}}{\partial t^2}+\nabla(\nabla\cdot\bm{A}+\frac{1}{c^2}\frac{\partial\phi}{\partial t})=\mu_0\bm{J}
+\end{equation}
+现在，如果我们把洛伦茨规范代进去，方程就变成了：
+\begin{equation}
+\nabla^2\phi-\frac{1}{c^2}\frac{\partial^2\phi}{\partial t^2}=-\frac{\rho}{\varepsilon_0}
+\end{equation}
+与
+\begin{equation}
+\nabla^2\bm{A}-\frac{1}{c^2}\frac{\partial^2\bm{A}}{\partial t^2}=-\mu_0\bm{J}
+\end{equation}
+
+这两个与麦克斯韦方程等价的方程现在相互独立，而且展现出波动方程的形式！而刚刚形式定义的$c$正是这个波的波速。麦克斯韦由此预言了电磁波的存在，几年后，赫兹在实验中发现了电磁波。
+
+\subsection{记号系统}
+为了更进一步叙述，我们需要引入新的记号系统了。前面已经看了一堆矢量运算，是不是已经烦透了呀？说实话，关于矢量的记号，我觉得可以分为普通、文艺和二X三种：
+
+\begin{itemize}
+\item 普通记号：按照规定，用粗斜体$\bm{a}$表示矢量。这种记号大家已经很熟悉了，很清晰地体现出了矢量和数字的分别，但是，做微分运算非常地不直观。而且另一个缺点是，我们用什么记号来表示矩阵和张量？
+\item 二X记号：不区分所有的量——矢量、矩阵、张量通通用同一种记号，比如$Ax=b$。如果方程很多读者又需要跳着看，或者作者再重复用几个符号，理解难度可以直线上升。
+\end{itemize}
+下面我们来讲讲文艺记号——分量记号（我随便取的名字= =）。这个记号可以被广泛用于后续的物理、数学课程——线性代数、量子场论、广义相对论、微分几何等等……这个记号系统很灵活，又不容易引起歧义，而且做微分运算非常直观，不再需要查一大堆矢量运算公式，所以广受青睐。
+
+其中的中心思想是，我们用一个矢量的分量的一般形式，来代替这个矢量本身——对于矢量$\bm{a}$，我们直接写作$a^i$（注意，这个可不是$a$的$i$次方！）。其中$i=1,2,3$，$i$取不同值表示矢量的不同分量。而且一般约定，英文指标取值范围是1-3，而如果我们用希腊字母做指标，取值范围则是从0到3，其中0表示时间分量——这样表明相应的矢量是四维时空中的矢量。这样一来，只要方程中指标是匹配的，我们可以将1,2,3带入指标来得到矢量的全部信息，比如$a^i=b^i$意味着$a^1=b^1,a^2=b^2,a^3=b^3$。
+
+接下来要写的东西其实和我在量子力学笔记第一节中写的东西相差无几。我们知道对任何一个线性空间，都有一个对偶的线性空间——线性算符构成的线性空间，那么对于一般的矢量空间，我们也有一个空间与它对应，其中的元素我们记做$a_i$，用下标表示。如果两个元素作用在一起，我们得到一个数：
+\begin{equation}
+\sum_ia_ib^i=a_1b^1+a_2b^2+a_3b^3
+\end{equation}
+但这里我们讨论的主要是实空间，实数空间的对偶，显然还是实数空间，所以，我们其实可以在同一个空间中谈论两个完全不同的数学结构。而之前所说的“矢量”和“算符”其实并没有明晰的分界线，于是这里我们模糊矢量和算符的分界线，称$a^i$为逆变矢量，称$a_i$为协变矢量。比如一般我们约定，速度矢量是一个逆变矢量。
+
+我们称上面的求和为内积。这里对协变和逆变的区分对于非欧几里得空间是非常重要的，虽然在日常中我们可以心安理得地拿两个矢量分量相乘来做内积，但是，即使同样是欧几里得空间，极坐标系下的矢量就已经不能这么做了！为了更一致地定义内积，我们需要这样的区分。实际操作中，我们往往采用爱因斯坦求和规则——重复指标表示求和，即$a_ib^i=\sum_ia_ib^i$，这样把烦人的求和号去掉，让方程变得简洁。但注意，为了减少歧义，求和的重复指标最多只能有一对，且必须是一个指标在上，一个指标在下，这被求和掉的指标，我们称为哑指标，因为这个符号本身已经没有了任何意义——你甚至可以画一只小猫来代替它。
+
+对于任何一个空间，我们可以引入度量来衡量空间中无穷接近的两个元素的距离。一般，对于两个无穷接近的点$(x,y,z)$与$(x+dx,y+dy,z+dz)$，我们可以把连接它们的矢量记为$dx^i$。那么，这两个点之间的距离是一个二次函数（注意我们已经开始使用爱因斯坦求和约定了）：
+
+$ds^2=g_{ij}dx^idx^j$（或者四维时空：$ds^2=g_{\mu\nu}dx^\mu dx^\nu$）
+
+对于欧几里得空间，$g_{ij}=\delta_{ij}=\mathrm{diag}(1,1,1)$，对于四维时空，$g_{\mu\nu}=\mathrm{diag}(1,-1,-1,-1)$（或者有的书中写成：$\mathrm{diag}(-1,1,1,1)$。看你喜欢了……）这里，这个有两个指标的东西$g_{ij}$，我们称为度规张量。这种有多个指标的量，我们称为张量（当然，严格的定义是要在多个线性空间与对偶空间的直积上，将张量定义为某个线性映射——这都是数学了），而矢量其实不过是一种特殊的张量。两个指标的东西，其实很像矩阵，但在这种记号中，我们可以更详细地区分出四种不同的张量：$A_{ij},A^{ij},A_{\ j}^i,A^{\ j}_i$，这四个张量是不同的（甚至最后两个因为指标的位置不同也有可能不同）！一般而言，我们只将最后两种张量称为矩阵，这种写法和以往将第$i$行第$j$列矩阵元记为$A_{ij}$并无明显不同，只是，我们加入了更细致的分类，来处理更复杂的空间。而且这个记号更厉害的是，一个东西可以有更多指标——比如三个指标，在三维空间中这相当于一个$3\times3\times3$的正方体数阵！
+
+在这种记号系统中，矩阵与向量、矩阵与矩阵的乘法也可以简单写成：$A^i_{\ j}x^j$和$A^i_{\ j}B^j_{\ k}$，注意到求和的指标总是靠近放置。这样，我们也不用特意去记矩阵是怎么相乘的了。
+
+度规张量对于一个度量空间是无比重要的，它决定了一个空间的几何性质——这一点我们还是在广义相对论中再细说。有了度规张量，我们可以升降指标——其实就是在协变与逆变矢量之间建立起一一对应：
+\begin{equation}
+a_i=g_{ij}a^j
+\end{equation}
+如果记度规张量的逆为$g^{ij}$，即满足：$g_{ij}g^{jk}=\delta_i^k$（这里的$\delta$记号已经没必要区别协变与逆变了），我们也有：
+\begin{equation}
+a^i=g^{ij}a_j
+\end{equation}
+于是，我们可以定义两个矢量之间的内积（点积）为：
+\begin{equation}
+a^ib_i=a_ib^i=g^{ij}a_ib_j=g_{ij}a^ib^j
+\end{equation}
+对于三维欧式空间，度规张量不过是单位张量，一个协变矢量对应的逆变矢量就是它自己，所以我们不需要区分协变和逆变，这种时候也可以简单写成$a_ib_i$，实际上表示以往记号中的$\bm{a}\cdot\bm{b}$。
+
+点乘虽然很简单，但叉乘就比较麻烦一点了。对于叉乘，我们需要引入三阶反对称记号$\epsilon_{ijk}$（任意指标数的情况下也叫Levi-Civita记号，严格来讲，它不是张量）。这个记号是这样定义的——如果有两个指标相同，则记号为0：
+\begin{equation}
+\epsilon_{111}=\epsilon_{112}=\epsilon_{113}=\epsilon_{121}=\epsilon_{211}=\cdots=0
+\end{equation}
+如果指标为123或123的对称轮换（或者说，指标间的偶数次对换），记号等于1：
+\begin{equation}
+\epsilon_{123}=\epsilon_{231}=\epsilon_{312}=1
+\end{equation}
+其他情况下，等于$-1$：
+\begin{equation}
+\epsilon_{132}=\epsilon_{321}=\epsilon_{213}=-1
+\end{equation}
+把每个分量写出来不难发现，不区分协变和逆变的$\epsilon_{ijk}a_jb_k$正是$\bm{a}\times\bm{b}$。（如果需要区分协变和逆变，请注意用度规适当地升降指标。）
+
+为了做与叉乘相关的运算，以下（欧式空间中的）恒等式是非常有用的：
+\begin{equation}
+\epsilon_{ijk}\epsilon_{ilm}=\delta_{jl}\delta_{km}-\delta_{jm}\delta_{kl}
+\end{equation}
+有了这个恒等式帮助我们可以轻易计算出任何矢量运算需要的公式。当然，所有这些都可以很轻易地推广到区分协变和逆变的情形（见Levi-Civita symbol）。
+
+另外微分算子$\nabla$我们往往也当做一个矢量，在这套记号中，我们写作$\partial_i=\frac{\partial}{\partial x^i}$，将它看做一个协变矢量。比如，$\nabla\cdot\bm{A}$可以写作$\partial_iA^i$，拉普拉斯算子$\Delta=\partial^i\partial_i$。
+
+\subsection{协变写法}
+还记得拉格朗日力学可以作为所有经典物理的框架吗？对于经典电动力学，也是一样的。我们开始使用新的记号系统。首先，为了方便我们取自然单位制：$c=1$（光速是1，且无量纲——意味着时间和空间是同一个单位，而速度请理解为相对于光速的比值），并将时间和空间并在一起成为有4个指标的矢量——四矢量$x^\mu=(t,x,y,z)$。取度规为$g_{\mu\nu}=\mathrm{diag}(1,-1,-1,-1)$。我们如果将电磁势并在一起，写成$A^\mu=(\phi,A_x,A_y,A_z)$，当做逆变的四矢量。定义协强张量：
+\begin{equation}
+F_{\mu\nu}=\partial_\mu A_\nu-\partial_\nu A_\mu
+\end{equation}
+显然，这是一个反对称的二阶张量。写成矩阵的形式，我们不难看出，它就是由电场和磁场组成的矩阵：
+\begin{equation}
+F_{\mu\nu}=\left(\begin{array}{cccc} 0 & E_x & E_y & E_z \\ -E_x & 0 & -B_z & B_y\\ -E_y & B_z & 0 & -B_x\\ -E_z & -B_y & B_x & 0\\ \end{array}\right)
+\end{equation}
+还记得拉格朗日量是个标量吧？那么由此可以凑出电磁场的拉格朗日密度，最简单的形式正比于：
+\begin{equation}
+F^{\mu\nu}F_{\mu\nu}
+\end{equation}
+其中将矢量场$A^\mu$当做自变量。我们简单计算一下就会发现，这个拉格朗日密度给出的正是无源麦克斯韦方程！前面的系数取决于单位制——对于自然单位制，前面的系数是$-\frac{1}{4}$。考虑到电磁场和物质的相互作用，我们把拉格朗日密度写成（$J^\mu=(\rho,J_x,J_y,J_z)$是电流四矢量）：
+\begin{equation}
+\mathcal{L}=-A_\mu J^\mu-\frac{1}{4}F_{\mu\nu}F^{\mu\nu}
+\end{equation}
+于是最小作用量原理给出了麦克斯韦方程的第一和第四个：
+\begin{equation}
+\partial_\mu F^{\nu\mu}=J^\nu
+\end{equation}
+而很容易验证，另外两个方程写作：
+\begin{equation}
+\partial_\mu F_{\nu\rho}+\partial_\nu F_{\rho\mu}+\partial_\rho F_{\mu\nu}=0
+\end{equation}
+这个形式倒是很对称。值得一提，这种记号系统下，洛伦茨规范正是简单的：
+\begin{equation}
+\partial_\mu A^\mu=0
+\end{equation}
+很简洁。
+
+\subsection{外微分写法}
+其实，麦克斯韦方程还可以写得更加简洁，如果借助外微分的话。首先，为了将普通积分、线积分、面积分等等各种积分的形式统一起来，我们定义一个叫做微分形式的东西。它其实就是积分号后面的所有东西。比如说，对于普通积分，是$f(x)dx$；对于第二型曲线积分，是$\bm{f}\cdot d\bm{l}$，或者写成新的记号，是$f_idx^i$；对于第二型曲面积分，是$\bm{f}\cdot d\bm{S}$。要将这些形式统一起来，我们先注意到它们都可以分成2部分——一个待积分的函数和一个微分符号的乘积。而这个微分符号，总和空间坐标$x$的微分有关系，比如$dx$、$dx^i$、$dS_i=\epsilon_{ijk}dx^jdx^k$。于是，我们定义”数“为微分0-形式，现在定义基本微分1-形式为$dx^i$。我们很想定义第二型曲线积分后面的东西为基本微分2-形式——但你可以试试，它很难直接地在新的记号中写出，因为$d\bm{S}$不是单纯的坐标微分的乘积。于是我们引入楔积$\wedge$ ，他对于两个0-形式（数）而言，不过是单纯的乘法：
+\begin{equation}
+f\wedge g=fg
+\end{equation}
+但对于1-形式，契积是有顺序的乘法，即：
+\begin{equation}
+dx^i\wedge dx^j=-dx^j\wedge dx^i
+\end{equation}
+显然有$dx^i\wedge dx^i=0$。于是借助楔积，我们可以定义任意的基本微分$p$-形式：
+\begin{equation}
+dx^{i_1}\wedge dx^{i_2}\wedge \cdots\wedge dx^{i_p}
+\end{equation}
+之所以称它们为基本，是因为我们可以将它们看做微分形式的基底，而将任意的微分形式看做是以他们为基的展开。以特定阶数的基本微分形式为基底的微分形式，我们称为$p$-形式。比如当我们将微分形式写作$f_idx^i$时，它是一个1-形式，以$dx^i$为基底，而$f_i$是相应的系数。显然，一个给定维数的空间中，积分形式的阶数不会超过空间的维数。比如三维空间中，0-形式只有一个基底（只是数嘛），1-形式有3个基底——$dx^1,dx^2,dx^3$，而2-形式有3个线性无关的基底——$dx^1\wedge dx^2,dx^2\wedge dx^3,dx^3\wedge dx^1$，3-形式只有一个基底——$dx^1\wedge dx^2\wedge dx^3$，4-形式就不存在了，因为$dx^i\wedge dx^i=0$。
+
+这样我们可以把第二型曲面积分的积分形式$\bm{f}\cdot d\bm{S}$写成：$f_{ij}dx^i\wedge dx^j$，其实在三维空间中展开写就是
+\begin{equation}
+(f_{12}-f_{21})dx^1\wedge dx^2+(f_{23}-f_{32})dx^2\wedge dx^3+(f_{13}-f_{31})dx^1\wedge dx^3
+\end{equation}
+显然，对于$f_{ij}$（它其实是个张量，因为显然它是一个$V\times V\to R$的线性映射）只有3个独立的变量是有用的：$f_{12}-f_{21},f_{23}-f_{32},f_{13}-f_{31}$，它们分别对应原先记号中的$f_z,f_x,f_y$。因此，我们规定张量$f_{ij}$必须是反对称张量，即满足$f_{ij}=-f_{ji}$，这样的张量正好只有3个独立的分量，既简化了问题又没有损失。于是这样一来，我们也常常省去微分形式的基底，而称反对称的协变张量$T_{i_1i_2\cdots i_p}$称为$p$-形式。于是，协变矢量就是1-形式（Carroll的Spacetime and Geometry就是这么写的），二阶反对称张量就是2-形式，等等。但要注意，这些张量只是微分形式的分量，微分形式的基底还是$dx^i$与它们的楔积。需要注意的是，反对称张量表示的$p$-形式，它的基底已经不再是任意顺序的了，我们约定，作为基底的契积的指标永远是递增的，比如$dx^1\wedge dx^2$是一个基底，但$dx^2\wedge dx^1$不是，所以如不特别指明，按爱因斯坦求和约定求和微分形式$T_{ij}dx^i\wedge dx^j$时，我们总假定$i<j$。
+
+于是楔积的定义可以稍微推广一下，使其不止适用于基本微分形式。其实就是：
+\begin{align}
+&(f_{i_1i_2\cdots i_k}dx^{i_1}\wedge dx^{i_1}\wedge\cdots\wedge dx^{i_k})\wedge(g_{j_1j_2\cdots j_k}dx^{j_1}\wedge dx^{j_1}\wedge\cdots\wedge dx^{j_k})\non
+=&f_{i_1i_2\cdots i_k}g_{j_1j_2\cdots j_k}dx^{i_1}\wedge dx^{i_1}\wedge\cdots\wedge dx^{i_k}\wedge dx^{j_1}\wedge dx^{j_1}\wedge\cdots\wedge dx^{j_k}
+\end{align}
+但使用前需要注意的是，因为后面那些部分求和之后，很多项只是指标的顺序不同，实际上是同一个分量计算了很多次。所以，一般情况下我们把楔积写作：
+\begin{equation}
+f_{i_1\cdots i_k}\wedge g_{j_1\cdots j_l}=\frac{(k+l)!}{k!l!}f_{[i_1\cdots i_k}g_{j_1\cdots j_k]}
+\end{equation}
+即对乘积的指标轮换后给予适当的符号再求和，做一个反对称化，使乘积成为一个反对称矩阵。比如$T_{[ij]}=T_{ij}-T_{ji}$。这样对于一般的微分形式$f$和$g$，如果它们分别是$k$-形式与l-形式，那么有：
+\begin{equation}
+f\wedge g=(-1)^{kl}g\wedge f
+\end{equation}
+且
+\begin{equation}
+f\wedge(g+l)=f\wedge g+f\wedge l
+\end{equation}
+对于一个微分形式，一个有用的运算是算符$*$，对于一个$n$维空间中的$p$-形式，算符$*$给出同一空间中的$(n-p)$-形式：
+\begin{equation}
+(*f)_{i_{p+1},\cdots i_n}=\frac{1}{p!}\sqrt{|\det(g_{ij})|}\epsilon_{i_1\cdots i_n}f^{i_1\cdots i_p}
+\end{equation}
+（其实，因为可以演算，Levi-Civita符号乘以$\sqrt{|\det(g_{ij})|}$后是一个张量，所以我们常常也用这个叫做Levi-Civita张量的张量代替这两项。）
+
+简单计算会发现：
+\begin{equation}
+*(*f)=(-1)^{p(n-p)}\mathrm{sgn}(\det(g_{ij}))f
+\end{equation}
+即连续做两次算符$*$会得到微分形式本身，只是可能会相差一个符号。算符$*$的物理含义……我其实并不太理解，这个好像是在微分形式中引入某种对偶关系，但这个算符对于我们表述麦克斯韦方程是有用的。
+
+下面我们要定义微分形式的微分，即外微分运算$d$。对于一个$p$-形式$f=f_{i_1\cdots i_p}dx^{i_1}\wedge\cdots\wedge dx^{i_p}$，我们定义它的外微分是一个$(p+1)$-形式：
+\begin{equation}
+df=\sum_{\begin{array}{c} _{i_{p+1}} \\ _{i_1<\cdots<i_p}\end{array}}\frac{\partial f_{i_1\cdots i_p}}{\partial x^{i_{p+1}}}dx^{i_{p+1}}\wedge dx^{i_1}\wedge\cdots\wedge dx^{i_p}
+\end{equation}
+这其实就是对张量函数求各分量的偏导数，这个定义还没有将同样基底的项合并，于是前面的也不是一个反对称张量，所以通常我们将项合并后的结果写成：
+\begin{equation}
+(df)_{i_1\cdots i_{p+1}}=(p+1)\partial_{[i_1}f_{i_2\cdots i_{p+1}]}
+\end{equation}
+这个定义最犀利的地方是，我们终于可以将牛顿-莱布尼茨公式、格林公式、高斯公式、斯托克斯公式等等等等微积分中五花八门的公式统一成一个定理：
+\begin{equation}
+\int_V df=\int_{\partial V}f
+\end{equation}
+翻译成人类的语言就是：一个东西的外微分在一个区域上的积分，等于这个东西在区域边界上的积分。当积分区域是数轴上的一个区间时，这就是牛顿-莱布尼茨公式。取不同的积分区域和不同阶数的微分形式，我们就得到了所有的广义斯托克斯公式！
+
+关于外微分，还有两个性质很重要。首先，显然对于$n$维空间的$n$-形式，因为$(n+1)$-形式不存在，所以所有$n$-形式的外微分等于零。另外容易验证：
+\begin{equation}
+d(df)=0
+\end{equation}
+这样，我们回到麦克斯韦方程。现在我们注意到电磁势的协变形式$A_\mu dx^\mu$是一个四维时空中的1-形式，定义协强张量（2-形式）：
+\begin{equation}
+F=dA=\sum_{\mu<\nu}\partial_\mu A_\nu dx^\mu\wedge dx^\nu+\sum_{\mu<\nu}\partial_\nu A_\mu dx^\nu\wedge dx^\mu=\sum_{\mu<\nu}(\partial_\mu A_\nu-\partial_\nu A_\mu)dx^\mu\wedge dx^\nu
+\end{equation}
+即$F_{\mu\nu}=\partial_\mu A_\nu-\partial_\nu A_\mu$和刚才的定义完全一样。于是，因为$F=dA,dF=d(dA)$，协变形式的第二个方程正是恒等式：
+\begin{equation}
+dF=0
+\end{equation}
+而第一个方程，容易验证，是：
+\begin{equation}
+d(*F)=*J
+\end{equation}
+是不是特别简单？
+
+\section{狭义相对论}
+历史上，狭义相对论出现的一大动因，是为了解决麦克斯韦方程和牛顿力学的不兼容性。一方面，麦克斯韦方程组中出现了与速度有关的量——电流$\bm{J}$，这意味着变换参考系会观察到不同的电磁场，进而观察到电磁场中的粒子有不同的运动轨迹。这是直接违反伽利略相对性原理的。但这可能还不是最直接的动因。更直接的动因是电磁波波速的问题。由麦克斯韦方程组的波动形式我们看出，电磁波的波速为$c$，我们现在称为光速。而麦克斯韦方程本身并没有表明这个波速是在哪个参考系之中的波速。
+
+历史上有很多人试图解释这个问题。有人提出以太参考系，就是为了解释光速是在哪个参考系的速度。但是随着一系列MM实验（这个实验现在任何一个物理系的实验室都有条件做了——它甚至是学生实验训练的一部分了），人们确认了光速并不属于特定的参考系。洛伦茨提出洛伦茨变换，来解释不同参考系中光速不变的问题。但是他并没有将洛伦茨变换中的时间和位置当做物理真实的时间和位置。爱因斯坦首先提出了这些参量的物理真实，并将其规范在一个更统一的框架中。这个被称为狭义相对论的理论随后被一系列实验所验证。
+
+前面我们已经将时间和空间并在一起进行处理，但没有说明这样做的理由。现在我们从光速不变出发，考虑到时空中的两个事件：$(t_1,x_1,y_1,z_1)$和$(t_2,x_2,y_2,z_2)$，如果它们之间由一个光信号相联系，则显然有路程$=$速度$\times$时间：
+\begin{equation}
+(x_1-x_2)^2+(y_1-y_2)^2+(z_1-z_2)^2=c^2(t_1-t_2)^2
+\end{equation}
+如果在另一个参考系，它们的坐标是$(t'_1,x'_1,y'_1,z'_1)$和$(t'_2,x'_2,y'_2,z'_2)$，那么由于光速不变，必须有：
+\begin{equation}
+(x'_1-x'_2)^2+(y'_1-y'_2)^2+(z'_1-z'_2)^2=c^2(t'_1-t'_2)^2
+\end{equation}
+这必须对任意参考系都成立，这暗示着，我们可以对任何两个事件之间定义时空间隔：
+\begin{equation}
+\Delta s^2=c^2(t_1-t_2)^2-(x_1-x_2)^2-(y_1-y_2)^2-(z_1-z_2)^2
+\end{equation}
+如果我们假设坐标变换是一个线性变换，那么它是一个不随参考系变化而变化的不变量，这样能之前两个等式总是可以成立的。而对于无穷小间隔，这意味着：
+\begin{equation}
+ds^2=c^2dt^2-dx^2-dy^2-dz^2
+\end{equation}
+这个无穷小间隔不随参考系而变，也满足三角不等式，虽然可正可负是个麻烦，但我们依然将它当做是一种距离。而它的度规正是$g_{\mu\nu}=\mathrm{diag}(1,-1,-1,-1)$。有了这个度规，我们将时间和空间正式合并在一起，成为一个配备了度规的4维度量空间——闵可夫斯基空间，因为他的度规不正定，它是一个伪欧几里得空间。
+
+保证距离$ds^2=c^2dt^2-dx^2-dy^2-dz^2$不变的坐标系变换，显得尤其重要。因为这样的变换后，时空的性质不会有人们可以观测到的改变，这正是伽利略等效原理的体现。数学中我们可以用一个矩阵$\Lambda_{\ j}^i$来表示坐标变换，这样一来对于空间中的任意矢量$a^i$，变换后的矢量是$\Lambda^i_{\ j}a^j$。我们将保证度规$g_{\mu\nu}=\mathrm{diag}(1,-1,-1,-1)$不变的变换所组成的集合，称为庞加莱群。简单地说，庞加莱群的任一元素可以由几种基本的变换“生成”，它们是：
+\begin{enumerate}
+\item 沿时间/空间平移；
+\item 在任意两个轴构成的平面上旋转（或者boost）。
+\end{enumerate}
+
+第一种无非是重新选定坐标原点所在的时间和位置，没什么特别的。第二种中，相对坐标平面的旋转也是三维情况下就很常见的，也没什么可说的。但剩下一种在时间和坐标平面的“旋转”（boost），就很有意思了。这里考虑最简单的，比如$t$-$x$平面的"旋转"。保证度规$ds^2=c^2dt^2-dx^2$不变的变换方程，和普通的旋转类似但又有点不同，可以用双曲函数（而不是三角函数）表示：
+\begin{equation}
+x=x'\cosh\theta+ct'\sinh\theta,\ \ ct=x'\sinh\theta+ct'\cosh\theta
+\end{equation}
+其中$\theta$是“旋转”的角度。观察其中一个参考系的坐标原点，即取$x'=0$，再将两式相除，可以得到带撇号的坐标系原点的速度 $v$ 与$\theta$ 的关系：
+\begin{equation}
+\frac{x}{ct}=\frac{v}{c}=\tanh\theta
+\end{equation}
+但我们知道：
+\begin{equation}
+\sinh\theta=\frac{\tanh\theta}{\sqrt{1-\tanh^2\theta}}
+\end{equation}
+\begin{equation}
+\cosh\theta=\frac{1}{\sqrt{1-\tanh^2\theta}}
+\end{equation}
+代入后我们得到了世人通称为洛伦茨变换的坐标变换：
+\begin{equation}
+x=\frac{x'+vt'}{\sqrt{1-v^2/c^2}},\ \ \ t=\frac{t'+vx'/c^2}{\sqrt{1-v^2/c^2}}
+\end{equation}
+更一般情况下洛伦茨变换的变换矩阵，也可以轻易写出来。这样一来，我们将麦克斯韦写成协变形式的意义就很明显了——这样写出的方程，我们可以将洛伦茨变换乘在方程中，直接得到方程在新的坐标系中的形式，并且新的形式会和原来的完全一样。换句话说，如果方程中每一个矢量、张量都是四维时空中的矢量、张量，那么它自然地满足洛伦茨不变性。
+
+遗憾的是，通常我们定义的速度$v=\frac{dx}{dt}=\frac{dx^i}{dx^0}$不再是四维时空中的矢量——因为时间不再是常量，它是一个矢量的两个分量的比值，也就不会再满足线性关系了。但是，我们记得四维时空还是有一个不变量可用：$ds$。如果$ds>0$，这个间隔更类似于时间的流逝，我们可以定义本征时：$d\tau=ds/c$，然后用本征时来除一个矢量，我们自然地能够得到其他矢量。于是我们定义了各种四矢量：
+\begin{itemize}
+\item 四速度：$\nu^\mu=\frac{dx^\mu}{d\tau}$
+\item 四加速度：$\alpha^\mu=\frac{d\nu^\mu}{d\tau}$
+\item 四动量：$p^\mu=mc\nu^\mu$
+\end{itemize}
+而在狭义相对论中，自由粒子的运动方程依然和牛顿第二定律形式类似：
+\begin{equation}
+\frac{dp^\mu}{d\tau}=0
+\end{equation}
+值得一提的是，四矢量的“长度”——自身与自身的内积也都是不变量，这与三维空间的情形是一样的。对于四速度而言，$\nu_\mu\nu^\mu=1$，对于四动量而言，$p_\mu p^\mu=m^2c^2$。
+
+狭义相对论的动力学、对称性、能量、动量，都可以通过拉格朗日力学或哈密顿力学来分析，请参考理论力学笔记，这里不再赘述了。只是有一个结论值得一提，很容易发现四动量的时间分量就是能量（除以光速），而$p_\mu p^\mu=m^2c^2$给出的正是相对论的能量与动量之间的关系。
+
+\end{document}
