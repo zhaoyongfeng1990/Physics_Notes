@@ -1,0 +1,351 @@
+\documentclass{ctexart}
+
+\usepackage{mhchem}
+\usepackage{array}
+\usepackage{graphicx,bm}
+\usepackage{amsmath,amssymb}
+\usepackage{appendix}
+\usepackage{color}
+\usepackage[standard]{ntheorem}
+\usepackage{siunitx}
+\newcommand\cincludegraphics[1]{\centerline{\includegraphics[scale=0.75]{#1}}}
+\newcommand\diff[2]{\frac{d #1}{d #2}}
+\newcommand\Diff[2]{\frac{D #1}{D #2}}
+\newcommand\ddiff[2]{\frac{d^2 #1}{d #2^2}}
+\newcommand\ndiff[3]{\frac{d^{#3}#1}{d #2^{#3}}}
+\newcommand\pdiff[2]{\frac{\partial #1}{\partial #2}}
+\newcommand\pddiff[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\newcommand\pndiff[3]{\frac{\partial^{#3} #1}{\partial #2^{#3}}}
+\newcommand\mathmx[1]{\bm{#1}}
+\newcommand\E[2]{\ensuremath{#1\times10^{#2}}}
+\newcommand\ii{\mathrm{i}}
+\newcommand\dd{\mathrm{d}}
+\newcommand\non{\nonumber \\}
+\newcommand\ecoli{\textit{E. coli }}
+\newcommand\um{\ensuremath{\mathrm{\mu m}}}
+\newcommand\red[1]{{\color{red}#1}}
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    linkcolor=blue,  %choose some color if you want links to stand out
+}
+\renewcommand\arraystretch{1.8}
+
+\DeclareRobustCommand{\vect}[1]{\bm{#1}}
+\pdfstringdefDisableCommands{%
+  \renewcommand{\vect}[1]{#1}%
+}
+
+\bibliographystyle{unsrt}
+
+\usepackage[margin=1.0in]{geometry}
+
+%\usepackage{ctex}
+\usepackage{enumitem}
+
+\begin{document}
+\title{广义相对论简介}
+\maketitle
+\tableofcontents
+\section{推荐用书}
+
+这次之所以加了简介两个字，是因为广义相对论的水太深了，我也有诸多地方并不太理解……所以作为爱好者我只能做一些浅显的介绍，真正要做广义相对论不是简简单单上两门课就结束的，需要读很多东西……可以推荐的书很多，但我只看过一本（还没看完）：
+\begin{itemize}
+\item Sean Carroll的Spacetime and geometry，这本书的Level在本科高年级到研究生低年级之间，比较数学化，但讲得还算容易跟上。一个学期时间太有限，我大概只看到一半……
+\end{itemize}
+另一本我买过的书是：
+\begin{itemize}
+\item Hartle的Gravity，这本书是本科生低年级的Level，有图像上的困难时我会翻翻这本书。不过某位老师听学生说过后，对这本书评价很低：
+\begin{quotation}
+Some students comment that this is a popular science book with equations, one cannot actually learn general relativity by reading it.
+\end{quotation}
+\end{itemize}
+
+对了还买过一本Dirac的General Relativity，这本特别特别薄……
+
+其他值得推荐的书太多了，虽然我都没看过，比如Wald的General Relativity，Weinberg的Gravitation and Cosmology，Schutz的A First Course in General Relativity……如果真有心要做广义相对论，这几本大概是要看看的吧……
+
+\section{等效原理}
+广义相对论在物理中大概算比较特殊的。和物理中的很多其他有证据支持的理论不同，广义相对论作为一个完整的力学，是理论上的创造远远早于实验的，而且几乎是以爱因斯坦一人之力开创的。（不过现在好像物理学又发展到了理论创造远远优先于实验的阶段？虽然很多都没有证据支持。）
+
+广义相对论的出发点是这样一个让物理学家一直很困惑的问题：为什么惯性质量等于引力质量？我们知道牛顿第二定律：
+\begin{equation}
+F=m_ia
+\end{equation}
+其中出现了一个质量——惯性质量$m_i$。但牛顿万有引力定律：
+\begin{equation}
+F=G\frac{m_{g1}m_{g2}}{r^2}
+\end{equation}
+其中也出现了一个质量——引力质量$m_g$。以前我们没有任何怀疑就认为这两个质量是同样的，但这其实是一件很奇怪的事情。牛顿力学中，惯性质量衡量了一个物体的运动状态有多难被改变，而引力质量是引力相互作用的“荷”，就像电荷一样。这两个量的涵义完全不同，为什么会相等呢？
+
+人类在近100年间在天上地下做了无数实验（参见Equivalence principle），试图找出两种质量的差别，但是一无所获。于是，我们将这个实验事实总结为一条原理：惯性质量=引力质量，这个原理被称为弱等效原理。
+
+
+弱等效原理意味着引力对所有物体运动的影响是一致的——牛顿力学中，不论是质量多少的物体置于其中，它的加速度都是一致的。以此为启发，爱因斯坦有了一个非常奇特的想法（传说中他是看到一位工人从房顶掉下来时想到的），就是引力本身并不“存在”，他将这个想法总结成爱因斯坦等效原理：
+
+在时空的任何一个点附近，物理定律都会还原为在狭义相对论中的情形；局部的实验不能检测到引力场的存在。
+如果考虑到不能破坏弱等效原理，我们需要指明以上定律不但适用于与引力无关的物理定律，同样适用于引力定律本身。否则考虑有自己对自己的引力作用的物体，在局部惯性系中它的自引力能会减小惯性质量，但我们却没有理由认为自引力能会同样减小引力质量。于是我们得到强等效原理：
+
+在时空的任何一个点附近，包括引力定律在内的任何物理定律都会还原为在狭义相对论中的情形。
+而狭义相对论中的时空是平直的，如果时空是全局处处平直的，那么我们就完全找不到引力了。所以有引力的时空应当是弯曲的。而所有物体在引力中的运动是一致的，这启发我们一件事：
+
+\begin{quotation}
+引力是纯粹的几何现象。
+
+Gravity is geometry.
+\end{quotation}
+
+\section{几何}
+既然明确了物理图像，我们要做的第一件事就是想办法描述这个弯曲的时空。为此，我们需要很多数学。这里先来扯一扯几何是什么，注意这里我并非在讲数学史，所以与数学史相关的部分不一定是准确的。
+
+一般人的印象中，几何是研究图形的数学分支。一般认为，欧几里得《几何原本》开创了几何学的公理化尝试。虽然以现在的观点来看并不严谨，但他以现为人所熟知的五条公理和五条公设出发，建立了一套公理体系，直至今日依然“折磨”着广大的初中高中学生。
+
+我之所以用了“折磨”一词，是因为这套体系并不那么实用，解决问题非常依赖于技巧，比如添辅助线……随着代数学的蓬勃发展，笛卡尔干了一件具有跨时代意义的事情——用代数研究几何问题。用坐标系的方式建立了几何点与实数集（及其笛卡尔积）的一一映射，笛卡尔创立了解析几何。于是，很多几何问题转化为代数问题，而代数方程的通用解法是已经为人所熟知的。
+
+但数学家并没有完全抛弃欧几里得的几何学。数学家企图完善欧几里得的公理体系，却觉得有一条公设特别碍眼，即第五公设：
+
+同一平面内一条直线和另外两条直线相交，若在某一侧的两个内角的和小于两直角，则这两直线经无限延长后在这一侧相交。
+这条公设并不显然，也不简洁。数学家尝试用其他公设去证明它，或者用更显然的公设去代替它，但是均无所获。这时，几个年轻人（罗巴切夫斯基、鲍耶）想到用反证法——假设第五公设不成立，然后寻找体系的矛盾。结果也失败了——他们建立起了一套没有任何矛盾的新公理体系，现在我们称之为非欧几里得几何。
+
+非欧几里得几何与欧几里得几何有很多区别——非欧几里得几何中过一条直线外一点可以不存在任何平行线，或者很多条平行线；非欧几里得几何中三角形的内角和可以大于180度，或者小于180度。我们将前者称为球面几何，后者称为双曲几何，因为我们发现，前者描述的就好像是球面上的图形，而后者描述的好像马鞍面上的图形。这些几何描述的就好像是“弯曲”的空间。
+
+然而虽然这些几何可以描述弯曲的空间，但是作为公理化几何它们并不实用，而且不适合更一般的情况。那么怎样用代数和分析的方法研究弯曲的空间？这时的解析几何随着人们对曲线与曲面的研究，进入到了古典微分几何的阶段。人们已经知道如何用微积分研究欧式空间中曲线与曲面上的各种性质，比如曲线曲面的曲率、曲面上的弧长等等。然而此时的研究中这些曲线和曲面依然定义在一个欧式空间中——它们是镶嵌在欧式空间中的。首先打破这个观点的，是黎曼。
+
+\section{流形}
+黎曼指出，类似曲线和曲面这样的对象——流形（Manifold）的定义不必依赖于欧式空间中的镶嵌，虽然一个$n$维的流形总能镶嵌在$2n$维的欧式空间中。这个想法尤其适合用于描述时空——因为我们的确也不知道有没有一个更高维的空间来镶嵌我们能观察到的这个4维的时空，所以这种看起来更“本质”的观点更适合广义相对论。
+
+我们先要仔细说明一下流形是什么，因为不是任何曲线/曲面都可以称为流形。首先，我们加入一条限制，流形应当是没有边界的完备空间，即集合内的任何柯西序列都是有极限的，极限运算是封闭的。如解析几何一般，我们想在流形上引入坐标系统（一一映射）来标记流形$M$中的每一个点：$\phi:M\to N\subset\mathbb{R}^n$，其中$N$是$\mathbb{R}^n$上的开集，而$n$是流形的维数。（以后简单起见，我会以$\mathbb{R}^n$来代替其上的开集。）但经验告诉我们这不总是可行的。比如我们找不到一个好的坐标来覆盖整个球面，常用的经纬度系统总会在南北极这两个点坏掉。我们退而求其次，至少对于流形$M$中的某些开集$S_i$，我们可以找到分别的坐标系统：
+\begin{equation}
+\phi_i:S_i\to\mathbb{R}^n
+\end{equation}
+如果这一系列开集的并能覆盖整个流形（当然，因为是开集，这些子集会有重叠），$\cup_i S_i=M$，我们将这些子集和上面的坐标系组合起来，$\{(S_i,\phi_i)\}$，称作地图册（Atlas）。如果有看过地图册的话，这的确是个很贴切的名字。
+
+接下来，我们要求流形中任何一个点的附近都类似于同样维数的欧式空间，这个要求意味着所有的映射$\phi_i$都必须是一一映射并且是连续的，而且$\phi_i^{-1}$也必须是连续的——即每个点附近的邻域均与欧式空间同胚。
+
+将上面的总结起来，如果对于一个无边界的完备空间$M$，可以找到一系列开集将其覆盖，并在每一个开集上存在双连续的一一映射$\phi_i:S_i\to\mathbb{R}^n$，那么我们称这个集合为流形（Manifold）。
+
+进一步，如果在地图册重叠的部分，从一个坐标系转换到另一个坐标系的坐标变换：$\phi_i\circ \phi_j^{-1}$是$C^p$连续可微的，我们称流形为$C^p$微分流形（Differentiable Manifold）。一般情况下我们遇到的时空，都是微分流形。作为最简单的例子，欧式空间$\mathbb{R}^n$，$n$维球面$S^n$，面包圈面$T^2$都是微分流形。
+
+\section{向量、1-形式与张量}
+经验中我们知道，在球面上没有平行线的概念，任意两个大圆弧总会相交。这意味着平行四边形法则不再有效，我们无法用“有向线段”的方式在球面上直接定义向量，然后使用线性代数。然而向量对于物理是如此重要，因此我们需要找到新的方法定义它。向量通常描述的是某个物理量的变化率，比如速度是粒子位置的变化率。我们考虑一个粒子在流形中运动，它的某个物理量可以用函数$f(\tau)$表示。这个物理量在某个点的变化率是函数对参数的导数：
+\begin{equation}
+\frac{df(\tau)}{d\tau}
+\end{equation}
+如果粒子的运动轨迹是$x^\mu(\tau)$，根据链式法则，我们可以将这个导数写成：
+\begin{equation}
+\frac{d x^\mu}{d\tau}\frac{\partial}{\partial x^\mu}f\equiv \frac{d x^\mu}{d\tau}\partial_\mu f
+\end{equation}
+注意我们已经使用了我曾经在电动力学的笔记中介绍过的记号系统，并且假定了爱因斯坦求和规则。并且，所有的导数应该理解为导数在某一点的取值。由于参数和函数都是任意选取的，变化率总是会具有$a^\mu\partial_\mu$的形式。于是我们这样定义向量：
+
+对于流形中任意一点$p$，（切）向量是从流形上的实值函数到实数的映射：$v:F(M)\to\mathbb{R}$，并且满足：
+\begin{itemize}
+\item 线性：$v(af+bg)=av(f)+bv(g)$
+\item 莱布尼兹法则：$v(fg)=v(f)g(p)+f(p)v(g)$
+\end{itemize}
+首先我们先不加证明地指出，这样定义的切向量组成一个线性空间，并且微分算子$\partial_\mu=\frac{d}{dx^\mu}$是这个线性空间的基。确切地说，这组基是这样定义的：对于坐标$\phi=(x^1(M),x^2(M),\cdots,x^n(M)):M\to\mathbb{R}^n$，有$\partial_\mu(x^\nu)=\delta_\mu^\nu$；而对于任何函数$f(M)=f(\phi^{-1}(x^1,x^2,\cdots,x^n))$，$\partial_\mu f=\frac{\partial (f\circ\phi^{-1})}{\partial x^\mu}$。对于任意切向量$v$，有$v=v^\mu\partial_\mu=v(x^\mu)\partial_\mu$，后一个式子可以将$v$作用于坐标函数来得到。
+
+所有切向量组成的这个线性空间称为切空间，注意到切空间的定义必须指明流形$M$上的一个点$p$，我们将切空间记做$T_p(M)$，并且注意到切空间附属于流形上的点，不同的点具有不同的切空间。而整个流形上所有点的切空间的集合，叫做切丛。不同点上的切空间不同意味着我们不能再像平直空间中那样将向量在不同的点之间平移，其实，我们现在已经不知道何为平移了。
+
+作为直观的例子，速度就是一个典型的向量。（以下取自Dr. Lee Kai Ming的讲义）考虑粒子运动的轨迹是从实数上的区间（本征时）到流形上点（位置）的映射$\alpha:\mathbb{R}\to M$，我们这样定义速度$v$：对于任意流形上的函数f(M)和某一时间$\tau_0$，
+\begin{equation}
+v(\tau_0)(f)=\left.\frac{df(\alpha(\tau))}{d\tau}\right|_{t_0}
+\end{equation}
+
+这个定义显然是满足我们对于向量的定义的。为什么说它是速度呢？考虑到$v=v^\mu\partial_\mu=v(x^\mu)\partial_\mu$，我们将粒子的轨迹用坐标写出来：$x^\mu(\alpha(\tau))$并将速度矢量作用在上面，我们发现速度矢量的分量正是：
+\begin{equation}
+v^\mu(\tau_0)=\left.\frac{dx^\mu(\alpha(\tau))}{d\tau}\right|_{t_0}
+\end{equation}
+这正是我们熟悉的速度定义，而$\partial_\mu$就好像是以往记号中的$\bm{e}_\mu$，它确实是个基矢！
+
+既然我们有了切空间这么个线性空间，看过我之前文章的以及有经验的人一定知道接下来该干什么了……没错，每个线性空间都可以构造一个对偶的线性空间——线性函数的空间！找这个空间并不麻烦，既然切向量是流形上的实值函数到实数的映射：$v:F(M)\to\mathbb{R}$，那么我们可以这样定义这个线性函数：
+
+对于流形上任意一个实值函数$f(M)$，我们定义切空间上的线性函数$df$，使得：
+\begin{equation}
+(df)(v)=v(f)
+\end{equation}
+这样的线性函数称为1-形式，所有1-形式的集合构成切空间的对偶空间，称为余切空间$T_p^*(M)$。
+
+考虑到$df(\partial_\mu)=\partial_\mu f$，我们发现$df$其实相当于函数$f(M)$的梯度。而$dx^\mu$正是余切空间中与$\partial_\mu$相对应的基，因为$dx^\mu(\partial_\nu)=\partial_\nu x^\mu=\delta_\nu^\mu$。这样对于任意的1-形式，我们可以写作$df=\partial_\mu fdx^\mu$。注意到和切空间一样，余切空间也是依附于流形上某一个点的。流形上所有余切空间的集合，称为余切丛。
+
+上面的定义稍微有点抽象。实际计算中我们总是用坐标来表示流形上的点，所以我们常常省略掉繁琐的坐标映射$\phi$，直接将坐标本身当做流形上的点。比如，对于粒子的运动轨迹$x^\mu(\alpha(\tau))$，我们可以省略其中繁琐的映射直接写作$x^\mu(\tau)$。这样一来，在计算时$\partial_\mu$就是函数对坐标$x^\mu$进行求导，方便很多。
+
+有了切空间和余切空间，我们可以正式定义张量。首先我们定义一个双线性运算——张量积：两个线性空间的张量积产生一个新的线性空间，其维数是这两个线性空间的维数之积。如果$x_i$与$y_j$是这两个线性空间的基底，新空间的基底则形式地写作$x_i\otimes y_j$，而两个空间中任意两个矢量$a^i$与$b^j$的张量积得到新线性空间中的矢量，其$(i,j)$分量为$a^ib^j$。
+
+于是我们定义$(n,p)$张量是张量积：$T_p(M)\otimes\cdots\otimes T_p(M)\otimes T_p^*(M)\otimes\cdots\otimes T_p^*(M)$中的元素，其中有$n$个$T_p(M)$与$p$个$T_p^*(M)$。即一个$(n,p)$张量的基底是$\partial_{\mu_1}\otimes\cdots\otimes\partial_{\mu_n}\otimes dx^{\nu_1}\otimes\cdots\otimes dx^{\nu_p}$，而写成分量形式：
+\begin{equation}
+T=T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}\partial_{\mu_1}\otimes\cdots\otimes\partial_{\mu_n}\otimes dx^{\nu_1}\otimes\cdots\otimes dx^{\nu_p}
+\end{equation}
+这样看来，矢量其实是$(1,0)$张量，而1-形式其实是$(0,1)$张量。如果我们有一个坐标变换，从$x^\mu$变为$x^{\mu'}$，由偏微分的链式法则有$\partial_\mu=\frac{\partial x^{\mu'}}{\partial x^\mu}\partial_{\mu'}$。类似地，$dx^\mu=\frac{\partial x^\mu}{\partial x^{\mu'}}dx^{\mu'}$，于是张量的分量变换可以简单得出：
+\begin{equation}
+T^{\mu_1'\cdots\mu_n'}_{\ \ \ \ \ \ \ \nu_1'\cdots\nu_p'}=T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}\frac{\partial x^{\mu_1'}}{\partial x^{\mu_1}}\cdots\frac{\partial x^{\mu_n'}}{\partial x^{\mu_n}}\frac{\partial x^{\nu_1}}{\partial x^{\nu_1'}}\cdots\frac{\partial x^{\nu_n}}{\partial x^{\nu_n'}}
+\end{equation}
+有时候物理学家将这个变换法则作为张量的定义，但在数学家看来这似乎是不必要而且奇怪的。
+
+\section{度规张量}
+（继续自引，例子参见有人了解“度规张量”吗？ - 赵永峰的回答）
+
+如果在流形的每个点的附属切/余切空间中各取一个张量，将这堆张量看做是流形上点的函数，我们将这堆张量叫做张量场。首先最重要的一个$(0,2)$张量场是度规张量。对于一个配备了坐标的流形，我们依然需要给它指明更多的信息。自然地，如何在流形中度量长度就是个重要的问题。而长度的度量不可小觑，我们会看到它甚至可以代替第五公设来区分欧式几何和非欧几何。在欧几里得几何中，长度可以用勾股定理来度量：$z^2=x^2+y^2$。对于$n$维的欧式空间，考虑一段趋于无穷短的线段，我们可以把勾股定理写作二次函数：
+\begin{equation}
+ds^2=\delta_{\mu\nu}dx^\mu dx^\nu=g_{\mu\nu}dx^\mu dx^\nu
+\end{equation}
+对于任意的流形，因为假定它的局域性质与欧式空间一致，我们可以类比地使用最后一个等式定义一小段线段的长度，于是我们称$(0,2)$对称张量场$g_{\mu\nu}$为度规张量。而对于一条曲线，它的长度可以通过将曲线切成小段后求和。因为我们总可以写出曲线的参数方程$x^\mu(\tau)$，于是曲线长度可以写成积分：
+\begin{equation}
+s=\int_{\tau_0}^{\tau_1}\sqrt{g_{\mu\nu}\frac{dx^\mu}{d\tau}\frac{dx^\mu}{d\tau}}d\tau
+\end{equation}
+注意，度规的定义是独立于流形的。即使对于配备同样坐标的同一个流形，我们也可以引入不同的度规来度量长度，得到的空间也会具有完全不同的性质。而且作为张量，它也不依赖特定坐标系的选取。
+
+度规张量的逆$g^{\mu\nu}$也是非常重要的，它是一个$(2,0)$张量，定义为：
+\begin{equation}
+g^{\mu\nu}g_{\nu\lambda}=\delta^\mu_\lambda
+\end{equation}
+其实相当于矩阵的求逆运算。度规张量和它的逆之所以重要，是因为它们合起来建立了一个自然的切向量与1-形式的一一映射——俗称升降指标。即：
+\begin{equation}
+a^\mu=g^{\mu\nu}a_\nu
+\end{equation}
+\begin{equation}
+a_\mu=g_{\mu\nu}a^\nu
+\end{equation}
+这个映射保证了内积定义的一致，即$a^\mu b_\mu=a_\mu b^\mu$，而且我们可以使用二次型：
+\begin{equation}
+\langle a|b\rangle=g_{\mu\nu}a^\mu b^\nu=g^{\mu\nu}a_\mu b_\nu
+\end{equation}
+来定义任意两个切向量或1-形式的内积。有了这些关系，我们可以确实认识到向量与1-形式的地位是等同的。
+
+借助于二次函数进行定义，度规张量实际上只有对称的部分是有意义的，所以我们通常要求度规张量一定是对称的：$g_{\mu\nu}=g_{\nu\mu}$。而对称张量可以写作对称矩阵的形式，实对称矩阵又总是可以对角化的……于是对于任何坐标系，我们总可以通过适当的旋转和拉伸将度规张量变成对角线均为1或-1的对角张量，这说明我们的流形的确是在局部近似为一个欧式/伪欧式空间。注意这里我并没有要求度规张量的正定——也就是说长度不一定是一个正实数。如果度规张量是正定的，我们称配备了这个度规的流形为黎曼流形，如果不是，我们称为伪黎曼流形。因为相对论中时空距离的平方是可正可负的，时空流形正是伪黎曼流形，对应于狭义相对论中的伪欧式空间（闵科夫斯基空间）。
+
+\section{协变导数}
+前面提到了微分算子是切空间的基，虽然对于函数，它是一个定义良好的向量。然而如果将微分算子推广，使其作用在张量场上，得到的结果将不再是一个张量。这个结果可以简单地使用坐标变换来检查，我们很容易看到这个结果并不独立于坐标选取。比如，拉普拉斯算子（微分算子作用于微分算子）在直角坐标系中写作：
+\begin{equation}
+\partial_i\partial^i=\frac{\partial^2}{\partial x^2}+\frac{\partial^2}{\partial y^2}+\frac{\partial^2}{\partial z^2}
+\end{equation}
+但在球坐标系中却不能写作
+\begin{equation}
+\frac{\partial^2}{\partial r^2}+\frac{\partial^2}{\partial \theta^2}+\frac{\partial^2}{\partial \phi^2}
+\end{equation}
+于是$\partial_\mu$作用在张量上将不再具有变换坐标系不变的性质，这极大地限制了微分算子的使用。为了修正这一点，我们定义协变导数$\nabla_\mu$，它将一个$(k,l$)型张量场变成$(k,l+1)$型张量场，并在$k=l=0$的时候退化为微分算符$\partial_\mu$。我们要求它是线性算符，于是一个简单的形式可以写作：
+\begin{equation}
+\nabla_\mu T^\nu=\partial_\mu T^\nu+\Gamma_{\mu\lambda}^\nu T^\lambda
+\end{equation}
+\begin{equation}
+\nabla_\mu T_\nu=\partial_\mu T_\nu+\bar{\Gamma}_{\mu\nu}^\lambda T_\lambda
+\end{equation}
+其中$\Gamma$是一堆系数。首先其实$\Gamma$与$\bar{\Gamma}$不是独立的。考虑我们之前提到的条件，对于任意两个矢量，有
+\begin{equation}
+\nabla_\mu(a^\nu b_\nu)=\partial_\mu(a^\nu b_\nu)
+\end{equation}
+将左右两边分别按莱布尼茨公式展开，并考虑到任意性，我们可以得到：
+\begin{equation}
+\bar{\Gamma}^{\mu}_{\nu\lambda}=-\Gamma^{\mu}_{\nu\lambda}
+\end{equation}
+于是我们将$\Gamma^\mu_{\nu\lambda}$称为联络（Connection）。一般张量的协变导数写作：
+\begin{equation}
+\nabla_{\lambda}T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}=\partial_{\lambda}T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}+\Gamma^{\mu_1}_{\lambda\rho}T^{\rho\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}+\cdots+\Gamma^{\mu_n}_{\lambda\rho}T^{\mu_1\cdots\rho}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}-\Gamma^\rho_{\lambda\nu_1}T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \rho\cdots\nu_p}-\cdots-\Gamma^\rho_{\lambda\nu_p}T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\rho}
+\end{equation}
+
+因为协变指标相互之间应当是平等的，所以每一项中的联络应该是相同的。那么这个联络究竟是什么东西？首先它不是张量，因为联络相当于是联系对坐标的导数和某个与坐标系无关的张量的一组参数，所以自然是与坐标系选取有关的。这也可以从联络的变换性质中看出。但除此以外，我们没有太多的细节了，甚至联络及相应的协变导数的定义不是唯一的。我们可以验证不同联络的差的确是一个张量。所以，为了特定出一个联络，我们人为地增加下面两条性质。
+\begin{enumerate}
+\item 对称/无旋（Torsion-free）：$\Gamma^\lambda_{\mu\nu}=\Gamma^\lambda_{\nu\mu}$
+\item 与度规兼容：$\nabla_\mu g_{\nu\lambda}=0$
+\end{enumerate}
+这样我们得到一个与度规有关的联络：
+\begin{equation}
+\Gamma^\lambda_{\mu\nu}=\frac{1}{2}g^{\lambda\sigma}(\partial_\mu g_{\nu\sigma}+\partial_\nu g_{\sigma\mu}-\partial_\sigma g_{\mu\nu})
+\end{equation}
+这个特别的联络称为Christoffel联络或Christoffel符号（克式联络、克式符号）。如果你在学广义相对论这门课，这个公式大概是会被要求一定记住的公式之一。
+
+这个联络是非常实用的，他甚至可以帮助我们把一个直角坐标中写出的微分方程转换到任意坐标系去，非常方便。
+
+\section{平移与测地线}
+下面我们考虑如何将切向量从流形的一个点平移到另一个点上去。对于平直空间而言，这个问题很简单，但弯曲的空间就不那么显然了。我们仿佛对平移有一个直观的概念，但有很多问题需要厘清。比如在地球赤道上一根指向北极的切向量，如果我们沿经线直接平移，或先在赤道上平移之后，沿另一根经线平移，两种平移最后会得到完全不同的切向量。换句话说，平移与路径有关。
+
+因为我们之前定义的协变导数是与坐标选取无关的导数算符，其实我们依然可以将它理解为梯度算符。那么对于某一条（写成参数方程的）路径$x^\mu(\lambda)$，它的方向是导数$\frac{dx^\mu}{d\lambda}$，于是我们可以与欧式空间中的多元微积分类似地，定义协变方向导数为：
+\begin{equation}
+\frac{dx^\mu}{d\lambda}\nabla_\mu
+\end{equation}
+于是如果一个张量场在某条路径上的协变方向导数为0，我们称这个张量场是张量在这条路径上的平移，即：
+\begin{equation}
+\frac{dx^\mu}{d\lambda}\nabla_\mu T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}=0
+\end{equation}
+这应该还算是个比较直观的定义。接下来有趣的是，如果一条路径平移了自己的方向，我们称这种路径为测地线。这种路径满足：
+\begin{equation}
+\frac{dx^\mu}{d\lambda}\nabla_\mu \frac{dx^\nu}{d\lambda}=\frac{dx^\mu}{d\lambda}\frac{\partial}{\partial x^\mu}\frac{dx^\nu}{d\lambda}+\frac{dx^\mu}{d\lambda}\Gamma^\nu_{\mu\sigma}\frac{dx^\sigma}{d\lambda}=\frac{d^2x^\nu}{d\lambda^2}+\Gamma^\nu_{\mu\sigma}\frac{dx^\mu}{d\lambda}\frac{dx^\sigma}{d\lambda}=0
+\end{equation}
+最后一个等式称作测地线方程，无比重要，所以我们再写一遍：
+\begin{equation}
+\frac{d^2x^\nu}{d\lambda^2}+\Gamma^\nu_{\mu\sigma}\frac{dx^\mu}{d\lambda}\frac{dx^\sigma}{d\lambda}=0
+\end{equation}
+如果你在学广义相对论这门课，这个公式大概是会被要求一定记住的公式之二。
+
+测地线在几何和广义相对论中都有重要的意义。在几何中，可以通过变分法证明，测地线是连接流形中两个点的曲线中，长度最短/长（取决于距离的符号）的一个，而满足这个条件的联络必须取为克式联络。而在物理中，我们假定，流形中自由运动的粒子，它的轨迹满足测地线方程，而参数$\lambda$是粒子的本征时。这是广义相对论的运动定律，如果有其他相互作用（比如，电磁），那么方程右边可以加一个“力”张量来描述这种相互作用，而将方程变为：
+\begin{equation}
+\frac{d^2x^\nu}{d\lambda^2}+\Gamma^\nu_{\mu\sigma}\frac{dx^\mu}{d\lambda}\frac{dx^\sigma}{d\lambda}=f^\nu
+\end{equation}
+在平直空间中，克式联络等于0，本征时如果和坐标时间可以不加区分，这个方程正是牛顿第二定律：$a=f$（我们只是将质量项吸收进了力的定义中）。所以，测地线方程在广义相对论中的地位与牛顿第二定律等同！
+
+\section{曲率}
+我们有了运动学方程，现在还需要一个关于引力的动力学方程。我们之前已经说过，引力是一种纯粹的几何现象，是时空的弯曲表现出的现象。那么首先我们来建立最后一个数学概念，一个类似于曲线曲率、用来刻画流形弯曲程度的概念——黎曼曲率张量。
+
+一个弯曲的流形有什么样的本质特征可以与平直的流形分开？其实，之前提到的关于平移依赖路径的问题，就是这样一个区别——平直流形的平移是不依赖于路径的。
+
+那么，我们用这样的方式来刻画流形的弯曲程度。对于某个任意的矢量$V^\mu$，和任意两个矢量$A^\mu$与$B^\mu$，我们将矢量$V^\mu$沿矢量$A^\mu$平移一段极小的距离，再沿矢量$B^\mu$平移极小的一段距离，我们得到矢量$V_1^\mu$。同样，我们也可以先沿矢量$B^\mu$平移再沿矢量$A^\mu$平移，得到矢量$V_2^\mu$。如果两段平移的距离都趋近于0，由于流形每个局部都趋近于欧式空间，平移后的矢量$V_1^\mu$与$V_2^\mu$依附的点也趋近于同一个点。那么如果他们的差值有极限：
+\begin{equation}
+\delta V^\mu=V_1^\mu-V_2^\mu=R_{\ \sigma\nu\lambda}^{\mu}V^\sigma A^\nu B^\lambda
+\end{equation}
+其中$R_{\ \sigma\nu\lambda}^{\mu}$是一个与$V^\mu$、$A^\mu$、$B^\mu$均无关的$(1,3)$张量场，那么我们将$R_{\ \sigma\nu\lambda}^{\mu}$称作黎曼曲率张量。对于向量的无穷小平移，我们知道正是方向导数$A^\mu\nabla_\mu$，因为方向的任意性，我们可以直接通过计算$[\nabla_\mu,\nabla_\nu]=\nabla_\mu\nabla_\nu-\nabla_\nu\nabla_\mu$来找出黎曼曲率张量。经过繁琐的计算，我们可以得到：
+\begin{equation}
+R^\mu_{\ \sigma\nu\lambda}=\partial_\nu\Gamma^\mu_{\lambda\sigma}-\partial_\lambda\Gamma^\mu_{\nu\sigma}+\Gamma^\mu_{\nu\rho}\Gamma^\rho_{\lambda\sigma}-\Gamma^\mu_{\lambda\rho}\Gamma^\rho_{\nu\sigma}
+\end{equation}
+这个公式不同的记号中会有微妙差别，一般老师大概也不会让学生记忆。但它有些性质比较重要。
+\begin{itemize}
+\item 从定义我们很容易看出：$R^\mu_{\ \sigma\nu\lambda}=-R^\mu_{\ \sigma\lambda\nu}$。
+\item 如果将第一个指标降下来，还有：$R_{\mu\sigma\nu\lambda}=-R_{\sigma\mu\nu\lambda}，以及R_{\mu\sigma\nu\lambda}=R_{\nu\lambda\mu\sigma}$。
+\item $R_{\mu\sigma\nu\lambda}+R_{\mu\nu\lambda\sigma}+R_{\mu\lambda\sigma\nu}=0$。
+\item Bianchi恒等式：协变导数及其对易子满足雅克比恒等式。
+\end{itemize}
+
+根据这些性质，一个$n$维流形的曲率张量只有$n^2(n^2-1)/12$个不相关的分量。1维流形有0个分量，意味着所有的1维流形都没有曲率，都是等价的。2维流形有1个分量，这个分量正是微分几何中的高斯曲率。高斯曲率描述了一个二维曲面的弯曲程度，而且微分几何中我们知道这个曲率是曲面的内蕴性质，一个高斯曲率不为0的曲面是无论如何都不能展成平面的（比如，地球表面）。
+接下来要用到的是将黎曼曲率张量第一个指标和第三个指标缩并后的$(0,2)$对称张量场，叫做Ricci张量：
+\begin{equation}
+R_{\mu\nu}=R^\lambda_{\ \mu\lambda\nu}
+\end{equation}
+
+\section{爱因斯坦方程}
+接下来要猜出动力学方程——爱因斯坦场方程。我们简化地用一个$(0,2)$张量来描述曲率。回想一下拉格朗日力学，和物质的惯性质量相关的同样的$(0,2)$张量，有一个候选——能量动量张量$T_{\mu\nu}$（见理论力学笔记），那么我们猜，这两个张量应该有某种关系。
+
+但不是直接等于，因为得到的结果如果考虑能量动量守恒，会得到一个奇怪的、不符合实际的方程$\nabla^\mu R_{\mu\nu}=0$。于是我们考虑另一种可能——把Ricci张量的迹除去，记$R=R^\mu_{\ \mu}$是Ricci张量的迹，凑出
+\begin{equation}
+R_{\mu\nu}-\frac{1}{2}Rg_{\mu\nu}=\alpha T_{\mu\nu}
+\end{equation}
+这个不知道的系数可以通过求弱引力近似，再与牛顿万有引力进行对比而得到。计算比较繁琐，结果可以直接写作：
+\begin{equation}
+R_{\mu\nu}-\frac{1}{2}Rg_{\mu\nu}=8\pi G T_{\mu\nu}
+\end{equation}
+其中G是大家熟知的引力常数。注意这里我提一下单位的问题……实际上我一直在用光速c=1的单位制，所以如果要在国际单位制中进行计算，注意在合适的地方加上光速c。
+
+这个方程作为广义相对论的动力学方程，属于广义相对论的基本假设，是没法“推导”出来的，所以我这里只是用了“猜”这个字。理想情况下，对于给定的物质分布/模型，我们可以写出能量动量张量，然后通过这个方程——实际上把曲率和联络的定义带入，是度规的方程，解出度规和联络，于是我们就可以根据测地线方程知道流形中所有粒子的运动轨迹。然而，想象一下也可以知道，这个过程之复杂，使得我们几乎不可能这样去解爱因斯坦方程。这个高度非线性的、甚至自耦合的爱因斯坦方程大概是物理的各种方程中最难解的一个方程。幸运的是，我们可以根据对称性得到几个比较简单的解。
+
+
+\section{史瓦西解、史瓦西黑洞、克尔黑洞、引力波}
+篇幅已经很长了……接下来的内容我只能稍作介绍，因为计算越来越繁琐，我也不是特别熟悉……
+
+如果时空流形的空间部分是“球对称”的、静态的，且空间中没有物质分布（$T_{\mu\nu}=0$），我们可以得到史瓦西（Schwarzschild）度规。找出这个解需要根据对称性给出度规的一般形式，然后带入爱因斯坦方程定出度规的各项。这里我们直接引用结果：
+\begin{equation}
+ds^2=(1-\frac{2GM}{\rho})dt^2-(1-\frac{2GM}{\rho})^{-1}d\rho^2-\rho^2d\phi^2-\rho^2\sin^2\phi d\theta^2
+\end{equation}
+这个度规写在一个类似球坐标的坐标之中。太阳周围时空的度规，近似地可以用史瓦西度规来描述。历史上，我们就是用这个度规更精确地算出了水星进动的角度，而这个数据是广义相对论早期的支持证据之一。
+
+我们注意到，这个度规有一个奇特的界面：$\rho=2GM$。在这个界面上，度规的$dt^2$与$d\rho^2$分量均为0。如果$\rho$继续减小，这两个分量的符号甚至颠倒了过来！我们知道时间坐标和位置坐标的区别很大程度上体现在度规的符号上，这种颠倒就好像是空间坐标$\rho$变得像时间一样——无法倒流，而时间坐标$t$反而变得好像是空间一样。当然这只是一种不严格的比喻。如果我们仔细检查这个度规，会发现很多奇特的性质：“落入”度规中心的物体，外界看来它的未来光锥会一点点被挤扁，最后它好像停留在了$\rho=2GM$的界面上。它的坐标时一点点变慢，最后趋于停滞，但对于物体本身来说，它的本征时依然在流动。在它看来，它确实地进入了界面内部，只是信号无法再传达到外界。界面内部的物体的未来光锥会全部落在界面内部，也就是说任何内部的物体都无法逃出这个界面，即使是光。这样的物体被称为史瓦西黑洞，而界面$\rho=2GM$被称为史瓦西黑洞的视界。
+
+如果中心天体在旋转，那么我们可以得到更复杂的克尔（Kerr）度规，写在球坐标是：
+\begin{equation}
+ds^2=-\left(1-\frac{2GMr}{\rho^2}\right)dt^2-\frac{2GMar\sin^2\theta}{\rho^2}(dtd\phi+d\phi dt)+\frac{\rho^2}{\Delta}dr^2+\rho^2d\theta^2+\frac{\sin^2\theta}{\rho^2}[(r^2+a^2)^2-a^2\Delta\sin^2\theta]d\phi^2
+\end{equation}
+其中，$a=J/m$相当于中心天体的角速度，$\Delta(r)=r^2-2GMr+a^2$，$\rho^2(r,\theta)=r^2+a^2\cos^2\theta$。（看，仅仅只是旋转就让这个度规如此复杂……不过用椭球坐标可以更简洁地写出这个度规。）与克尔度规相联系的黑洞称为克尔黑洞。克尔黑洞具有更多更复杂的性质。比如说，它有两层视界，而且外层视界的形状不再是球形，而是椭球形。（我会告诉你我考试的时候记错了克尔黑洞的视界方程么T T）
+
+近年来颇受关注的广义相对论的一个重要预言，就是引力波。如果我们对自由空间中的爱因斯坦方程中的度规，在弱引力近似下，在伪欧式度规附近做微扰展开，我们可以得到一个关于扰动的波动方程。这个度规的波动被称为引力波，是爱因斯坦于1916年便已预言了的。诸如双星系统、星系合并等等都会产生引力波。然而，我们虽然有一些引力波存在的间接证据，但因为它太微弱了，直接探测引力波还是一个重大的课题。天体物理学家建造了很多巨形探测器（原理类似于迈克尔逊干涉仪），还在继续探测着引力波的蛛丝马迹。2016年2月11日，美国的探测器LIGO终于确认了直接探测引力波的信号。
+
+\end{document}
