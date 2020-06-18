@@ -242,9 +242,10 @@ a_\mu=g_{\mu\nu}a^\nu
 \bar{\Gamma}^{\mu}_{\nu\lambda}=-\Gamma^{\mu}_{\nu\lambda}
 \end{equation}
 于是我们将$\Gamma^\mu_{\nu\lambda}$称为联络（Connection）。一般张量的协变导数写作：
-\begin{equation}
-\nabla_{\lambda}T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}=\partial_{\lambda}T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}+\Gamma^{\mu_1}_{\lambda\rho}T^{\rho\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}+\cdots+\Gamma^{\mu_n}_{\lambda\rho}T^{\mu_1\cdots\rho}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}-\Gamma^\rho_{\lambda\nu_1}T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \rho\cdots\nu_p}-\cdots-\Gamma^\rho_{\lambda\nu_p}T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\rho}
-\end{equation}
+\begin{align}
+\nabla_{\lambda}T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}=&\partial_{\lambda}T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}+\Gamma^{\mu_1}_{\lambda\rho}T^{\rho\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}+\cdots\non
+&+\Gamma^{\mu_n}_{\lambda\rho}T^{\mu_1\cdots\rho}_{\ \ \ \ \ \ \ \nu_1\cdots\nu_p}-\Gamma^\rho_{\lambda\nu_1}T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \rho\cdots\nu_p}-\cdots-\Gamma^\rho_{\lambda\nu_p}T^{\mu_1\cdots\mu_n}_{\ \ \ \ \ \ \ \nu_1\cdots\rho}
+\end{align}
 
 因为协变指标相互之间应当是平等的，所以每一项中的联络应该是相同的。那么这个联络究竟是什么东西？首先它不是张量，因为联络相当于是联系对坐标的导数和某个与坐标系无关的张量的一组参数，所以自然是与坐标系选取有关的。这也可以从联络的变换性质中看出。但除此以外，我们没有太多的细节了，甚至联络及相应的协变导数的定义不是唯一的。我们可以验证不同联络的差的确是一个张量。所以，为了特定出一个联络，我们人为地增加下面两条性质。
 \begin{enumerate}

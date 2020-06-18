@@ -306,7 +306,7 @@ f\wedge(g+l)=f\wedge g+f\wedge l
 
 下面我们要定义微分形式的微分，即外微分运算$d$。对于一个$p$-形式$f=f_{i_1\cdots i_p}dx^{i_1}\wedge\cdots\wedge dx^{i_p}$，我们定义它的外微分是一个$(p+1)$-形式：
 \begin{equation}
-df=\sum_{\begin{array}{c} _{i_{p+1}} \\ _{i_1<\cdots<i_p}\end{array}}\frac{\partial f_{i_1\cdots i_p}}{\partial x^{i_{p+1}}}dx^{i_{p+1}}\wedge dx^{i_1}\wedge\cdots\wedge dx^{i_p}
+df=\sum_{\scriptstyle{i_{p+1}},\ \scriptstyle{i_1<\cdots<i_p}}\frac{\partial f_{i_1\cdots i_p}}{\partial x^{i_{p+1}}}dx^{i_{p+1}}\wedge dx^{i_1}\wedge\cdots\wedge dx^{i_p}
 \end{equation}
 这其实就是对张量函数求各分量的偏导数，这个定义还没有将同样基底的项合并，于是前面的也不是一个反对称张量，所以通常我们将项合并后的结果写成：
 \begin{equation}
